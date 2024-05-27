@@ -29,10 +29,10 @@ class Book(models.Model):
     uploaded_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     upload_date = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(UserProfile, related_name='liked_books_set', blank=True)
-    comments = models.ManyToManyField('comments.Comment', related_name='book_comments', blank=True)
-    recommendations = models.ManyToManyField('recommendations.Recommendation', related_name='book_recommendations', blank=True)
     dislikes = models.ManyToManyField(UserProfile, related_name='disliked_books_set', blank=True)
     read_count = models.IntegerField(default=0)
-
+    comments = models.ManyToManyField('comments.Comment', related_name='book_comments', blank=True)
+    recommendations = models.ManyToManyField('recommendations.Recommendation', related_name='book_recommendations', blank=True)
+    
     def __str__(self):
         return self.title
