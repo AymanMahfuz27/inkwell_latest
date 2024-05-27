@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from .models import UserProfile, BookCollection
 from books.serializers import BookSerializer, GenreSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class UserProfileSerializer(serializers.ModelSerializer):
     followers = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
@@ -19,3 +20,14 @@ class BookCollectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = BookCollection
         fields = ['id', 'name', 'description', 'books', 'created_at', 'updated_at']
+
+# users/serializers.py
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data.update({
+            'user_id': self.user.id, 
+            'username': self.user.username})
+        return data
