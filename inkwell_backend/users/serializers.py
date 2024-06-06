@@ -12,7 +12,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'bio', 'profile_picture', 'followers', 'following', 'liked_books', 'favorite_genres']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'bio', 'profile_picture', 'followers', 'following', 'liked_books', 'favorite_genres','visitors', 'visited_profiles', 'created_at']
 
 class BookCollectionSerializer(serializers.ModelSerializer):
     books = BookSerializer(many=True, read_only=True)

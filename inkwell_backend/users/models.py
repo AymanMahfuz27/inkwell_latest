@@ -33,7 +33,11 @@ class UserProfile(AbstractUser):
         verbose_name='user permissions',
     )
 
-
+    #add a field to store the users that visited this users profile 
+    visitors = models.ManyToManyField('self', related_name='user_visitors', symmetrical=False, blank=True, db_index=True)
+    #add a field to store the users that this user visited their profile
+    visited_profiles = models.ManyToManyField('self', related_name='user_visited_profiles', symmetrical=False, blank=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.username
