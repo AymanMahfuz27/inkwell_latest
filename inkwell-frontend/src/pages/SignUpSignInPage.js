@@ -1,23 +1,32 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+// SignUpSignInPage.js
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const REGISTER_URL = "http://localhost:8000/api/users/register/";
+const LOGIN_URL = "http://localhost:8000/api/users/login/";
 
 const SignUpSignInPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [bio, setBio] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [bio, setBio] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       if (isSignUp) {
+        if (password !== confirmPassword) {
+          console.error("Passwords do not match");
+          return;
+        }
         // Registration
-        const response = await axios.post('http://localhost:8000/api/users/register/', {
+        const response = await axios.post(REGISTER_URL, {
           username,
           email,
           password,
@@ -25,45 +34,69 @@ const SignUpSignInPage = () => {
           last_name: lastName,
           bio,
         });
-        localStorage.setItem('access_token', response.data.access);
-        localStorage.setItem('refresh_token', response.data.refresh);
-        navigate('/');
+        localStorage.setItem("access_token", response.data.access);
+        localStorage.setItem("refresh_token", response.data.refresh);
+        navigate("/");
       } else {
         // Login
-        const response = await axios.post('http://localhost:8000/api/token/', {
+        console.log("Sending login request...");
+        console.log("Username:", username);
+        console.log("Password:", password);  
+        const response = await axios.post(LOGIN_URL, {
           username,
           password,
         });
-        localStorage.setItem('access_token', response.data.access);
-        localStorage.setItem('refresh_token', response.data.refresh);
-        navigate('/');
+        console.log("Login response:", response);
+        localStorage.setItem("access_token", response.data.access);
+        localStorage.setItem("refresh_token", response.data.refresh);
+        navigate("/");
       }
     } catch (error) {
-      console.error('Authentication failed:', error);
+      if (error.response) {
+        console.error("Authentication failed:", error.response.data);
+      } else console.error("Authentication failed:", error);
     }
   };
 
   return (
     <div>
-      <h1>{isSignUp ? 'Sign Up' : 'Sign In'}</h1>
+      <h1>{isSignUp ? "Sign Up" : "Sign In"}</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Username:</label>
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
         </div>
         {isSignUp && (
           <>
             <div>
               <label>Email:</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
             </div>
             <div>
               <label>First Name:</label>
-              <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+              <input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
             </div>
             <div>
               <label>Last Name:</label>
-              <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
             </div>
             <div>
               <label>Bio:</label>
@@ -73,12 +106,30 @@ const SignUpSignInPage = () => {
         )}
         <div>
           <label>Password:</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
         </div>
-        <button type="submit">{isSignUp ? 'Sign Up' : 'Sign In'}</button>
+        {isSignUp && (
+          <div>
+            <label>Confirm Password:</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+        )}
+        <button type="submit">{isSignUp ? "Sign Up" : "Sign In"}</button>
       </form>
       <button onClick={() => setIsSignUp(!isSignUp)}>
-        {isSignUp ? 'Already have an account? Sign In' : 'Don’t have an account? Sign Up'}
+        {isSignUp
+          ? "Already have an account? Sign In"
+          : "Don’t have an account? Sign Up"}
       </button>
     </div>
   );

@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import UserProfile, BookCollection
 from books.serializers import BookSerializer, GenreSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth import authenticate
 
 class UserProfileSerializer(serializers.ModelSerializer):
     followers = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
@@ -26,11 +27,26 @@ class BookCollectionSerializer(serializers.ModelSerializer):
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        data = super().validate(attrs)
-        data.update({
-            'user_id': self.user.id, 
-            'username': self.user.username})
-        return data
+        username = attrs.get('username')
+        password = attrs.get('password')
+
+        print("Validating user credentials...")
+        print("Username:", username)
+        print("Password:", password)
+
+        user = authenticate(username=username, password=password)
+        if user is not None and user.is_active:
+            data = super().validate(attrs)
+            data.update({
+                'user_id': user.id,
+                'username': user.username
+            })
+            print("Validation successful. User data:", data)
+            return data
+        else:
+            print("Invalid username or password")
+            raise serializers.ValidationError('Invalid username or password')
+
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -48,4 +64,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             last_name=validated_data.get('last_name', ''),
             bio=validated_data.get('bio', ''),
         )
+        user.set_password(validated_data['password'])
+        user.save()
         return user

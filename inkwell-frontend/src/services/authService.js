@@ -1,13 +1,26 @@
+// authService.js
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 const API_URL = 'http://localhost:8000/api';
 
 export const login = async (username, password) => {
+try {
+    console.log("Sending login request to API...");
+    console.log("Username:", username);
+    console.log("Password:", password);
+
   const response = await axios.post(`${API_URL}/token/`, { username, password });
   const { access, refresh } = response.data;
   localStorage.setItem('access_token', access);
   localStorage.setItem('refresh_token', refresh);
+  const user = jwtDecode(access);
+  localStorage.setItem('user_first_name', user.first_name);
+
+} catch (error) {
+    console.error("Login failed. Error:", error);
+    throw error;
+  }
 };
 
 export const register = async (username, email, password) => {
@@ -28,3 +41,4 @@ export const isAuthenticated = () => {
 
 export const getAccessToken = () => localStorage.getItem('access_token');
 export const getRefreshToken = () => localStorage.getItem('refresh_token');
+export const getUserFirstName = () => localStorage.getItem('user_first_name');
