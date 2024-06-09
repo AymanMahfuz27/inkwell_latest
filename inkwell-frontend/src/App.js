@@ -4,10 +4,10 @@ import Navbar from './components/Navbar'; // Import the Navbar component
 import Footer from './components/Footer'; // Import the Footer component
 import HomePage from './pages/HomePage'; // Import the HomePage component
 import SignUpSignInPage from './pages/SignUpSignInPage'; // Import the SignUpSignInPage component
-// import UploadBookPage from './pages/UploadBookPage'; // Import the UploadBookPage component
+import UploadBookPage from './pages/UploadBookPage'; // Import the UploadBookPage component
 // import ProfilePage from './pages/ProfilePage'; // Import the ProfilePage component
 // import AboutPage from './pages/AboutPage'; // Import the AboutPage component
-// import PrivateRoute from './components/PrivateRoute'; // Import the PrivateRoute component for protected routes
+import PrivateRoute from './components/PrivateRoute'; // Import the PrivateRoute component for protected routes
 
 // Define the App component
 function App() {
@@ -17,7 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} /> 
         <Route path="/login" element={<SignUpSignInPage />} /> {/* Sign Up / Sign In page */}
-        {/* <Route path="/upload" element={<PrivateRoute><UploadBookPage /></PrivateRoute>} /> {/* Upload Book page, protected route */}
+        <Route path="/upload" element={<PrivateRoute><UploadBookPage /></PrivateRoute>} /> {/* Upload Book page, protected route */}
         {/* <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} /> {/* Profile page, protected route */}
         {/* <Route path="/about" element={<AboutPage />} /> {/* About page */}
       </Routes>

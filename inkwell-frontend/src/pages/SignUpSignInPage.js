@@ -39,14 +39,10 @@ const SignUpSignInPage = () => {
         navigate("/");
       } else {
         // Login
-        console.log("Sending login request...");
-        console.log("Username:", username);
-        console.log("Password:", password);  
         const response = await axios.post(LOGIN_URL, {
           username,
           password,
         });
-        console.log("Login response:", response);
         localStorage.setItem("access_token", response.data.access);
         localStorage.setItem("refresh_token", response.data.refresh);
         navigate("/");

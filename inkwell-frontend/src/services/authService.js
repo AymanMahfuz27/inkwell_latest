@@ -6,10 +6,6 @@ const API_URL = 'http://localhost:8000/api';
 
 export const login = async (username, password) => {
 try {
-    console.log("Sending login request to API...");
-    console.log("Username:", username);
-    console.log("Password:", password);
-
   const response = await axios.post(`${API_URL}/token/`, { username, password });
   const { access, refresh } = response.data;
   localStorage.setItem('access_token', access);
