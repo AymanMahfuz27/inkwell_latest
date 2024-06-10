@@ -21,17 +21,27 @@ class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]
+    
     def create(self, request, *args, **kwargs):
         logger.info("Received book upload request")
         logger.info(f"Request data: {request.data}")
 
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         try:
-            response = super().create(request, *args, **kwargs)
-            logger.info(f"Response data: {response.data}")
-            return response
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            logger.info(f"Response data: {serializer.data}")
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         except Exception as e:
             logger.error(f"Error: {str(e)}")
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        logger.info(f"Saved book instance: {instance}")
+        logger.info(f"Book genres: {instance.genres.all()}")
 
 
 

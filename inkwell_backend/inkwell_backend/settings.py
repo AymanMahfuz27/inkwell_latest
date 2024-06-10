@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'comments',
     'recommendations',
     'uploads',
+    'debug_toolbar',
 
 ]
 
@@ -59,6 +60,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+
 
 ]
 
@@ -182,3 +185,12 @@ AUTH_USER_MODEL = 'users.UserProfile'
 #         },
 #     },
 # }
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
+
+import socket
+hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+INTERNAL_IPS += [ip[:-1] + "1" for ip in ips]

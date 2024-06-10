@@ -112,3 +112,22 @@ const UploadBookPage = () => {
 };
 
 export default UploadBookPage;
+
+
+// Next Steps
+// Investigate and Ensure Proper Setting of uploaded_by Field:
+
+// Confirm that the uploaded_by field is correctly set with the authenticated user during the book creation process in the serializer and view.
+// Check and Resolve Foreign Key Constraints:
+
+// Ensure that all foreign key constraints are correctly set and that the user_id in django_admin_log corresponds to valid entries in the UserProfile table.
+// Investigate and fix any inconsistencies in the user data between the django_admin_log and UserProfile tables.
+// Potential Debugging Steps
+// Print and Log Statements:
+
+// Add additional print and log statements to confirm the values being passed to and from the serializer and view.
+// Log the authenticated user being used for the uploaded_by field.
+// Database Integrity Checks:
+
+// Verify the integrity of the user-related data in the database.
+// Ensure that all foreign key references in the django_admin_log table are valid and correspond to existing users in the UserProfile table.
