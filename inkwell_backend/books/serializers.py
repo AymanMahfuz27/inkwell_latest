@@ -38,11 +38,6 @@ class BookSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"detail": "User must be authenticated to upload a book."})
 
 
-        print("Creating book instance")
-        print(f"Validated data: {validated_data}")
-        print(f"Genres data: {genres_data}")
-        print(f"User: {user}")
-
         try:
             # Create the book instance
             book = Book.objects.create(uploaded_by=user, **validated_data)
@@ -56,30 +51,16 @@ class BookSerializer(serializers.ModelSerializer):
             for genre_name in genres_data:
                 genre, created = Genre.objects.get_or_create(name=genre_name)
                 genres.append(genre)
-                print(f"Created/fetched genre: {genre}, created: {created}")
 
 
-            # Ensure we get an iterable
-            # book.genres.set(genres)
 
             book.genres.set([genre for genre in genres])
             book.save()
-            print(f"Book saved with genres: {book.genres.all()}")
 
-
-            # for genre_name in genres_data:
-            #     genre, _ = Genre.objects.get_or_create(name=genre_name)
-            #     book.genres.add(genre)
-
-
-            print(f"Created book: {book}")
             return book
         except Exception as e:
             print(f"Error creating book: {str(e)}")
             raise serializers.ValidationError({"detail": str(e)})
-        # except Exception as e:
-            # logger.error(f"Error creating book: {str(e)}")
-            # return book
-
+      
 
 
