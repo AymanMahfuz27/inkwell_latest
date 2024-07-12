@@ -11,8 +11,22 @@ RUN pip install -r requirements.txt
 # Copy the project files
 COPY . .
 
-# Expose the port the app runs on
-EXPOSE 8000
+# Install node and npm
+RUN apt-get update && apt-get install -y nodejs npm
+
+# Copy frontend files
+COPY ../inkwell-frontend /app/frontend
+
+# Build frontend
+WORKDIR /app/frontend
+RUN npm install
+RUN npm run build
+
+# Move back to the main app directory
+WORKDIR /app
+
+# Collect static files
+RUN python manage.py collectstatic --noinput
 
 # Run the application
-CMD ["gunicorn", "inkwell_backend.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD gunicorn inkwell_backend.wsgi:application --bind 0.0.0.0:$PORT
