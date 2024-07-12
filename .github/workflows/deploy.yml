@@ -24,8 +24,8 @@ jobs:
 
       - name: Build and push Docker images
         run: |
-          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/backend ./backend
-          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/frontend ./frontend
+          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/backend ./inkwell_backend
+          docker build -t registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/frontend ./inkwell-frontend
           docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/backend
           docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/frontend
 
