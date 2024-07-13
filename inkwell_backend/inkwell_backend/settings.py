@@ -3,6 +3,9 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,7 +16,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-secret-key-here')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'your-domain.com']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
@@ -65,17 +68,33 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'inkwell_backend.wsgi.application'
 
-# Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'inkwell'),
-        'USER': os.environ.get('DB_USER', 'inkwelluser'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'G00ddays$'),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
+DJANGO_ENV = os.getenv('DJANGO_ENV', 'development')
+
+if DJANGO_ENV == 'production':
+    # Database
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('DB_USER'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'HOST': os.getenv('DB_HOST'),
+            'PORT': os.getenv('DB_PORT'),
+        }
     }
-}
+else:
+    # Database
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'inkwell',
+            'USER': 'inkwelluser',
+            'PASSWORD': 'G00ddays$',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -116,21 +135,20 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
 
 # JWT settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=20),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = False  # Set to True for development, False for production
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://your-frontend-domain.com",
-]
+CORS_ALLOW_ALL_ORIGINS = True  # Set to True for development, False for production
+CORS_ALLOWS_CREDENTIALS = True
 
 # Custom user model
 AUTH_USER_MODEL = 'users.UserProfile'
