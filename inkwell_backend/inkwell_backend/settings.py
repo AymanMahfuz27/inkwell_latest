@@ -149,6 +149,13 @@ SIMPLE_JWT = {
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = True  # Set to True for development, False for production
 CORS_ALLOWS_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://localhost:8080",
+    "https://359265b8-6edd-406f-b3a3-e869fcb2ecf8-dev.e1-us-east-azure.choreoapis.dev/inkwell/backend/v1"
+]
+
 
 # Custom user model
 AUTH_USER_MODEL = 'users.UserProfile'
