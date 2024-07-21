@@ -1,7 +1,6 @@
-// UploadBookPage.js
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 const UploadBookPage = () => {
   const [title, setTitle] = useState('');
@@ -12,53 +11,83 @@ const UploadBookPage = () => {
   const [coverPicture, setCoverPicture] = useState(null);
   const [bannerPicture, setBannerPicture] = useState(null);
   const [uploadType, setUploadType] = useState('pdf'); // 'pdf' or 'text'
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null);
   const navigate = useNavigate();
-  const UPLOAD_BOOK_URL = 'http://localhost:8000/api/books/books/';
+  const UPLOAD_BOOK_URL = 'api/books/books/';
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const handleFileChange = (event) => {
     const { name, files } = event.target;
-    if (name === 'pdfFile') {
-      setPdfFile(files[0]);
-    } else if (name === 'coverPicture') {
-      setCoverPicture(files[0]);
-    } else if (name === 'bannerPicture') {
-      setBannerPicture(files[0]);
+    const file = files[0];
+    
+    if (name === 'pdfFile' && file && file.type !== 'application/pdf') {
+      setErrorMessage('Please upload a PDF file');
+      return;
     }
+    
+    if ((name === 'coverPicture' || name === 'bannerPicture') && file && !file.type.startsWith('image/')) {
+      setErrorMessage('Please upload an image file');
+      return;
+    }
+
+    if (name === 'pdfFile') setPdfFile(file);
+    else if (name === 'coverPicture') setCoverPicture(file);
+    else if (name === 'bannerPicture') setBannerPicture(file);
+    
+    setErrorMessage(null);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    setIsLoading(true);
 
     const formData = new FormData();
     formData.append('title', title);
-    genres.split(',').forEach(genre => formData.append('genres', genre.trim())); // Append genres individually
-    // const genresData = genres.split(',').map(genre => ({ name: genre.trim() }));
-    // formData.append('genres', JSON.stringify(genresData));
+    genres.split(',').forEach(genre => formData.append('genres', genre.trim()));
     formData.append('description', description);
-    formData.append('cover_picture', coverPicture);
-    formData.append('banner_picture', bannerPicture);
+    if (coverPicture) formData.append('cover_picture', coverPicture);
+    if (bannerPicture) formData.append('banner_picture', bannerPicture);
 
     if (uploadType === 'pdf') {
-      formData.append('pdf_file', pdfFile);
+      if (pdfFile) formData.append('pdf_file', pdfFile);
     } else {
       formData.append('content', textContent);
     }
 
-    // Log formData entries
-   
-      try {
-      const response = await axios.post(UPLOAD_BOOK_URL, formData, {
+    try {
+      const response = await api.post(UPLOAD_BOOK_URL, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
         }
       });
-
-      navigate('/');
+      console.log('Upload response:', response.data);
+      setSuccessMessage('Book uploaded successfully!');
+      setTimeout(() => navigate('/'), 2000);
     } catch (error) {
       console.error('Error uploading book:', error);
+      if (error.response) {
+        setErrorMessage(`Error uploading book: ${error.response.data.detail || JSON.stringify(error.response.data)}`);
+      } else if (error.request) {
+        setErrorMessage('Error uploading book: No response from server');
+      } else {
+        setErrorMessage(`Error uploading book: ${error.message}`);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
+
 
   return (
     <div>
@@ -86,7 +115,7 @@ const UploadBookPage = () => {
         {uploadType === 'pdf' ? (
           <div>
             <label>PDF File:</label>
-            <input type="file" name="pdfFile" onChange={handleFileChange} required />
+            <input type="file" name="pdfFile" onChange={handleFileChange} accept=".pdf" required />
           </div>
         ) : (
           <div>
@@ -96,19 +125,24 @@ const UploadBookPage = () => {
         )}
         <div>
           <label>Cover Picture:</label>
-          <input type="file" name="coverPicture" onChange={handleFileChange} required />
+          <input type="file" name="coverPicture" onChange={handleFileChange} accept="image/*" required />
         </div>
         <div>
           <label>Banner Picture:</label>
-          <input type="file" name="bannerPicture" onChange={handleFileChange} required />
+          <input type="file" name="bannerPicture" onChange={handleFileChange} accept="image/*" required />
         </div>
-        <button type="submit">Upload Book</button>
+        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+        {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? 'Uploading...' : 'Upload Book'}
+        </button>
       </form>
     </div>
   );
 };
 
 export default UploadBookPage;
+
 
 
 // Next Steps

@@ -19,11 +19,11 @@ logger = logging.getLogger(__name__)
 
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
-    serializer_class = BookSerializer
+    serializer_class = BookSerializer #(books, many=True, context={'request': request})
     permission_classes = [IsAuthenticated]
     
     def create(self, request, *args, **kwargs):
-
+        logger.info(f"User {request.user.username} is attempting to create a book")
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -32,11 +32,12 @@ class BookViewSet(viewsets.ModelViewSet):
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         except Exception as e:
-            logger.error(f"Error: {str(e)}")
+            logger.error(f"Error creating book: {str(e)}")
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def perform_create(self, serializer):
-        serializer.save()
+        serializer.save(uploaded_by=self.request.user)
+
 
 
 

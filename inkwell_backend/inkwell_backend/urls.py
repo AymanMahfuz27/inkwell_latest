@@ -25,6 +25,7 @@ from rest_framework_simplejwt.views import (
 from django.conf import settings
 from django.urls import include, path
 from django.http import HttpResponse
+from django.conf.urls.static import static
 
 
 
@@ -51,3 +52,4 @@ if settings.DEBUG:
     urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

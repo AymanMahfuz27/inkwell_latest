@@ -3,7 +3,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 // const API_URL = 'http://localhost:8000/api';
-const API_URL = process.env.VITE_API_URL + '/api';
+const API_URL = process.env.REACT_APP_API_URL + '/api';
 export const login = async (username, password) => {
 try {
   const response = await axios.post(`${API_URL}/token/`, { username, password });

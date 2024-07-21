@@ -1,10 +1,10 @@
 // SignUpSignInPage.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 
-const REGISTER_URL = "http://localhost:8000/api/users/register/";
-const LOGIN_URL = "http://localhost:8000/api/users/login/";
+const REGISTER_URL = "/api/users/register/";
+const LOGIN_URL = "/api/users/login/";
 
 const SignUpSignInPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -26,7 +26,7 @@ const SignUpSignInPage = () => {
           return;
         }
         // Registration
-        const response = await axios.post(REGISTER_URL, {
+        const response = await api.post(REGISTER_URL, {
           username,
           email,
           password,
@@ -39,7 +39,7 @@ const SignUpSignInPage = () => {
         navigate("/");
       } else {
         // Login
-        const response = await axios.post(LOGIN_URL, {
+        const response = await api.post(LOGIN_URL, {
           username,
           password,
         });
@@ -50,6 +50,7 @@ const SignUpSignInPage = () => {
     } catch (error) {
       if (error.response) {
         console.error("Authentication failed:", error.response.data);
+        
       } else console.error("Authentication failed:", error);
     }
   };
