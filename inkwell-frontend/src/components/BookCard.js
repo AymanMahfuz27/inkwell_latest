@@ -11,7 +11,7 @@ const BookCard = ({ book }) => {
     };
   
     return (
-      <Link to={`/book/${book.id}`} className="book-card">
+      <Link to={`/book/${book.id}`} className="book-card" >
         <img 
           src={getImageUrl(book.cover_picture)} 
           alt={`${book.title} cover`} 

@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
-    serializer_class = BookSerializer #(books, many=True, context={'request': request})
+    serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]
     
     def create(self, request, *args, **kwargs):
@@ -37,6 +37,18 @@ class BookViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(uploaded_by=self.request.user)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        data = serializer.data
+        if instance.content:
+            data['content'] = instance.content
+        logger.info(f"Retrieving book: {instance.id}, Content length: {len(data.get('content', ''))}")
+        return Response(data)
+
+
+
 
 
 
