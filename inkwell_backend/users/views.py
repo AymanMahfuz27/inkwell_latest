@@ -1,5 +1,5 @@
 # users/views.py
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics,status
 from .models import UserProfile, BookCollection
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .serializers import UserProfileSerializer, BookCollectionSerializer,CustomTokenObtainPairSerializer, RegisterSerializer
@@ -14,6 +14,32 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
+    lookup_field = 'username'
+
+    def get_queryset(self):
+        username = self.kwargs.get('username')
+        if username == 'undefined':
+            return UserProfile.objects.filter(id=self.request.user.id)
+        return UserProfile.objects.filter(username=username)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        
+        # Check if the user is updating their own profile
+        if instance != request.user:
+            return Response({"detail": "You do not have permission to edit this profile."}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+
 
 class BookCollectionViewSet(viewsets.ModelViewSet):
     queryset = BookCollection.objects.all()

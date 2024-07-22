@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { isAuthenticated, logout, getUserFirstName } from "../services/authService";
+import { Link, useNavigate } from "react-router-dom";
+import { isAuthenticated, getUserFirstName, getUsername, logout } from "../services/authService";
+import useAuth from "../hooks/useAuth";
+
 
 const Navbar = () => {
-  const [auth, setAuth] = useState(false);
-  const [firstName, setFirstName] = useState("");
+  const { auth, username, firstName } = useAuth();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    setAuth(isAuthenticated());
-    if (isAuthenticated()) setFirstName(getUserFirstName());
-  }, []);
   const handleLogout = () => {
     logout();
-    window.location.reload();
+    // handleStorageChange();
+    navigate('/');
   };
 
   return (
@@ -29,10 +28,14 @@ const Navbar = () => {
         </Link>
         {auth ? (
           <>
-            <Link to="/profile" style={styles.link}>
-              Hello, {firstName}
-            </Link>
-            <button onClick={handleLogout} style={styles.button}>
+            {username ? (
+              <Link to={`/profile/${username}`} style={styles.link}>
+                Hello, {firstName || 'User'}
+              </Link>
+            ) : (
+              <span style={styles.link}>Hello, {firstName || 'User'}</span>
+            )}
+            <button onClick={handleLogout} style={styles.logoutButton}>
               Logout
             </button>
           </>
@@ -45,6 +48,7 @@ const Navbar = () => {
     </nav>
   );
 };
+
 
 const styles = {
   navbar: {
@@ -93,5 +97,18 @@ const styles = {
     fontSize: "18px",
     cursor: "pointer",
   },
+  logoutButton: {
+    backgroundColor: "transparent",
+    border: "none",
+    color: "#fff",
+    fontSize: "18px",
+    cursor: "pointer",
+    padding: "0 10px",
+  }
 };
+
+
+
+
+
 export default Navbar;

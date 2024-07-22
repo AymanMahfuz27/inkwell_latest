@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import {login as authLogin} from "../services/authService";
 
 const REGISTER_URL = "/api/users/register/";
 const LOGIN_URL = "/api/users/login/";
@@ -39,12 +40,7 @@ const SignUpSignInPage = () => {
         navigate("/");
       } else {
         // Login
-        const response = await api.post(LOGIN_URL, {
-          username,
-          password,
-        });
-        localStorage.setItem("access_token", response.data.access);
-        localStorage.setItem("refresh_token", response.data.refresh);
+        await authLogin(username, password);
         navigate("/");
       }
     } catch (error) {
