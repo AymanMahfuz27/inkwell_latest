@@ -15,9 +15,9 @@ class GenreSerializer(serializers.ModelSerializer):
 class BookSerializer(serializers.ModelSerializer):
     genres = serializers.ListField(child=serializers.CharField(), write_only=True)
     genre_names = serializers.SerializerMethodField(read_only=True)
-    cover_picture = serializers.SerializerMethodField()
-    banner_picture = serializers.SerializerMethodField()
-    pdf_file = serializers.SerializerMethodField()
+    cover_picture = serializers.ImageField(required=False, allow_null=True)
+    banner_picture = serializers.ImageField(required=False, allow_null=True)
+    pdf_file = serializers.FileField(required=False, allow_null=True)
     uploaded_by = serializers.SerializerMethodField()
 
     class Meta:
@@ -54,4 +54,5 @@ class BookSerializer(serializers.ModelSerializer):
         for genre_name in genres_data:
             genre, created = Genre.objects.get_or_create(name=genre_name.strip())
             book.genres.add(genre)
+        logger.info(f"Book created: {book}")
         return book

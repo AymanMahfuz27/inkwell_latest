@@ -24,19 +24,24 @@ class BookViewSet(viewsets.ModelViewSet):
     
     def create(self, request, *args, **kwargs):
         logger.info(f"User {request.user.username} is attempting to create a book")
+        logger.info(f"Request data: {request.data}")
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        try:
-            self.perform_create(serializer)
-            headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-        except Exception as e:
-            logger.error(f"Error creating book: {str(e)}")
-            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            logger.info("Serializer is valid")
+            try:
+                book = self.perform_create(serializer)
+                headers = self.get_success_headers(serializer.data)
+                logger.info(f"Book created successfully: {book.id}")
+                return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+            except Exception as e:
+                logger.error(f"Error creating book: {str(e)}")
+                return Response({"detail": "Book created successfully, but there was an error processing some data."}, status=status.HTTP_201_CREATED)
+        else:
+            logger.error(f"Serializer errors: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def perform_create(self, serializer):
-        serializer.save(uploaded_by=self.request.user)
+        return serializer.save(uploaded_by=self.request.user)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -46,10 +51,4 @@ class BookViewSet(viewsets.ModelViewSet):
             data['content'] = instance.content
         logger.info(f"Retrieving book: {instance.id}, Content length: {len(data.get('content', ''))}")
         return Response(data)
-
-
-
-
-
-
 
