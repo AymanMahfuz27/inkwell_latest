@@ -8,14 +8,18 @@ from django.contrib.auth import authenticate
 class UserProfileSerializer(serializers.ModelSerializer):
     followers = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     following = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    liked_books = BookSerializer(many=True, read_only=True)
+    books_liked = BookSerializer(many=True, read_only=True)  # Changed from liked_books to books_liked
     favorite_genres = GenreSerializer(many=True, read_only=True)
 
     class Meta:
         model = UserProfile
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'bio', 'profile_picture', 'followers', 'following', 'liked_books', 'favorite_genres', 'visitors', 'visited_profiles', 'created_at']
-        read_only_fields = ['id', 'username', 'followers', 'following', 'liked_books', 'favorite_genres', 'visitors', 'visited_profiles', 'created_at']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'bio', 'profile_picture', 
+                'followers', 'following', 'books_liked', 'favorite_genres', 'visitors', 
+                'visited_profiles', 'created_at']
+        read_only_fields = ['id', 'username', 'followers', 'following', 'books_liked', 
+                            'favorite_genres', 'visitors', 'visited_profiles', 'created_at']
 
+# ... rest of the serializer remains the same
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email', instance.email)
         instance.first_name = validated_data.get('first_name', instance.first_name)
@@ -24,11 +28,17 @@ class UserProfileSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 class BookCollectionSerializer(serializers.ModelSerializer):
-    books = BookSerializer(many=True, read_only=True)
+    books = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = BookCollection
         fields = ['id', 'name', 'description', 'books', 'created_at', 'updated_at']
+        read_only_fields = ['user']
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
+
 
 # users/serializers.py
 

@@ -26,23 +26,29 @@ from django.conf import settings
 from django.urls import include, path
 from django.http import HttpResponse
 from django.conf.urls.static import static
+from django.urls import get_resolver
+from rest_framework.routers import DefaultRouter
+from books.views import GenreViewSet, BookViewSet
+
+
 
 
 
 def home(request):
     return HttpResponse('Welcome to the Inkwell API!')
 
-
+router = DefaultRouter()
+router.register(r'books', BookViewSet, basename='book')
+router.register(r'genres', GenreViewSet, basename='genre')
 urlpatterns = [
     #need a home page
     path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('api/users/', include('users.urls')),
-    path('api/books/', include('books.urls')),
     path('api/ads/', include('ads.urls')),
-    path('api/comments/', include('comments.urls')),
     path('api/recommendations/', include('recommendations.urls')),
     path('api/uploads/', include('uploads.urls')),
+    path('api/books/', include(router.urls)),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
@@ -53,3 +59,11 @@ if settings.DEBUG:
         path('__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+#print out all the endpoints
+endpoints = set(v[1] for k,v in get_resolver(None).reverse_dict.items())
+
+print("All Endpoints:")
+for i in endpoints:
+    print(i)
+print('\n\n')

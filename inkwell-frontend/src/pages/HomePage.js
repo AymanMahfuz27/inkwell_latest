@@ -12,13 +12,22 @@ const HomePage = () => {
     const fetchBooks = async () => {
       try {
         const response = await api.get('/api/books/books/');
-        setBooks(response.data);
+        console.log('API Response:', response.data); // Log the response for debugging
+        const booksData = Array.isArray(response.data) ? response.data : response.data.results;
+        
+        if (Array.isArray(booksData)) {
+          setBooks(booksData);
+        } else {
+          throw new Error('Received data is not in the expected format');
+        }
         setLoading(false);
       } catch (err) {
-        setError('No Books Found');
+        console.error('Error fetching books:', err);
+        setError('Failed to fetch books. Please try again later.');
         setLoading(false);
       }
     };
+
 
     fetchBooks();
   }, []);

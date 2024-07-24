@@ -8,6 +8,11 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import JSONParser
+from rest_framework.decorators import action
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import action
+from books.models import Book
+
 
 
 class UserProfileViewSet(viewsets.ModelViewSet):
@@ -42,9 +47,26 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 
 
 class BookCollectionViewSet(viewsets.ModelViewSet):
-    queryset = BookCollection.objects.all()
     serializer_class = BookCollectionSerializer
     permission_classes = [IsAuthenticated]
+    queryset = BookCollection.objects.all()  # Add this line
+
+    def get_queryset(self):
+        return BookCollection.objects.filter(user=self.request.user)
+
+    @action(detail=True, methods=['post'])
+    def add_book(self, request, pk=None):
+        collection = self.get_object()
+        book = get_object_or_404(Book, pk=request.data.get('book_id'))
+        collection.books.add(book)
+        return Response({'status': 'book added to collection'})
+
+    @action(detail=True, methods=['post'])
+    def remove_book(self, request, pk=None):
+        collection = self.get_object()
+        book = get_object_or_404(Book, pk=request.data.get('book_id'))
+        collection.books.remove(book)
+        return Response({'status': 'book removed from collection'})
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):

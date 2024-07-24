@@ -19,11 +19,19 @@ class Book(models.Model):
     banner_picture = models.ImageField(upload_to='book_banners/', blank=True, null=True)
     uploaded_by = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     upload_date = models.DateTimeField(auto_now_add=True)
-    likes = models.ManyToManyField(UserProfile, related_name='liked_books_set', blank=True)
-    dislikes = models.ManyToManyField(UserProfile, related_name='disliked_books_set', blank=True)
-    read_count = models.IntegerField(default=0)
-    comments = models.ManyToManyField('comments.Comment', related_name='book_comments', blank=True)
-    recommendations = models.ManyToManyField('recommendations.Recommendation', related_name='book_recommendations', blank=True)
+    likes = models.ManyToManyField(UserProfile, related_name='books_liked', blank=True)  # Changed this line
+    view_count = models.PositiveIntegerField(default=0)
+
     
     def __str__(self):
         return self.title
+
+class Comment(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='comments')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='comments')
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']

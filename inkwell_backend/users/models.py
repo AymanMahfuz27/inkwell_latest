@@ -13,7 +13,6 @@ class UserProfile(AbstractUser):
     profile_picture = models.ImageField(upload_to='profile_pictures', blank=True, null=True)
     followers = models.ManyToManyField('self', related_name='user_following', symmetrical=False, blank=True, db_index=True)
     following = models.ManyToManyField('self', related_name='user_followers', symmetrical=False, blank=True, db_index=True)
-    liked_books = models.ManyToManyField('books.Book', related_name='liked_by_users', blank=True, db_index=True)
 
     #add a field to store the user's favorite genres
     favorite_genres = models.ManyToManyField('books.Genre', related_name='users_fav_genres', blank=True, db_index=True)
@@ -50,9 +49,13 @@ class UserProfile(AbstractUser):
     
 
 class BookCollection(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='user_collections')
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='book_collections')
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    books = models.ManyToManyField('books.Book', related_name='book_in_collections')
+    books = models.ManyToManyField('books.Book', related_name='collections')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['user', 'name']
+

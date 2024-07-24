@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 router = DefaultRouter()
 router.register(r'profiles', UserProfileViewSet, basename='profile')
-router.register(r'collections', BookCollectionViewSet)
+router.register(r'collections', BookCollectionViewSet, basename='collection')  # Add basename here
 
 urlpatterns = [
     path('', include(router.urls)),
