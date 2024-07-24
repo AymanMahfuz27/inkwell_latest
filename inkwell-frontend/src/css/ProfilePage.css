@@ -43,3 +43,24 @@
     color: red;
     margin-bottom: 10px;
   }
+
+  .collections-section {
+    margin-top: 20px;
+  }
+  
+  .collection {
+    margin-bottom: 20px;
+  }
+  
+  .book-scroll {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 0;
+  }
+  
+  .book-scroll .book-card {
+    flex: 0 0 auto;
+    width: 150px;
+    margin-right: 10px;
+  }
+  

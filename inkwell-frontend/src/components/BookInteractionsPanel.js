@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import { useNavigate } from 'react-router-dom';
 import '../css/BookInteractionsPanel.css';
+import { isAuthenticated } from '../services/authService';
 
 const BookInteractionPanel = ({ bookId }) => {
   const [likes, setLikes] = useState(0);
@@ -11,11 +13,18 @@ const BookInteractionPanel = ({ bookId }) => {
   const [collections, setCollections] = useState([]);
   const [selectedCollection, setSelectedCollection] = useState('');
   const [loading, setLoading] = useState(true);
+  const [newCollectionName, setNewCollectionName] = useState('');
+  const [showNewCollectionInput, setShowNewCollectionInput] = useState(false);
+
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  
 
   useEffect(() => {
     fetchBookInteractions();
-    fetchUserCollections();
+    if (isAuthenticated()) {
+      fetchUserCollections();
+    }
   }, [bookId]);
 
   const fetchBookInteractions = async () => {
@@ -44,6 +53,10 @@ const BookInteractionPanel = ({ bookId }) => {
   };
 
   const handleLike = async () => {
+    if (!isAuthenticated()) {
+      navigate('/login');
+      return;
+    }
     try {
       const response = await api.post(`/api/books/books/${bookId}/like/`);
       setLikes(response.data.like_count);
@@ -54,6 +67,10 @@ const BookInteractionPanel = ({ bookId }) => {
   };
 
   const handleAddComment = async () => {
+    if (!isAuthenticated()) {
+      navigate('/login');
+      return;
+    }
     if (!newComment.trim()) return;
     try {
       const response = await api.post(`/api/books/books/${bookId}/comments/`, { content: newComment });
@@ -67,12 +84,28 @@ const BookInteractionPanel = ({ bookId }) => {
   const handleAddToCollection = async () => {
     if (!selectedCollection) return;
     try {
-      await api.post(`/api/users/collections/${selectedCollection}/add-book/`, { bookId });
+      await api.post(`/api/users/collections/${selectedCollection}/add_book/`, { book_id: bookId });
       alert('Book added to collection successfully');
     } catch (error) {
       console.error('Error adding book to collection:', error);
     }
   };
+
+  const handleCreateCollection = async () => {
+    if (!newCollectionName.trim()) return;
+    try {
+      const response = await api.post('/api/users/collections/', { name: newCollectionName });
+      const newCollection = response.data;
+      setCollections([...collections, newCollection]);
+      setSelectedCollection(newCollection.id);
+      setNewCollectionName('');
+      setShowNewCollectionInput(false);
+      await handleAddToCollection();
+    } catch (error) {
+      console.error('Error creating collection:', error);
+    }
+  };
+
 
   if (loading) return <div>Loading interactions...</div>;
   if (error) return <div>{error}</div>;
@@ -80,21 +113,37 @@ const BookInteractionPanel = ({ bookId }) => {
   return (
     <div className="book-interaction-panel">
       <div className="interaction-section">
-      <button onClick={handleLike}>{isLiked ? 'Unlike' : 'Like'} ({likes})</button>
-      <span>Views: {views}</span>
+        <button onClick={handleLike}>{isLiked ? 'Unlike' : 'Like'} ({likes})</button>
+        <span>Views: {views}</span>
       </div>
-      <div className="interaction-section">
+      {isAuthenticated() && (
+        <div className="interaction-section">
         <select 
           value={selectedCollection} 
           onChange={(e) => setSelectedCollection(e.target.value)}
         >
           <option value="">Select Collection</option>
-          {collections && collections.map(collection => (
+          {collections.map(collection => (
             <option key={collection.id} value={collection.id}>{collection.name}</option>
           ))}
+          <option value="new">+ Create New Collection</option>
         </select>
-        <button onClick={handleAddToCollection}>Add to Collection</button>
+        {selectedCollection === 'new' || showNewCollectionInput ? (
+          <div>
+            <input
+              type="text"
+              value={newCollectionName}
+              onChange={(e) => setNewCollectionName(e.target.value)}
+              placeholder="New collection name"
+            />
+            <button onClick={handleCreateCollection}>Create & Add</button>
+          </div>
+        ) : (
+          <button onClick={handleAddToCollection}>Add to Collection</button>
+        )}
       </div>
+
+      )}
       <div className="interaction-section">
         <input
           type="text"
@@ -105,7 +154,7 @@ const BookInteractionPanel = ({ bookId }) => {
         <button onClick={handleAddComment}>Comment</button>
       </div>
       <div className="comments-section">
-        {comments && comments.map(comment => (
+        {comments.map(comment => (
           <div key={comment.id} className="comment">
             <p>{comment.content}</p>
             <small>{comment.user} - {new Date(comment.created_at).toLocaleString()}</small>

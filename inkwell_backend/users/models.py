@@ -59,3 +59,5 @@ class BookCollection(models.Model):
     class Meta:
         unique_together = ['user', 'name']
 
+    def __str__(self):
+        return f"{self.user.username}'s collection: {self.name}"

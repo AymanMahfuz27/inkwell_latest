@@ -54,19 +54,20 @@ class BookCollectionViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return BookCollection.objects.filter(user=self.request.user)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def add_book(self, request, pk=None):
         collection = self.get_object()
         book = get_object_or_404(Book, pk=request.data.get('book_id'))
         collection.books.add(book)
         return Response({'status': 'book added to collection'})
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def remove_book(self, request, pk=None):
         collection = self.get_object()
         book = get_object_or_404(Book, pk=request.data.get('book_id'))
         collection.books.remove(book)
         return Response({'status': 'book removed from collection'})
+
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):

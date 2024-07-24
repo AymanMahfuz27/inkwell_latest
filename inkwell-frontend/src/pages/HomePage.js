@@ -32,8 +32,7 @@ const HomePage = () => {
     fetchBooks();
   }, []);
 
-  if (loading) return <div>Loading books...</div>;
-  if (error) return <div>{error}</div>;
+  
 
   return (
     <div className="home-page">

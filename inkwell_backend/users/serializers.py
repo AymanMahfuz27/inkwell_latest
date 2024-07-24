@@ -28,17 +28,20 @@ class UserProfileSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 class BookCollectionSerializer(serializers.ModelSerializer):
-    books = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    book_count = serializers.SerializerMethodField()
+    books = BookSerializer(many=True, read_only=True)
 
     class Meta:
         model = BookCollection
-        fields = ['id', 'name', 'description', 'books', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'description', 'books', 'book_count', 'created_at', 'updated_at']
         read_only_fields = ['user']
+
+    def get_book_count(self, obj):
+        return obj.books.count()
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
-
 
 # users/serializers.py
 

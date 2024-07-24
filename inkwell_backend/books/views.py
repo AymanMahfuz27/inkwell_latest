@@ -1,12 +1,13 @@
 from django.shortcuts import render
 
-from rest_framework import viewsets, status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets, status,permissions
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 import logging
 from rest_framework.response import Response
 from .models import Genre, Book, Comment
 from .serializers import GenreSerializer, BookSerializer, BookInteractionSerializer, CommentSerializer
 from rest_framework.decorators import action
+import PyPDF2
 
 
 
@@ -20,7 +21,14 @@ logger = logging.getLogger(__name__)
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [permissions.AllowAny()]
+        return super().get_permissions()
+
+
     def list(self, request):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
@@ -61,7 +69,7 @@ class BookViewSet(viewsets.ModelViewSet):
         serializer = BookInteractionSerializer(book, context={'request': request})
         return Response(serializer.data)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def like(self, request, pk=None):
         book = self.get_object()
         user = request.user
@@ -78,7 +86,7 @@ class BookViewSet(viewsets.ModelViewSet):
         })
 
 
-    @action(detail=True, methods=['get', 'post'])
+    @action(detail=True, methods=['get', 'post'], permission_classes=[IsAuthenticated])
     def comments(self, request, pk=None):
         book = self.get_object()
         if request.method == 'GET':
@@ -91,3 +99,15 @@ class BookViewSet(viewsets.ModelViewSet):
                 serializer.save(user=request.user, book=book)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=True, methods=['get'])
+    def page_count(self, request, pk=None):
+        book = self.get_object()
+        if book.pdf_file:
+            with book.pdf_file.open('rb') as pdf_file:
+                pdf_reader = PyPDF2.PdfReader(pdf_file)
+                page_count = len(pdf_reader.pages)
+            return Response({'page_count': page_count})
+        return Response({'page_count': 'N/A'}, status=400)
+
+

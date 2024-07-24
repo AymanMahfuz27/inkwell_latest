@@ -23,7 +23,7 @@ function App() {
         <Route path="/book/:bookId" element={<BookReader />} /> {/* Book Reader page */}
         {/* <Route path="/about" element={<AboutPage />} /> {/* About page */}
       </Routes>
-      <Footer /> {/* Include Footer on every page */}
+      {/*<Footer />  Include Footer on every page */}
     </div>
   );
 

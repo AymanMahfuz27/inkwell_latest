@@ -1,0 +1,117 @@
+.book-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .overlay-content {
+    background-color: white;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  .banner-section {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+  }
+  
+  .banner-image-container {
+    position: relative;
+    height: 100%;
+  }
+  
+  .banner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .banner-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+  }
+  
+  .overlay-title {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+    font-size: 2em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+  
+  .start-reading-button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #e50914;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+  
+  .book-details {
+    display: flex;
+    padding: 20px;
+  }
+  
+  .left-column, .right-column {
+    flex: 1;
+    padding: 0 10px;
+  }
+  
+  .book-description {
+    margin-top: 20px;
+  }
+  
+  .collection-buttons, .book-metrics {
+    margin-bottom: 20px;
+  }
+  
+  .genres-section {
+    padding: 0 20px 20px;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    margin-left: 5px;
+  }
+  
+  
