@@ -1,0 +1,91 @@
+/* src/css/Navbar.css */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+  }
+  
+  .navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .navbar.scrolled {
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-links a:hover {
+    color: #3291ff;
+  }
+  
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .icon-button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+  }
+  
+  .icon-button:hover {
+    color: #3291ff;
+  }
+  
+  .profile-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .profile-link:hover {
+    color: #3291ff;
+  }
+  
+  .login-button {
+    background-color: #3291ff;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .login-button:hover {
+    background-color: #5ba7ff;
+  }

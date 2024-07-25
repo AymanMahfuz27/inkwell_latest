@@ -153,7 +153,7 @@ const BookOverlay = ({ book, onClose, onLikeUpdate }) => {
               <p>
                 <strong>Likes:</strong> {likeCount}
                 <button onClick={handleLike} className="like-button">
-                  {isLiked ? '❤️' : '🤍'}
+                  {isLiked ? 'Unlike' : 'Like'}
                 </button>
               </p>
             </div>
