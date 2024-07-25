@@ -22,15 +22,12 @@
     backdrop-filter: blur(10px);
   }
   
-  .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #fff;
-    text-decoration: none;
-  }
+
   
   .nav-links {
     display: flex;
+    flex: 2;
+    justify-content: center;
     gap: 20px;
   }
   
@@ -47,6 +44,7 @@
   
   .nav-actions {
     display: flex;
+    flex:.5;
     align-items: center;
     gap: 15px;
   }
@@ -64,28 +62,100 @@
     color: #3291ff;
   }
   
+ 
+ 
+
+  .sign-in-button {
+    background-color: transparent;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  
+  .sign-in-button::before{
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+    z-index: -1;
+    filter: blur(10px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .sign-in-button:hover{
+    color: #000;
+    background-color: white;
+    }
+  
+  .sign-in-button:hover::before {
+    opacity: 1;
+  }
+
+  .logo {
+    /* display: flex; */
+    flex: .5;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .logo::before {
+    content: '';
+    position: absolute;
+    width: 45%;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+    z-index: -1;
+    filter: blur(10px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .logo:hover::before {
+    opacity: 1;
+  }
+  
   .profile-link {
     display: flex;
     align-items: center;
     gap: 5px;
     color: #fff;
     text-decoration: none;
-    transition: color 0.3s ease;
-  }
-  
-  .profile-link:hover {
-    color: #3291ff;
-  }
-  
-  .login-button {
-    background-color: #3291ff;
-    color: #fff;
-    padding: 8px 16px;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 5px 10px;
     border-radius: 4px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
   }
   
-  .login-button:hover {
-    background-color: #5ba7ff;
+  .profile-link::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+    z-index: -1;
+    filter: blur(10px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
+  
+  .profile-link:hover::before {
+    opacity: 1;
+  }
+  

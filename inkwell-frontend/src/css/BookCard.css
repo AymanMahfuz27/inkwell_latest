@@ -1,13 +1,14 @@
 /* src/css/BookCard.css */
 .book-card {
   position: relative;
-  width: 550px;
-  height: 350px;
+  width: 500px;  /* Increased from 300px */
+  height: 400px; /* Increased from 400px */
   background-color: #1a1a1a;
-  border-radius: 8px;
+  border-radius: 12px; /* Slightly increased for better proportion */
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 
 .book-card:hover {
   transform: translateY(-5px);
@@ -80,13 +81,18 @@
   transition: opacity 0.3s ease, background-color 0.3s ease;
 }
 
+.info-button:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  transition: all 0.5s ease-in;
+}
+
+
+
 .book-card:hover .info-button {
   opacity: 1;
 }
 
-.info-button:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-}
+
 
 @media (max-width: 768px) {
   .book-card {

@@ -9,12 +9,16 @@ body {
   padding: 80px 40px 40px;
   max-width: 1200px;
   margin: 0 auto;
+  
 }
 
 .hero-section {
   text-align: center;
   margin-bottom: 60px;
 }
+
+
+
 
 .hero-section h1 {
   font-size: 3rem;
