@@ -1,117 +1,270 @@
-.book-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .overlay-content {
-    background-color: white;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 900px;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-  }
-  
-  .banner-section {
-    position: relative;
-    height: 200px;
-    overflow: hidden;
-  }
-  
-  .banner-image-container {
-    position: relative;
-    height: 100%;
-  }
-  
-  .banner-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .banner-fade {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 50px;
-    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
-  }
-  
-  .overlay-title {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    color: white;
-    font-size: 2em;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-  }
-  
-  .start-reading-button {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    background-color: #e50914;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-  }
-  
-  .book-details {
-    display: flex;
+/* src/css/BookOverlay.css */
+.inkwell-book-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.inkwell-book-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.inkwell-book-overlay-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+}
+
+.inkwell-book-overlay-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.1;
+  animation: float 20s ease-in-out infinite;
+}
+
+.inkwell-book-overlay-blob.blob1 {
+  width: 100vh;
+  height: 100vh;
+  background-color: #ff6b6b;
+  top: -50vh;
+  left: -50vh;
+}
+
+.inkwell-book-overlay-blob.blob2 {
+  width: 100vh;
+  height: 100vh;
+  background-color: #4ecdc4;
+  bottom: -50vh;
+  right: -50vh;
+}
+
+.inkwell-book-overlay-blob.blob3 {
+  width: 80vh;
+  height: 80vh;
+  background-color: #45b7d1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.inkwell-book-overlay-content {
+  background-color: #1a1a1a; /* Changed from rgba(26, 26, 26, 0.9) to solid color */
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.inkwell-book-overlay.visible .inkwell-book-overlay-content {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.inkwell-book-overlay-close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.inkwell-book-overlay-close-button:hover {
+  color: #ff6b6b;
+}
+
+.inkwell-book-overlay-header {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.inkwell-book-overlay-cover {
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.inkwell-book-overlay-info {
+  flex: 1;
+}
+
+.inkwell-book-overlay-title {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.inkwell-book-overlay-author {
+  font-size: 1.2rem;
+  color: #a0a0a0;
+  margin-bottom: 20px;
+}
+
+.inkwell-book-overlay-stats {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.inkwell-book-overlay-stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #a0a0a0;
+}
+
+.inkwell-book-overlay-like-button {
+  background-color: transparent;
+  border: 1px solid #ff6b6b;
+  color: #ff6b6b;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.inkwell-book-overlay-like-button:hover {
+  background-color: #ff6b6b;
+  color: #fff;
+}
+
+.inkwell-book-overlay-details {
+  margin-bottom: 30px;
+}
+
+.inkwell-book-overlay-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #d0d0d0;
+  margin-bottom: 20px;
+}
+
+.inkwell-book-overlay-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.inkwell-book-overlay-genre-tag {
+  background-color: #2a2a2a;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.inkwell-book-overlay-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inkwell-book-overlay-read-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #4ecdc4;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.inkwell-book-overlay-read-button:hover {
+  background-color: #45b7d1;
+}
+
+.inkwell-book-overlay-collection-action {
+  display: flex;
+  gap: 10px;
+}
+
+.inkwell-book-overlay-select,
+.inkwell-book-overlay-input {
+  background-color: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  color: #fff;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.inkwell-book-overlay-add-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #3291ff;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.inkwell-book-overlay-add-button:hover {
+  background-color: #2b7ad4;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@media (max-width: 768px) {
+  .inkwell-book-overlay-content {
     padding: 20px;
   }
-  
-  .left-column, .right-column {
-    flex: 1;
-    padding: 0 10px;
-  }
-  
-  .book-description {
-    margin-top: 20px;
-  }
-  
-  .collection-buttons, .book-metrics {
-    margin-bottom: 20px;
-  }
-  
-  .genres-section {
-    padding: 0 20px 20px;
-  }
-  
-  .close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    font-size: 20px;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
+
+  .inkwell-book-overlay-header {
+    flex-direction: column;
     align-items: center;
+    text-align: center;
   }
-  
-  .like-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2em;
-    margin-left: 5px;
+
+  .inkwell-book-overlay-cover {
+    width: 150px;
+    height: 225px;
   }
-  
-  
+
+  .inkwell-book-overlay-title {
+    font-size: 2rem;
+  }
+
+  .inkwell-book-overlay-actions {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .inkwell-book-overlay-collection-action {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
