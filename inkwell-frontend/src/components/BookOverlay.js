@@ -106,15 +106,24 @@ const BookOverlay = ({ book, onClose, onLikeUpdate }) => {
         <button className="inkwell-book-overlay-close-button" onClick={handleClose}>
           <X size={24} />
         </button>
+        <div className="inkwell-book-overlay-banner">
+          <img 
+            src={book.banner_picture || book.cover_picture || '/default-banner.jpg'} 
+            alt={`${book.title} banner`} 
+            className="inkwell-book-overlay-banner-image"
+          />
+          <div className="inkwell-book-overlay-banner-fade"></div>
+        </div>
         <div className="inkwell-book-overlay-header">
-          <img
-            src={book.cover_picture || "/default-cover.jpg"}
-            alt={`${book.title} cover`}
+          <img 
+            src={book.cover_picture || '/default-cover.jpg'} 
+            alt={`${book.title} cover`} 
             className="inkwell-book-overlay-cover"
           />
           <div className="inkwell-book-overlay-info">
             <h2 className="inkwell-book-overlay-title">{book.title}</h2>
             <p className="inkwell-book-overlay-author">by {book.uploaded_by}</p>
+
             <div className="inkwell-book-overlay-stats">
               <span className="inkwell-book-overlay-stat">
                 <Eye size={16} /> {book.view_count}
