@@ -1,44 +1,43 @@
 /* src/css/BookCard.css */
-.book-card {
+.inkwell-bookcard-container {
   position: relative;
-  width: 500px;  /* Increased from 300px */
-  height: 400px; /* Increased from 400px */
+  width: 370px;
+  height: 400px;
   background-color: #1a1a1a;
-  border-radius: 12px; /* Slightly increased for better proportion */
+  border-radius: 12px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-
-.book-card:hover {
+.inkwell-bookcard-container:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-.book-card-content {
+.inkwell-bookcard-link {
   display: block;
   text-decoration: none;
   color: inherit;
   height: 100%;
 }
 
-.book-cover-container {
+.inkwell-bookcard-cover-wrapper {
   height: 70%;
   overflow: hidden;
 }
 
-.book-cover {
+.inkwell-bookcard-cover-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
 
-.book-card:hover .book-cover {
+.inkwell-bookcard-container:hover .inkwell-bookcard-cover-image {
   transform: scale(1.05);
 }
 
-.book-info {
+.inkwell-bookcard-info {
   padding: 15px;
   background: linear-gradient(to top, #000000, transparent);
   position: absolute;
@@ -47,7 +46,7 @@
   right: 0;
 }
 
-.book-title {
+.inkwell-bookcard-title {
   margin: 0;
   font-size: 1.2rem;
   font-weight: 600;
@@ -57,13 +56,13 @@
   text-overflow: ellipsis;
 }
 
-.book-author {
+.inkwell-bookcard-author {
   margin: 5px 0 0;
   font-size: 0.9rem;
   color: #a0a0a0;
 }
 
-.info-button {
+.inkwell-bookcard-info-button {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -81,34 +80,30 @@
   transition: opacity 0.3s ease, background-color 0.3s ease;
 }
 
-.info-button:hover {
+.inkwell-bookcard-info-button:hover {
   background-color: rgba(0, 0, 0, 0.8);
   transition: all 0.5s ease-in;
 }
 
-
-
-.book-card:hover .info-button {
+.inkwell-bookcard-container:hover .inkwell-bookcard-info-button {
   opacity: 1;
 }
 
-
-
 @media (max-width: 768px) {
-  .book-card {
+  .inkwell-bookcard-container {
     width: 220px;
     height: 330px;
   }
 
-  .book-title {
+  .inkwell-bookcard-title {
     font-size: 1rem;
   }
 
-  .book-author {
+  .inkwell-bookcard-author {
     font-size: 0.8rem;
   }
 
-  .info-button {
+  .inkwell-bookcard-info-button {
     opacity: 1;
     top: 5px;
     right: 5px;
@@ -118,20 +113,20 @@
 }
 
 @media (max-width: 480px) {
-  .book-card {
+  .inkwell-bookcard-container {
     width: 160px;
     height: 240px;
   }
 
-  .book-info {
+  .inkwell-bookcard-info {
     padding: 10px;
   }
 
-  .book-title {
+  .inkwell-bookcard-title {
     font-size: 0.9rem;
   }
 
-  .book-author {
+  .inkwell-bookcard-author {
     font-size: 0.7rem;
   }
 }

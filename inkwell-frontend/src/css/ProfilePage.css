@@ -1,66 +1,179 @@
-.profile-page {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .profile-page h1 {
-    margin-bottom: 20px;
-  }
-  
-  .profile-page form div {
-    margin-bottom: 15px;
-  }
-  
-  .profile-page label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .profile-page input,
-  .profile-page textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  .profile-page button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 10px;
-  }
-  
-  .profile-page button:hover {
-    background-color: #0056b3;
-  }
-  
-  .error {
-    color: red;
-    margin-bottom: 10px;
+/* src/css/ProfilePage.css */
+.inkwell-profile-page-container {
+  min-height: 100vh;
+  padding: 80px 20px 40px;
+  position: relative;
+}
+
+.inkwell-profile-page-content {
+  background-color: rgba(26, 26, 26, 0.8);
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 1;
+}
+
+.inkwell-profile-page-title {
+  font-size: 2.5rem;
+  color: #fff;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.inkwell-profile-page-subtitle {
+  font-size: 2rem;
+  color: #fff;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.inkwell-profile-page-form {
+  display: grid;
+  gap: 20px;
+}
+
+.inkwell-profile-page-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.inkwell-profile-page-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  margin-bottom: 5px;
+  font-size: 1rem;
+}
+
+.inkwell-profile-page-input,
+.inkwell-profile-page-textarea {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.inkwell-profile-page-input:focus,
+.inkwell-profile-page-textarea:focus {
+  outline: none;
+  border-color: #3291ff;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.inkwell-profile-page-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.inkwell-profile-page-button {
+  background-color: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+
+
+.inkwell-profile-page-button:hover {
+  color: #000;
+  background-color: #fff;
+}
+
+.inkwell-profile-page-button:hover::before {
+  opacity: 1;
+}
+
+.inkwell-profile-page-button.secondary {
+  border-color: #666;
+  color: #666;
+}
+
+.inkwell-profile-page-button.secondary:hover {
+  background-color: #666;
+  color: #fff;
+}
+
+.inkwell-profile-page-info {
+  color: #fff;
+  line-height: 1.6;
+}
+
+.inkwell-profile-page-collections {
+  margin-top: 40px;
+}
+
+.inkwell-profile-page-collection {
+  margin-bottom: 30px;
+}
+
+.inkwell-profile-page-collection-title {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 15px;
+}
+
+.inkwell-profile-page-book-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+
+.inkwell-profile-page-error,
+.inkwell-profile-page-loading {
+  color: #fff;
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 20px;
+}
+
+.inkwell-profile-page-error {
+  color: #ff6b6b;
+}
+
+@media (min-width: 768px) {
+  .inkwell-profile-page-form {
+    grid-template-columns: 1fr 1fr;
   }
 
-  .collections-section {
-    margin-top: 20px;
+  .inkwell-profile-page-input-group:last-of-type {
+    grid-column: span 2;
   }
-  
-  .collection {
-    margin-bottom: 20px;
-  }
-  
-  .book-scroll {
+
+  .inkwell-profile-page-button-group {
+    grid-column: span 2;
     display: flex;
-    overflow-x: auto;
-    padding: 10px 0;
+    justify-content: flex-end;
+    gap: 10px;
   }
-  
-  .book-scroll .book-card {
-    flex: 0 0 auto;
-    width: 270px;
-    margin-right: 10px;
+}
+
+@media (max-width: 767px) {
+  .inkwell-profile-page-content {
+    padding: 30px 20px;
   }
-  
+
+  .inkwell-profile-page-title {
+    font-size: 2rem;
+  }
+
+  .inkwell-profile-page-subtitle {
+    font-size: 1.5rem;
+  }
+}

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { User, Mail, Edit2, Save, X, BookOpen } from 'lucide-react';
 import api from '../services/api';
 import { getUsername } from '../services/authService';
 import BookCard from '../components/BookCard';
+import WatercolorBackground from '../components/WatercolorBackground';
 import '../css/ProfilePage.css';
 
 const ProfilePage = () => {
@@ -13,10 +15,12 @@ const ProfilePage = () => {
   const [collections, setCollections] = useState([]);
   const [newCollectionName, setNewCollectionName] = useState('');
   const [error, setError] = useState(null);
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
 
   useEffect(() => {
     fetchProfile();
     fetchCollections();
+    setIsOwnProfile(username === getUsername());
   }, [username]);
 
   const fetchProfile = async () => {
@@ -73,94 +77,129 @@ const ProfilePage = () => {
     }
   };
 
-  if (error) return <div className="error">{error}</div>;
-  if (!profile) return <div>Loading...</div>;
-
-  const isOwnProfile = username === getUsername();
+  if (error) return <div className="inkwell-profile-page-error">{error}</div>;
+  if (!profile) return <div className="inkwell-profile-page-loading">Loading...</div>;
 
   return (
-    <div className="profile-page">
-      <h1>{profile.username}'s Profile</h1>
-      
-      {isEditing ? (
-        <form onSubmit={handleSubmit} className="profile-edit-form">
-          <div>
-            <label>First Name:</label>
-            <input
-              type="text"
-              name="first_name"
-              value={editedProfile.first_name}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label>Last Name:</label>
-            <input
-              type="text"
-              name="last_name"
-              value={editedProfile.last_name}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label>Bio:</label>
-            <textarea
-              name="bio"
-              value={editedProfile.bio}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label>Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={editedProfile.email}
-              onChange={handleChange}
-            />
-          </div>
-          <button type="submit">Save</button>
-          <button type="button" onClick={handleCancel}>Cancel</button>
-        </form>
-      ) : (
-        <div className="profile-info">
-          <p><strong>Name:</strong> {profile.first_name} {profile.last_name}</p>
-          <p><strong>Email:</strong> {profile.email}</p>
-          <p><strong>Bio:</strong> {profile.bio}</p>
-          {isOwnProfile && <button onClick={handleEdit}>Edit Profile</button>}
-        </div>
-      )}
-
-      {isOwnProfile && (
-        <div className="collections-section">
-          <h2>Book Collections</h2>
-          <form onSubmit={createCollection}>
-            <input
-              type="text"
-              value={newCollectionName}
-              onChange={(e) => setNewCollectionName(e.target.value)}
-              placeholder="New collection name"
-              required
-            />
-            <button type="submit">Create Collection</button>
-          </form>
-
-          {collections.map(collection => (
-            <div key={collection.id} className="collection">
-              <h3>{collection.name}</h3>
-              {collection.books.length === 0 ? (
-                <p>This collection is empty.</p>
-              ) : (
-                <div className="book-scroll">
-                  {collection.books.map(book => (
-                    <BookCard key={book.id} book={book} />
-                  ))}
-                </div>
-              )}
+    <div className="inkwell-profile-page-container">
+      <WatercolorBackground />
+      <div className="inkwell-profile-page-content">
+        <h1 className="inkwell-profile-page-title">{profile.username}'s Profile</h1>
+        
+        {isEditing ? (
+          <form onSubmit={handleSubmit} className="inkwell-profile-page-form">
+            <div className="inkwell-profile-page-input-group">
+              <label className="inkwell-profile-page-label">
+                <User size={20} />
+                First Name
+              </label>
+              <input
+                type="text"
+                name="first_name"
+                value={editedProfile.first_name}
+                onChange={handleChange}
+                className="inkwell-profile-page-input"
+              />
             </div>
-          ))}
-        </div>
-      )}
+            <div className="inkwell-profile-page-input-group">
+              <label className="inkwell-profile-page-label">
+                <User size={20} />
+                Last Name
+              </label>
+              <input
+                type="text"
+                name="last_name"
+                value={editedProfile.last_name}
+                onChange={handleChange}
+                className="inkwell-profile-page-input"
+              />
+            </div>
+            <div className="inkwell-profile-page-input-group">
+              <label className="inkwell-profile-page-label">
+                <Mail size={20} />
+                Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={editedProfile.email}
+                onChange={handleChange}
+                className="inkwell-profile-page-input"
+              />
+            </div>
+            <div className="inkwell-profile-page-input-group">
+              <label className="inkwell-profile-page-label">
+                <BookOpen size={20} />
+                Bio
+              </label>
+              <textarea
+                name="bio"
+                value={editedProfile.bio}
+                onChange={handleChange}
+                className="inkwell-profile-page-textarea"
+              />
+            </div>
+            <div className="inkwell-profile-page-button-group">
+              <button type="submit" className="inkwell-profile-page-button">
+                <Save size={20} />
+                Save
+              </button>
+              <button type="button" onClick={handleCancel} className="inkwell-profile-page-button secondary">
+                <X size={20} />
+                Cancel
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div className="inkwell-profile-page-info">
+            <p><strong>Name:</strong> {profile.first_name} {profile.last_name}</p>
+            <p><strong>Email:</strong> {profile.email}</p>
+            <p><strong>Bio:</strong> {profile.bio}</p>
+            {isOwnProfile && (
+              <button onClick={handleEdit} className="inkwell-profile-page-button">
+                <Edit2 size={20} />
+                Edit Profile
+              </button>
+            )}
+          </div>
+        )}
+
+        {isOwnProfile && (
+          <div className="inkwell-profile-page-collections">
+            <h2 className="inkwell-profile-page-subtitle">Book Collections</h2>
+            <form onSubmit={createCollection} className="inkwell-profile-page-form">
+              <div className="inkwell-profile-page-input-group">
+                <input
+                  type="text"
+                  value={newCollectionName}
+                  onChange={(e) => setNewCollectionName(e.target.value)}
+                  placeholder="New collection name"
+                  required
+                  className="inkwell-profile-page-input"
+                />
+                <button type="submit" className="inkwell-profile-page-button">
+                  Create Collection
+                </button>
+              </div>
+            </form>
+
+            {collections.map(collection => (
+              <div key={collection.id} className="inkwell-profile-page-collection">
+                <h3 className="inkwell-profile-page-collection-title">{collection.name}</h3>
+                {collection.books.length === 0 ? (
+                  <p>This collection is empty.</p>
+                ) : (
+                  <div className="inkwell-profile-page-book-scroll">
+                    {collection.books.map(book => (
+                      <BookCard key={book.id} book={book} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

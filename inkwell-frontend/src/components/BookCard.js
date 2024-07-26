@@ -1,4 +1,3 @@
-// src/components/BookCard.js
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Info } from 'lucide-react';
@@ -26,25 +25,25 @@ const BookCard = ({ book, onLikeUpdate }) => {
 
   return (
     <>
-      <div className="book-card">
-        <Link to={`/book/${book.id}`} className="book-card-content">
-          <div className="book-cover-container">
+      <div className="inkwell-bookcard-container">
+        <Link to={`/book/${book.id}`} className="inkwell-bookcard-link">
+          <div className="inkwell-bookcard-cover-wrapper">
             <img 
               src={getImageUrl(book.cover_picture)} 
               alt={`${book.title} cover`} 
-              className="book-cover"
+              className="inkwell-bookcard-cover-image"
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = '/default-cover.jpg';
               }}
             />
           </div>
-          <div className="book-info">
-            <h3 className="book-title">{book.title}</h3>
-            <p className="book-author">{book.uploaded_by}</p>
+          <div className="inkwell-bookcard-info">
+            <h3 className="inkwell-bookcard-title">{book.title}</h3>
+            <p className="inkwell-bookcard-author">{book.uploaded_by}</p>
           </div>
         </Link>
-        <button className="info-button" onClick={() => setShowOverlay(true)} aria-label="More information">
+        <button className="inkwell-bookcard-info-button" onClick={() => setShowOverlay(true)} aria-label="More information">
           <Info size={20} />
         </button>
       </div>
