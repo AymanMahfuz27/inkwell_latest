@@ -1,7 +1,7 @@
 import React from 'react';
 import '../css/CoverPage.css';
 
-const CoverPage = ({ book }) => {
+const CoverPage = ({ book, onStartReading }) => {
   return (
     <div className="cover-page">
       <div className="cover-image-container">
@@ -18,10 +18,10 @@ const CoverPage = ({ book }) => {
           <p className="genres">Genres: {book.genre_names.join(', ')}</p>
         )}
         {book.description && <p className="description">{book.description}</p>}
+        <button onClick={onStartReading} className="start-reading-button">Start Reading</button>
       </div>
     </div>
   );
 };
 
 export default CoverPage;
-

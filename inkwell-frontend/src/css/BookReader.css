@@ -1,93 +1,44 @@
-.book-reader {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Georgia', serif;
-  }
-  
-  .book-reader h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .controls {
+
+  .book-reader {
     display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-  }
-  
-  .controls button {
-    margin: 0 10px;
-    padding: 5px 10px;
-    font-size: 16px;
+    height: calc(100vh - 60px); /* Adjust 60px to match your navbar height */
+    margin-top: 60px; /* Add top margin to push content below navbar */
   }
   
   .book-content {
-    line-height: 1.6;
-    margin-bottom: 20px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  .pagination {
+    flex-grow: 1;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    overflow: hidden;
   }
   
-  .pagination button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
+  .interactions-panel {
+    position: fixed;
+    top: 60px; /* Adjust to match navbar height */
+    right: -300px;
+    width: 300px;
+    height: calc(100vh - 60px);
+    background-color: #f8f9fa;
+    transition: right 0.3s ease;
+    z-index: 100;
+  }
+  
+  .interactions-panel.open {
+    right: 0;
+  }
+  
+  .toggle-interactions {
+    position: absolute;
+    top: 50%;
+    left: -30px;
+    transform: translateY(-50%);
+    background-color: #f8f9fa;
     border: none;
-    border-radius: 4px;
+    padding: 10px;
     cursor: pointer;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
   }
   
-  .pagination button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
   
-  @media (max-width: 600px) {
-    .book-reader {
-      padding: 10px;
-    }
-  
-    .book-content {
-      padding: 10px;
-    }
-  
-    .pagination button {
-      padding: 8px 12px;
-    }
-  }
-
-  .pdf-viewer {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .pdf-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-  }
-  
-  .pdf-controls button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .pdf-controls button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }

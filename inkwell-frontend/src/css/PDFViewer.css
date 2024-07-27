@@ -1,0 +1,66 @@
+.pdf-viewer {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px); /* Adjust 60px to match your navbar height */
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+}
+
+.pdf-document {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  border-radius: 8px;
+  padding: 20px; /* Add padding for better appearance */
+  max-width: 800px; /* Set a max-width for better readability */
+  margin: 0 auto; /* Center the document */
+}
+
+.react-pdf__Document {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.react-pdf__Page {
+  max-width: 100%;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.pdf-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: white;
+  border-top: 1px solid #e0e0e0;
+  max-width: 800px; /* Set a max-width for better readability */
+  margin: 0 auto; /* Center the controls */
+}
+
+.nav-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.nav-button:hover {
+  background-color: #0056b3;
+}
+
+.nav-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
