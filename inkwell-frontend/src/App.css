@@ -36,3 +36,44 @@
     transform: rotate(360deg);
   }
 }
+
+/* Add this to your global CSS file (e.g., src/index.css or src/App.css) */
+
+/* Hide default scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Hide default scrollbar for Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.1);
+}
+
+/* Ensure the body takes up full height */
+body {
+  min-height: 100vh;
+  overflow-y: scroll;
+}
+
+/* Optional: If you want to hide horizontal scrollbars */
+body {
+  overflow-x: hidden;
+}

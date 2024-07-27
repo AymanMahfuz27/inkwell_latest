@@ -1,10 +1,10 @@
-// SignUpSignInPage.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { User, Mail, Lock, UserPlus, LogIn, FileText } from 'lucide-react';
 import api from "../services/api";
-
-const REGISTER_URL = "/api/users/register/";
-const LOGIN_URL = "/api/users/login/";
+import { login as authLogin } from "../services/authService";
+import WatercolorBackground from '../components/WatercolorBackground';
+import '../css/SignUpSignInPage.css';
 
 const SignUpSignInPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -15,18 +15,20 @@ const SignUpSignInPage = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [bio, setBio] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setError("");
+
     try {
       if (isSignUp) {
         if (password !== confirmPassword) {
-          console.error("Passwords do not match");
+          setError("Passwords do not match");
           return;
         }
-        // Registration
-        const response = await api.post(REGISTER_URL, {
+        const response = await api.post("/api/users/register/", {
           username,
           email,
           password,
@@ -38,96 +40,138 @@ const SignUpSignInPage = () => {
         localStorage.setItem("refresh_token", response.data.refresh);
         navigate("/");
       } else {
-        // Login
-        const response = await api.post(LOGIN_URL, {
-          username,
-          password,
-        });
-        localStorage.setItem("access_token", response.data.access);
-        localStorage.setItem("refresh_token", response.data.refresh);
+        await authLogin(username, password);
         navigate("/");
       }
     } catch (error) {
-      if (error.response) {
-        console.error("Authentication failed:", error.response.data);
-        
-      } else console.error("Authentication failed:", error);
+      console.error("Authentication failed:", error);
+      setError("Authentication failed. Please check your credentials and try again.");
     }
   };
 
   return (
-    <div>
-      <h1>{isSignUp ? "Sign Up" : "Sign In"}</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Username:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        {isSignUp && (
-          <>
-            <div>
-              <label>Email:</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label>First Name:</label>
-              <input
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
-            </div>
-            <div>
-              <label>Last Name:</label>
-              <input
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
-            </div>
-            <div>
-              <label>Bio:</label>
-              <textarea value={bio} onChange={(e) => setBio(e.target.value)} />
-            </div>
-          </>
-        )}
-        <div>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        {isSignUp && (
-          <div>
-            <label>Confirm Password:</label>
+    <div className="inkwell-signup-signin-page-container">
+      <WatercolorBackground />
+      <div className="inkwell-signup-signin-page-content">
+        <h1 className="inkwell-signup-signin-page-title">
+          {isSignUp ? "Join Inkwell" : "Welcome Back"}
+        </h1>
+        <form onSubmit={handleSubmit} className="inkwell-signup-signin-page-form">
+          <div className="inkwell-signup-signin-page-input-group">
+            <label htmlFor="username" className="inkwell-signup-signin-page-label">
+              <User size={20} />
+              Username
+            </label>
             <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
+              className="inkwell-signup-signin-page-input"
             />
           </div>
-        )}
-        <button type="submit">{isSignUp ? "Sign Up" : "Sign In"}</button>
-      </form>
-      <button onClick={() => setIsSignUp(!isSignUp)}>
-        {isSignUp
-          ? "Already have an account? Sign In"
-          : "Don’t have an account? Sign Up"}
-      </button>
+          {isSignUp && (
+            <>
+              <div className="inkwell-signup-signin-page-input-group">
+                <label htmlFor="email" className="inkwell-signup-signin-page-label">
+                  <Mail size={20} />
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="inkwell-signup-signin-page-input"
+                />
+              </div>
+              <div className="inkwell-signup-signin-page-input-group">
+                <label htmlFor="firstName" className="inkwell-signup-signin-page-label">
+                  <User size={20} />
+                  First Name
+                </label>
+                <input
+                  id="firstName"
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="inkwell-signup-signin-page-input"
+                />
+              </div>
+              <div className="inkwell-signup-signin-page-input-group">
+                <label htmlFor="lastName" className="inkwell-signup-signin-page-label">
+                  <User size={20} />
+                  Last Name
+                </label>
+                <input
+                  id="lastName"
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="inkwell-signup-signin-page-input"
+                />
+              </div>
+              <div className="inkwell-signup-signin-page-input-group">
+                <label htmlFor="bio" className="inkwell-signup-signin-page-label">
+                  <FileText size={20} />
+                  Bio
+                </label>
+                <textarea
+                  id="bio"
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  className="inkwell-signup-signin-page-textarea"
+                />
+              </div>
+            </>
+          )}
+          <div className="inkwell-signup-signin-page-input-group">
+            <label htmlFor="password" className="inkwell-signup-signin-page-label">
+              <Lock size={20} />
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="inkwell-signup-signin-page-input"
+            />
+          </div>
+          {isSignUp && (
+            <div className="inkwell-signup-signin-page-input-group">
+              <label htmlFor="confirmPassword" className="inkwell-signup-signin-page-label">
+                <Lock size={20} />
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className="inkwell-signup-signin-page-input"
+              />
+            </div>
+          )}
+          {error && <p className="inkwell-signup-signin-page-error">{error}</p>}
+          <button type="submit" className="inkwell-signup-signin-page-submit-button">
+            {isSignUp ? <UserPlus size={20} /> : <LogIn size={20} />}
+            {isSignUp ? "Sign Up" : "Sign In"}
+          </button>
+        </form>
+        <button
+          onClick={() => setIsSignUp(!isSignUp)}
+          className="inkwell-signup-signin-page-toggle-button"
+        >
+          {isSignUp
+            ? "Already have an account? Sign In"
+            : "Don't have an account? Sign Up"}
+        </button>
+      </div>
     </div>
   );
 };

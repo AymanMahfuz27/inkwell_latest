@@ -1,0 +1,315 @@
+/* src/css/BookOverlay.css */
+.inkwell-book-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  
+}
+
+.inkwell-book-overlay-content {
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  padding: 0;
+  max-height: 85vh;
+}
+
+.inkwell-book-overlay-banner {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.inkwell-book-overlay-banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.inkwell-book-overlay-banner-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(to bottom, rgba(26, 26, 26, 0) 0%, #1a1a1a 100%);
+}
+
+.inkwell-book-overlay-header {
+  display: flex;
+  gap: 30px;
+  margin-top: -100px;
+  padding: 0 30px 20px;
+  position: relative;
+}
+
+.inkwell-book-overlay-cover {
+  width: 150px;
+  height: 225px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.inkwell-book-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.inkwell-book-overlay-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+}
+
+.inkwell-book-overlay-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.1;
+  animation: float 20s ease-in-out infinite;
+}
+
+.inkwell-book-overlay-blob.blob1 {
+  width: 100vh;
+  height: 100vh;
+  background-color: #ff6b6b;
+  top: -50vh;
+  left: -50vh;
+}
+
+.inkwell-book-overlay-blob.blob2 {
+  width: 100vh;
+  height: 100vh;
+  background-color: #4ecdc4;
+  bottom: -50vh;
+  right: -50vh;
+}
+
+.inkwell-book-overlay-blob.blob3 {
+  width: 80vh;
+  height: 80vh;
+  background-color: #45b7d1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+
+.inkwell-book-overlay.visible .inkwell-book-overlay-content {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.inkwell-book-overlay-close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  z-index: 10; /* Ensure it's above other content */
+
+}
+
+.inkwell-book-overlay-close-button:hover {
+  color: #ff6b6b;
+}
+
+
+
+
+
+.inkwell-book-overlay-info {
+  flex: 1;
+}
+
+.inkwell-book-overlay-title {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.inkwell-book-overlay-author {
+  font-size: 1.2rem;
+  color: #a0a0a0;
+  margin-bottom: 20px;
+}
+
+.inkwell-book-overlay-stats {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.inkwell-book-overlay-stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #a0a0a0;
+}
+
+.inkwell-book-overlay-like-button {
+  background-color: transparent;
+  border: 1px solid #ff6b6b;
+  color: #ff6b6b;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.inkwell-book-overlay-like-button:hover {
+  background-color: #ff6b6b;
+  color: #fff;
+}
+
+.inkwell-book-overlay-details {
+  margin-bottom: 30px;
+}
+
+.inkwell-book-overlay-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #d0d0d0;
+  margin-bottom: 20px;
+  margin-left: 30px;
+}
+
+.inkwell-book-overlay-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-left: 30px;
+  margin-bottom: 20px;
+}
+
+.inkwell-book-overlay-genre-tag {
+  background-color: #2a2a2a;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.inkwell-book-overlay-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px 30px; /* Add padding to the bottom */
+
+}
+
+.inkwell-book-overlay-read-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #4ecdc4;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.inkwell-book-overlay-read-button:hover {
+  background-color: #45b7d1;
+}
+
+.inkwell-book-overlay-collection-action {
+  display: flex;
+  gap: 10px;
+}
+
+.inkwell-book-overlay-select,
+.inkwell-book-overlay-input {
+  background-color: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  color: #fff;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.inkwell-book-overlay-add-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #4ecdc4;
+  color: #fff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.inkwell-book-overlay-add-button:hover {
+  background-color: #45b7d1;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@media (max-width: 768px) {
+  .inkwell-book-overlay-content {
+    padding: 20px;
+  }
+
+  .inkwell-book-overlay-banner {
+    height: 150px;
+  }
+
+  .inkwell-book-overlay-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: -75px;
+  }
+
+  .inkwell-book-overlay-cover {
+    width: 120px;
+    height: 180px;
+  }
+
+  .inkwell-book-overlay-title {
+    font-size: 2rem;
+  }
+
+  .inkwell-book-overlay-actions {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .inkwell-book-overlay-collection-action {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
