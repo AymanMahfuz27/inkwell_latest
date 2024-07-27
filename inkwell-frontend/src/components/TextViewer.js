@@ -1,49 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/TextViewer.css';
 
 const TextViewer = ({ content }) => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [fontSize, setFontSize] = useState(16);
-  const pages = [''].concat(content.split('\n\n'));
+  const [pages, setPages] = useState([]);
 
-  const nextPage = () => {
-    if (currentPage < pages.length - 1) {
-      setCurrentPage(currentPage + 1);
-    }
+  useEffect(() => {
+    const paginateContent = () => {
+      const wordsPerPage = 400; // Adjust this value as needed
+      const words = content.split(/\s+/);
+      const paginatedContent = [];
+      for (let i = 0; i < words.length; i += wordsPerPage) {
+        paginatedContent.push(words.slice(i, i + wordsPerPage).join(' '));
+      }
+      setPages(paginatedContent);
+    };
+
+    paginateContent();
+  }, [content]);
+
+  const changePage = (offset) => {
+    setCurrentPage(prevPage => Math.max(0, Math.min(pages.length - 1, prevPage + offset)));
   };
 
-  const prevPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'ArrowRight') {
+        changePage(1);
+      } else if (event.key === 'ArrowLeft') {
+        changePage(-1);
+      }
+    };
 
-  const changeFontSize = (delta) => {
-    setFontSize(prevSize => Math.max(12, Math.min(24, prevSize + delta)));
-  };
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, []);
 
   return (
     <div className="text-viewer">
-      {currentPage === 0 ? (
-        <div className="cover-page">
-          <p>Cover Page</p>
-          {/* Add more cover page content here if needed */}
-        </div>
-      ) : (
-        <>
-          <div className="controls">
-            <button onClick={() => changeFontSize(-2)}>A-</button>
-            <button onClick={() => changeFontSize(2)}>A+</button>
-          </div>
-          <div className="book-content" style={{ fontSize: `${fontSize}px` }}>
-            {pages[currentPage]}
-          </div>
-        </>
-      )}
-      <div className="pagination">
-        <button onClick={prevPage} disabled={currentPage === 0}>Previous</button>
-        <span>Page {currentPage} of {pages.length - 1}</span>
-        <button onClick={nextPage} disabled={currentPage === pages.length - 1}>Next</button>
+      <div className="text-viewer-content">
+        {pages[currentPage]}
+      </div>
+      <div className="text-viewer-controls">
+        <button onClick={() => changePage(-1)} disabled={currentPage === 0} className="nav-button">
+          Previous
+        </button>
+        <span>Page {currentPage + 1} of {pages.length}</span>
+        <button onClick={() => changePage(1)} disabled={currentPage === pages.length - 1} className="nav-button">
+          Next
+        </button>
       </div>
     </div>
   );
