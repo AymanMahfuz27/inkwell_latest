@@ -1,4 +1,4 @@
-.book-reader {
+/* .book-reader {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
@@ -90,4 +90,22 @@
   .pdf-controls button:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
+  } */
+
+
+  /* src/css/BookReader.css */
+  .book-reader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
   }
+  
+  .cover-page,
+  .pdf-viewer,
+  .text-viewer {
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
+  }
+  
