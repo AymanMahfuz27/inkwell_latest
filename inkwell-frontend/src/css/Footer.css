@@ -1,0 +1,98 @@
+.inkwell-footer {
+    background-color: rgba(26, 26, 26, 0.9);
+    color: #fff;
+    padding: 40px 0 20px;
+    margin-top: auto;
+  }
+  
+  .inkwell-footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .inkwell-footer-section {
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: 20px;
+  }
+  
+  .inkwell-footer-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: #3291ff;
+  }
+  
+  .inkwell-footer-section p,
+  .inkwell-footer-section ul {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  
+  .inkwell-footer-section ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .inkwell-footer-section ul li {
+    margin-bottom: 8px;
+  }
+  
+  .inkwell-footer-section a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .inkwell-footer-section a:hover {
+    color: #3291ff;
+  }
+  
+  .inkwell-footer-social {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .inkwell-footer-social a {
+    color: #fff;
+    transition: color 0.3s ease;
+  }
+  
+  .inkwell-footer-social a:hover {
+    color: #3291ff;
+  }
+  
+  .inkwell-footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 20px;
+    padding-top: 20px;
+    text-align: center;
+    font-size: 0.8rem;
+  }
+  
+  .inkwell-footer-bottom p {
+    margin-bottom: 10px;
+  }
+  
+  .inkwell-footer-bottom a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .inkwell-footer-bottom a:hover {
+    color: #3291ff;
+  }
+  
+  @media (max-width: 768px) {
+    .inkwell-footer-content {
+      flex-direction: column;
+    }
+  
+    .inkwell-footer-section {
+      margin-bottom: 30px;
+    }
+  }

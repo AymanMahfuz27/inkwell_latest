@@ -26,7 +26,7 @@ function App() {
         <Route path="/about" element={<AboutPage />} /> {/* About page */}
         <Route path="/all-books" element={<AllBooksPage />} /> {/* All Books page */}
       </Routes>
-      {/*<Footer />  Include Footer on every page */}
+      <Footer />
     </div>
   );
 
