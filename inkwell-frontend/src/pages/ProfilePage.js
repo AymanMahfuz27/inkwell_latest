@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { User, Mail, Edit2, Save, X, BookOpen } from 'lucide-react';
+import { User, Mail, Edit2, Save, X, BookOpen, Image } from 'lucide-react';
 import api from '../services/api';
 import { getUsername } from '../services/authService';
-import BookCard from '../components/BookCard';
 import WatercolorBackground from '../components/WatercolorBackground';
 import '../css/ProfilePage.css';
 import { BookListCard } from '../components/ListCards';
@@ -17,6 +16,7 @@ const ProfilePage = () => {
   const [newCollectionName, setNewCollectionName] = useState('');
   const [error, setError] = useState(null);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const [newProfilePicture, setNewProfilePicture] = useState(null);
 
   useEffect(() => {
     fetchProfile();
@@ -56,16 +56,39 @@ const ProfilePage = () => {
     setEditedProfile({ ...editedProfile, [e.target.name]: e.target.value });
   };
 
+  const handleProfilePictureChange = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      setNewProfilePicture(file);
+    } else {
+      setError("Please upload a valid image file.");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.put(`/api/users/profiles/${username}/`, editedProfile);
+      const formData = new FormData();
+      for (const key in editedProfile) {
+        formData.append(key, editedProfile[key]);
+      }
+      if (newProfilePicture) {
+        formData.append('profile_picture', newProfilePicture);
+      }
+
+      const response = await api.put(`/api/users/profiles/${username}/`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       setProfile(response.data);
       setIsEditing(false);
+      setNewProfilePicture(null);
     } catch (err) {
       setError('Failed to update profile. Please try again.');
     }
   };
+
 
   const createCollection = async (e) => {
     e.preventDefault();
@@ -86,6 +109,29 @@ const ProfilePage = () => {
       <WatercolorBackground />
       <div className="inkwell-profile-page-content">
         <h1 className="inkwell-profile-page-title">{profile.username}'s Profile</h1>
+        
+        <div className="inkwell-profile-page-picture-container">
+          <img 
+            src={profile.profile_picture || '/default-avatar.jpg'} 
+            alt={`${profile.username}'s profile`}
+            className="inkwell-profile-page-picture"
+          />
+          {isOwnProfile && isEditing && (
+            <div className="inkwell-profile-page-picture-upload">
+              <label htmlFor="profile-picture-upload" className="inkwell-profile-page-picture-label">
+                <Image size={20} />
+                Change Picture
+              </label>
+              <input
+                id="profile-picture-upload"
+                type="file"
+                onChange={handleProfilePictureChange}
+                accept="image/*"
+                className="inkwell-profile-page-picture-input"
+              />
+            </div>
+          )}
+        </div>
         
         {isEditing ? (
           <form onSubmit={handleSubmit} className="inkwell-profile-page-form">
@@ -164,7 +210,7 @@ const ProfilePage = () => {
             )}
           </div>
         )}
-
+  
         {isOwnProfile && (
           <div className="inkwell-profile-page-collections">
             <h2 className="inkwell-profile-page-subtitle">Book Collections</h2>
@@ -183,7 +229,7 @@ const ProfilePage = () => {
                 </button>
               </div>
             </form>
-
+  
             {collections.map(collection => (
               <div key={collection.id} className="inkwell-profile-page-collection">
                 <h3 className="inkwell-profile-page-collection-title">{collection.name}</h3>

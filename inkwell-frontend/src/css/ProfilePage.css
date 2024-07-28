@@ -88,15 +88,9 @@
   margin-top: 15px;
 }
 
-
-
 .inkwell-profile-page-button:hover {
   color: #000;
   background-color: #fff;
-}
-
-.inkwell-profile-page-button:hover::before {
-  opacity: 1;
 }
 
 .inkwell-profile-page-button.secondary {
@@ -129,8 +123,7 @@
 }
 
 .inkwell-profile-page-book-scroll {
-  /* display: flex; */
-  /* overflow-x: auto; */
+  overflow-x: auto;
   gap: 20px;
   padding-bottom: 20px;
 }
@@ -145,6 +138,46 @@
 
 .inkwell-profile-page-error {
   color: #ff6b6b;
+}
+
+.inkwell-profile-page-picture-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.inkwell-profile-page-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.inkwell-profile-page-picture-upload {
+  margin-top: 10px;
+}
+
+.inkwell-profile-page-picture-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.inkwell-profile-page-picture-label:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.inkwell-profile-page-picture-input {
+  display: none;
 }
 
 @media (min-width: 768px) {
