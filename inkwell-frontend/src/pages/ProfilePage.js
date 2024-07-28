@@ -6,6 +6,7 @@ import { getUsername } from '../services/authService';
 import BookCard from '../components/BookCard';
 import WatercolorBackground from '../components/WatercolorBackground';
 import '../css/ProfilePage.css';
+import { BookListCard } from '../components/ListCards';
 
 const ProfilePage = () => {
   const { username } = useParams();
@@ -191,7 +192,7 @@ const ProfilePage = () => {
                 ) : (
                   <div className="inkwell-profile-page-book-scroll">
                     {collection.books.map(book => (
-                      <BookCard key={book.id} book={book} />
+                      <BookListCard key={book.id} book={book} />
                     ))}
                   </div>
                 )}

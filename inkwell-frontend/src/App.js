@@ -10,6 +10,7 @@ import AboutPage from './pages/AboutPage'; // Import the AboutPage component
 import PrivateRoute from './components/PrivateRoute'; // Import the PrivateRoute component for protected routes
 import BookReader from './components/BookReader'; // Import the BookReader component
 import AllBooksPage from './pages/AllBooksPage';  // Import the new component
+import SearchPage from './pages/SearchPage'; // Import the SearchPage component
 
 
 // Define the App component
@@ -25,6 +26,7 @@ function App() {
         <Route path="/book/:bookId" element={<BookReader />} /> {/* Book Reader page */}
         <Route path="/about" element={<AboutPage />} /> {/* About page */}
         <Route path="/all-books" element={<AllBooksPage />} /> {/* All Books page */}
+        <Route path="/search" element={<SearchPage />} />  
       </Routes>
       <Footer />
     </div>

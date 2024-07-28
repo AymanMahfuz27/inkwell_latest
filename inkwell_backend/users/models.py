@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 
 # Create your models here.
 
@@ -47,6 +48,16 @@ class UserProfile(AbstractUser):
     def get_following(self):
         return self.following.all()
     
+    @classmethod
+    def search(cls, query):
+        search_vector = SearchVector('username', weight='A') + \
+                        SearchVector('first_name', weight='B') + \
+                        SearchVector('last_name', weight='B') + \
+                        SearchVector('bio', weight='C')
+        search_query = SearchQuery(query)
+        return cls.objects.annotate(
+            rank=SearchRank(search_vector, search_query)
+        ).filter(rank__gte=0.1).order_by('-rank').distinct()
 
 class BookCollection(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='book_collections')

@@ -12,6 +12,7 @@ from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from books.models import Book
+from django.db.models import Q
 
 
 
@@ -43,6 +44,17 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         serializer.save()
+    
+    @action(detail=False, methods=['get'], permission_classes=[AllowAny])
+    def search(self, request):
+        query = request.query_params.get('q', '')
+        if query:
+            users = UserProfile.search(query)
+            serializer = self.get_serializer(users, many=True)
+            return Response(serializer.data)
+        return Response([])
+
+
 
 
 
