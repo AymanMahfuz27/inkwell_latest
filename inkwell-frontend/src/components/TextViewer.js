@@ -26,10 +26,10 @@ const TextViewer = ({ content, currentPage, totalPages, onPageChange, viewMode, 
   return (
     <div className={`text-viewer ${viewMode}`} style={textStyle}>
       {viewMode === 'horizontal' ? (
-        <div className="page">{pages[currentPage - 1]}</div>
+        <div className="page" style={textStyle}>{pages[currentPage - 1]}</div>
       ) : (
         pages.map((page, index) => (
-          <div key={index} className="page">{page}</div>
+          <div key={index} className="page" style={textStyle}>{page}</div>
         ))
       )}
     </div>
