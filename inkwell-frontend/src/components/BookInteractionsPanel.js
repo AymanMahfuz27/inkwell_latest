@@ -185,7 +185,14 @@ const BookInteractionsPanel = ({
         <div className="collection-section">
           <select 
             value={selectedCollection} 
-            onChange={(e) => setSelectedCollection(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value === 'new') {
+                setShowNewCollectionInput(true);
+              } else {
+                setSelectedCollection(e.target.value);
+                setShowNewCollectionInput(false);
+              }
+            }}
           >
             <option value="">Select Collection</option>
             {collections.map(collection => (
@@ -193,8 +200,21 @@ const BookInteractionsPanel = ({
             ))}
             <option value="new">+ Create New Collection</option>
           </select>
-          <button onClick={handleAddToCollection}>Add to Collection</button>
+          {showNewCollectionInput ? (
+            <>
+              <input
+                type="text"
+                value={newCollectionName}
+                onChange={(e) => setNewCollectionName(e.target.value)}
+                placeholder="New collection name"
+              />
+              <button onClick={handleCreateCollection}>Create & Add</button>
+            </>
+          ) : (
+            <button onClick={handleAddToCollection}>Add to Collection</button>
+          )}
         </div>
+
         <div className="comment-section">
           <input
             type="text"

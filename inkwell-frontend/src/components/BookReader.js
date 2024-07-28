@@ -14,7 +14,7 @@ const BookReader = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [viewMode, setViewMode] = useState('horizontal');
   const [zoom, setZoom] = useState(1);
-  const [isPanelOpen, setIsPanelOpen] = useState(true);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
   const panelRef = useRef(null);
 
   useEffect(() => {
