@@ -1,6 +1,9 @@
+from datetime import timedelta
 from django.db import models
 from users.models import UserProfile
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.db.models import JSONField  # Update this import
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=255)
@@ -25,6 +28,13 @@ class Book(models.Model):
     upload_date = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(UserProfile, related_name='books_liked', blank=True)  # Changed this line
     view_count = models.PositiveIntegerField(default=0)
+    # New analytics fields
+    view_count = models.IntegerField(default=0)
+    unique_view_count = models.IntegerField(default=0)
+    completed_reads = models.IntegerField(default=0)
+    total_reading_time = models.DurationField(default=timedelta())
+    geographic_distribution = JSONField(default=dict)
+    revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     @classmethod
     def search(cls, query):

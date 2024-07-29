@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { User, Mail, Edit2, Save, X, BookOpen, Image } from 'lucide-react';
+import { User, Mail, Edit2, Save, X, BookOpen, Image, ChevronDown } from 'lucide-react';
 import api from '../services/api';
 import { getUsername } from '../services/authService';
 import WatercolorBackground from '../components/WatercolorBackground';
 import '../css/ProfilePage.css';
 import { BookListCard } from '../components/ListCards';
+import AnalyticsDashboard from '../components/AnalyticsDashboard';
 
 const ProfilePage = () => {
   const { username } = useParams();
@@ -24,6 +25,22 @@ const ProfilePage = () => {
     setIsOwnProfile(username === getUsername());
   }, [username]);
 
+  const CollapsibleSection = ({ title, children }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+  
+    return (
+      <div className="collapsible-section">
+        <div className="collapsible-header" onClick={() => setIsExpanded(!isExpanded)}>
+          <h2 className="inkwell-profile-page-subtitle">{title}</h2>
+          <ChevronDown className={`toggle-icon ${isExpanded ? 'expanded' : ''}`} />
+        </div>
+        <div className={`collapsible-content ${isExpanded ? 'expanded' : ''}`}>
+          {children}
+        </div>
+      </div>
+    );
+  };
+  
   const fetchProfile = async () => {
     try {
       const response = await api.get(`/api/users/profiles/${username}/`);
@@ -108,7 +125,7 @@ const ProfilePage = () => {
     <div className="inkwell-profile-page-container">
       <WatercolorBackground />
       <div className="inkwell-profile-page-content">
-        <h1 className="inkwell-profile-page-title">{profile.username}'s Profile</h1>
+        <h1 className="inkwell-profile-page-title">Welcome back, {profile.username}</h1>
         
         <div className="inkwell-profile-page-picture-container">
           <img 
@@ -211,40 +228,48 @@ const ProfilePage = () => {
           </div>
         )}
   
+  {isOwnProfile && (
+          <CollapsibleSection title="Book Collections">
+            <div className="inkwell-profile-page-collections">
+              <form onSubmit={createCollection} className="inkwell-profile-page-form">
+                <div className="inkwell-profile-page-input-group">
+                  <input
+                    type="text"
+                    value={newCollectionName}
+                    onChange={(e) => setNewCollectionName(e.target.value)}
+                    placeholder="New collection name"
+                    required
+                    className="inkwell-profile-page-input"
+                  />
+                  <button type="submit" className="inkwell-profile-page-button">
+                    Create Collection
+                  </button>
+                </div>
+              </form>
+
+              {collections.map(collection => (
+                <div key={collection.id} className="inkwell-profile-page-collection">
+                  <h3 className="inkwell-profile-page-collection-title">{collection.name}</h3>
+                  {collection.books.length === 0 ? (
+                    <p>This collection is empty.</p>
+                  ) : (
+                    <div className="inkwell-profile-page-book-scroll">
+                      {collection.books.map(book => (
+                        <BookListCard key={book.id} book={book} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </CollapsibleSection>
+        )}
+
+        {/* Analytics section */}
         {isOwnProfile && (
-          <div className="inkwell-profile-page-collections">
-            <h2 className="inkwell-profile-page-subtitle">Book Collections</h2>
-            <form onSubmit={createCollection} className="inkwell-profile-page-form">
-              <div className="inkwell-profile-page-input-group">
-                <input
-                  type="text"
-                  value={newCollectionName}
-                  onChange={(e) => setNewCollectionName(e.target.value)}
-                  placeholder="New collection name"
-                  required
-                  className="inkwell-profile-page-input"
-                />
-                <button type="submit" className="inkwell-profile-page-button">
-                  Create Collection
-                </button>
-              </div>
-            </form>
-  
-            {collections.map(collection => (
-              <div key={collection.id} className="inkwell-profile-page-collection">
-                <h3 className="inkwell-profile-page-collection-title">{collection.name}</h3>
-                {collection.books.length === 0 ? (
-                  <p>This collection is empty.</p>
-                ) : (
-                  <div className="inkwell-profile-page-book-scroll">
-                    {collection.books.map(book => (
-                      <BookListCard key={book.id} book={book} />
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          <CollapsibleSection title="Analytics Dashboard">
+            <AnalyticsDashboard />
+          </CollapsibleSection>
         )}
       </div>
     </div>
@@ -252,3 +277,4 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+

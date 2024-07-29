@@ -5,6 +5,7 @@ import api from '../services/api';
 import { BookListCard, UserListCard, GenreListCard } from '../components/ListCards';
 import { User, Book, Tag } from 'lucide-react';
 import '../css/SearchPage.css';
+import WatercolorBackground from '../components/WatercolorBackground';
 
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -54,6 +55,7 @@ const SearchPage = () => {
 
   return (
     <div className="search-page">
+      <WatercolorBackground />
       <h1>Search Inkwell</h1>
       <form onSubmit={handleSearch} className="search-form">
         <input
