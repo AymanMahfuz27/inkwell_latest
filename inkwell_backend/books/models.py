@@ -1,10 +1,17 @@
+from datetime import timedelta
 from django.db import models
-
-# Create your models here.
 from users.models import UserProfile
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.db.models import JSONField  # Update this import
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=255)
+
+    @classmethod
+    def search(cls, query):
+        return cls.objects.filter(name__icontains=query)
+
 
     def __str__(self):
         return self.name
@@ -21,6 +28,25 @@ class Book(models.Model):
     upload_date = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(UserProfile, related_name='books_liked', blank=True)  # Changed this line
     view_count = models.PositiveIntegerField(default=0)
+    # New analytics fields
+    view_count = models.IntegerField(default=0)
+    unique_view_count = models.IntegerField(default=0)
+    completed_reads = models.IntegerField(default=0)
+    total_reading_time = models.DurationField(default=timedelta())
+    geographic_distribution = JSONField(default=dict)
+    revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    @classmethod
+    def search(cls, query):
+        search_vector = SearchVector('title', weight='A') + \
+                        SearchVector('description', weight='B') + \
+                        SearchVector('uploaded_by__username', weight='C') + \
+                        SearchVector('genres__name', weight='D')
+        search_query = SearchQuery(query)
+        return cls.objects.annotate(
+            rank=SearchRank(search_vector, search_query)
+        ).filter(rank__gte=0.1).order_by('-rank').distinct()
+
 
     
     def __str__(self):

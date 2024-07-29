@@ -1,12 +1,22 @@
-
-
 import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, Layers, List, X, ThumbsUp, Eye } from 'lucide-react';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
-import '../css/BookInteractionsPanel.css';
 import { isAuthenticated } from '../services/authService';
+import '../css/BookInteractionsPanel.css';
 
-const BookInteractionPanel = ({ bookId }) => {
+const BookInteractionsPanel = ({ 
+  bookId, 
+  currentPage, 
+  totalPages, 
+  onPageChange, 
+  viewMode, 
+  onViewModeChange,
+  isOpen,
+  onClose,
+  onOpen
+}) => {
+
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [views, setViews] = useState(0);
@@ -17,10 +27,11 @@ const BookInteractionPanel = ({ bookId }) => {
   const [loading, setLoading] = useState(true);
   const [newCollectionName, setNewCollectionName] = useState('');
   const [showNewCollectionInput, setShowNewCollectionInput] = useState(false);
-
   const [error, setError] = useState(null);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [goToPage, setGoToPage] = useState('');
   const navigate = useNavigate();
-  
+
 
   useEffect(() => {
     fetchBookInteractions();
@@ -108,63 +119,122 @@ const BookInteractionPanel = ({ bookId }) => {
     }
   };
 
+  const handleGoToPage = () => {
+    const pageNumber = parseInt(goToPage, 10);
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      onPageChange(pageNumber);
+      setGoToPage('');
+    }
+  };
+
+  const toggleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
 
   if (loading) return <div>Loading interactions...</div>;
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="book-interaction-panel">
-      <div className="interaction-section">
-        <button onClick={handleLike}>{isLiked ? 'Unlike' : 'Like'} ({likes})</button>
-        <span>Views: {views}</span>
+    <>
+      <div 
+        className={`book-interaction-panel-toggle ${isOpen ? '' : 'collapsed'}`} 
+        onClick={onOpen}
+      >
+        <ChevronLeft />
       </div>
-      {isAuthenticated() && (
-        <div className="interaction-section">
-        <select 
-          value={selectedCollection} 
-          onChange={(e) => setSelectedCollection(e.target.value)}
-        >
-          <option value="">Select Collection</option>
-          {collections.map(collection => (
-            <option key={collection.id} value={collection.id}>{collection.name}</option>
-          ))}
-          <option value="new">+ Create New Collection</option>
-        </select>
-        {selectedCollection === 'new' || showNewCollectionInput ? (
-          <div>
-            <input
-              type="text"
-              value={newCollectionName}
-              onChange={(e) => setNewCollectionName(e.target.value)}
-              placeholder="New collection name"
-            />
-            <button onClick={handleCreateCollection}>Create & Add</button>
-          </div>
-        ) : (
-          <button onClick={handleAddToCollection}>Add to Collection</button>
-        )}
-      </div>
+      <div className={`book-interaction-panel ${isOpen ? '' : 'collapsed'}`}>
+        <button className="close-panel-button" onClick={onClose}>
+          Collapse Panel
+        </button>
 
-      )}
-      <div className="interaction-section">
-        <input
-          type="text"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder="Add a comment..."
-        />
-        <button onClick={handleAddComment}>Comment</button>
-      </div>
-      <div className="comments-section">
-        {comments.map(comment => (
-          <div key={comment.id} className="comment">
-            <p>{comment.content}</p>
-            <small>{comment.user} - {new Date(comment.created_at).toLocaleString()}</small>
+        <div className="interaction-section">
+          <button onClick={handleLike} className="like-button">
+            <ThumbsUp size={20} />
+            {isLiked ? 'Unlike' : 'Like'} ({likes})
+          </button>
+          <div className="views">
+            <Eye size={20} />
+            {views}
           </div>
-        ))}
+        </div>
+        <div className="page-navigation">
+          <span>Page {currentPage} of {totalPages}</span>
+          <div className="go-to-page">
+            <input
+              type="number"
+              value={goToPage}
+              onChange={(e) => setGoToPage(e.target.value)}
+              placeholder="Go to page"
+              min="1"
+              max={totalPages}
+            />
+            <button onClick={handleGoToPage}>Go</button>
+          </div>
+        </div>
+        <div className="view-mode-toggle">
+          <button onClick={() => onViewModeChange('horizontal')} className={viewMode === 'horizontal' ? 'active' : ''}>
+            <Layers size={20} />
+            Horizontal
+          </button>
+          <button onClick={() => onViewModeChange('vertical')} className={viewMode === 'vertical' ? 'active' : ''}>
+            <List size={20} />
+            Vertical
+          </button>
+        </div>
+        <div className="collection-section">
+          <select 
+            value={selectedCollection} 
+            onChange={(e) => {
+              if (e.target.value === 'new') {
+                setShowNewCollectionInput(true);
+              } else {
+                setSelectedCollection(e.target.value);
+                setShowNewCollectionInput(false);
+              }
+            }}
+          >
+            <option value="">Select Collection</option>
+            {collections.map(collection => (
+              <option key={collection.id} value={collection.id}>{collection.name}</option>
+            ))}
+            <option value="new">+ Create New Collection</option>
+          </select>
+          {showNewCollectionInput ? (
+            <>
+              <input
+                type="text"
+                value={newCollectionName}
+                onChange={(e) => setNewCollectionName(e.target.value)}
+                placeholder="New collection name"
+              />
+              <button onClick={handleCreateCollection}>Create & Add</button>
+            </>
+          ) : (
+            <button onClick={handleAddToCollection}>Add to Collection</button>
+          )}
+        </div>
+
+        <div className="comment-section">
+          <input
+            type="text"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="Add a comment..."
+          />
+          <button onClick={handleAddComment}>Comment</button>
+        </div>
+        <div className="comments-list">
+          {comments.map(comment => (
+            <div key={comment.id} className="comment">
+              <p>{comment.content}</p>
+              <small>{comment.user} - {new Date(comment.created_at).toLocaleString()}</small>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default BookInteractionPanel;
+export default BookInteractionsPanel;

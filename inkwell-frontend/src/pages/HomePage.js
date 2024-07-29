@@ -122,7 +122,7 @@ const HomePage = () => {
       )}
 
       <div className="see-all-links">
-        <Link to="/books">Explore All Books</Link>
+        <Link to="/all-books">Explore All Books</Link>
         {isAuthenticated() && <Link to={`/profile/${getUsername()}`}>View Your Collections</Link>}
         <Link to="/genres">Browse Genres</Link>
       </div>

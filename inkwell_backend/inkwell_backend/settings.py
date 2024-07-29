@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'recommendations',
     'uploads',
     'ads',
+    'analytics',
 ]
 
 MIDDLEWARE = [

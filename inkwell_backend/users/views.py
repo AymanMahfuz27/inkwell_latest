@@ -12,6 +12,8 @@ from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from books.models import Book
+from rest_framework.parsers import MultiPartParser, FormParser
+
 
 
 
@@ -20,6 +22,7 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = 'username'
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
         username = self.kwargs.get('username')
@@ -43,7 +46,15 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         serializer.save()
-
+    
+    @action(detail=False, methods=['get'], permission_classes=[AllowAny])
+    def search(self, request):
+        query = request.query_params.get('q', '')
+        if query:
+            users = UserProfile.search(query)
+            serializer = self.get_serializer(users, many=True)
+            return Response(serializer.data)
+        return Response([])
 
 
 class BookCollectionViewSet(viewsets.ModelViewSet):
@@ -78,6 +89,7 @@ class RegisterView(generics.CreateAPIView):
     queryset = UserProfile.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
+    parser_classes = (MultiPartParser, FormParser)
 
     def create(self, request, *args, **kwargs):
         print("Request data: ", request.data)
@@ -87,6 +99,7 @@ class RegisterView(generics.CreateAPIView):
         response.data['refresh'] = str(refresh)
         response.data['access'] = str(refresh.access_token)
         return response
+
 
 # Simplified login view
 @api_view(['POST'])

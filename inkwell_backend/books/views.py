@@ -16,6 +16,16 @@ class GenreViewSet(viewsets.ModelViewSet):
     serializer_class = GenreSerializer
     permission_classes = [IsAuthenticated]
 
+    @action(detail=False, methods=['get'])
+    def search(self, request):
+        query = request.query_params.get('q', '')
+        if query:
+            genres = Genre.search(query)
+            serializer = self.get_serializer(genres, many=True)
+            return Response(serializer.data)
+        return Response([])
+
+
 logger = logging.getLogger(__name__)
 
 class BookViewSet(viewsets.ModelViewSet):
@@ -109,5 +119,16 @@ class BookViewSet(viewsets.ModelViewSet):
                 page_count = len(pdf_reader.pages)
             return Response({'page_count': page_count})
         return Response({'page_count': 'N/A'}, status=400)
+    
+    @action(detail=False, methods=['get'])
+    def search(self, request):
+        query = request.query_params.get('q', '')
+        if query:
+            books = Book.search(query)
+            serializer = self.get_serializer(books, many=True)
+            return Response(serializer.data)
+        return Response([])
+
+
 
 

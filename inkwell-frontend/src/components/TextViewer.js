@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import '../css/TextViewer.css';
 
-const TextViewer = ({ content }) => {
-  const [currentPage, setCurrentPage] = useState(0);
+const TextViewer = ({ content, currentPage, totalPages, onPageChange, viewMode, zoom }) => {
   const [pages, setPages] = useState([]);
+  const baseFontSize = 16; // Base font size in pixels
 
   useEffect(() => {
     const paginateContent = () => {
-      const wordsPerPage = 400; // Adjust this value as needed
+      const wordsPerPage = 400;
       const words = content.split(/\s+/);
       const paginatedContent = [];
       for (let i = 0; i < words.length; i += wordsPerPage) {
@@ -19,37 +19,19 @@ const TextViewer = ({ content }) => {
     paginateContent();
   }, [content]);
 
-  const changePage = (offset) => {
-    setCurrentPage(prevPage => Math.max(0, Math.min(pages.length - 1, prevPage + offset)));
+  const textStyle = {
+    fontSize: `${baseFontSize * zoom}px`,
   };
 
-  useEffect(() => {
-    const handleKeyPress = (event) => {
-      if (event.key === 'ArrowRight') {
-        changePage(1);
-      } else if (event.key === 'ArrowLeft') {
-        changePage(-1);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, []);
-
   return (
-    <div className="text-viewer">
-      <div className="text-viewer-content">
-        {pages[currentPage]}
-      </div>
-      <div className="text-viewer-controls">
-        <button onClick={() => changePage(-1)} disabled={currentPage === 0} className="nav-button">
-          Previous
-        </button>
-        <span>Page {currentPage + 1} of {pages.length}</span>
-        <button onClick={() => changePage(1)} disabled={currentPage === pages.length - 1} className="nav-button">
-          Next
-        </button>
-      </div>
+    <div className={`text-viewer ${viewMode}`} style={textStyle}>
+      {viewMode === 'horizontal' ? (
+        <div className="page" style={textStyle}>{pages[currentPage - 1]}</div>
+      ) : (
+        pages.map((page, index) => (
+          <div key={index} className="page" style={textStyle}>{page}</div>
+        ))
+      )}
     </div>
   );
 };
