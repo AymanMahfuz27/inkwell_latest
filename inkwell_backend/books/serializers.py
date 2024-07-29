@@ -54,6 +54,8 @@ class BookSerializer(serializers.ModelSerializer):
     like_count = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
     view_count = serializers.ReadOnlyField()
+    content = serializers.CharField(allow_blank=True, required=False)
+
 
     class Meta:
         model = Book
@@ -90,7 +92,9 @@ class BookSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         return user.is_authenticated and obj.likes.filter(id=user.id).exists()
 
-
+    def validate_content(self, value):
+        # You might want to add additional validation here
+        return value
     def create(self, validated_data):
         genres_data = validated_data.pop('genres', [])
         book = Book.objects.create(**validated_data)

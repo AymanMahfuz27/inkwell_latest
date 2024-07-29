@@ -4,6 +4,10 @@ import { Upload, Book, FileText, Image } from 'lucide-react';
 import api from '../services/api';
 import WatercolorBackground from '../components/WatercolorBackground';
 import '../css/UploadBookPage.css';
+import Editor from '../components/Editor';  // Import the new QuillEditor component
+// import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Import Quill styles
+
 
 const UploadBookPage = () => {
   const [title, setTitle] = useState('');
@@ -18,6 +22,9 @@ const UploadBookPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
   const navigate = useNavigate();
+  const [richTextContent, setRichTextContent] = useState('');
+  const [bookContent, setBookContent] = useState('');
+
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -25,6 +32,9 @@ const UploadBookPage = () => {
       navigate('/login');
     }
   }, [navigate]);
+  const handleContentChange = (content) => {
+    setBookContent(content);
+  };
 
   const handleFileChange = (event) => {
     const { name, files } = event.target;
@@ -63,7 +73,7 @@ const UploadBookPage = () => {
     if (uploadType === 'pdf') {
       if (pdfFile) formData.append('pdf_file', pdfFile);
     } else {
-      formData.append('content', textContent);
+      formData.append('content', richTextContent); // Use rich text content instead of plain text
     }
 
     try {
@@ -81,6 +91,7 @@ const UploadBookPage = () => {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="inkwell-upload-page-container">
@@ -182,14 +193,32 @@ const UploadBookPage = () => {
                 <FileText size={20} />
                 Book Content
               </label>
-              <textarea
-                id="inkwell-upload-page-text-input"
-                value={textContent}
-                onChange={(e) => setTextContent(e.target.value)}
-                required
-                className="inkwell-upload-page-textarea"
-                placeholder="Enter your book content here"
-              />
+              {/* <ReactQuill
+                value={richTextContent}
+                onChange={setRichTextContent}
+                modules={{
+                  toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{'list': 'ordered'}, {'list': 'bullet'}],
+                    ['link', 'image'],
+                    ['clean']
+                  ],
+                }}
+                formats={[
+                  'header',
+                  'bold', 'italic', 'underline', 'strike',
+                  'list', 'bullet',
+                  'link', 'image'
+                ]}
+                className="inkwell-upload-page-rich-editor"
+              /> */}
+            <Editor            
+              className="inkwell-upload-page-rich-editor"
+              placeholder="Write your book content here..."
+              onChange={handleContentChange}
+            />
+
             </div>
           )}
           <div className="inkwell-upload-page-input-group">
