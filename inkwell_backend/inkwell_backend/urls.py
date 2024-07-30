@@ -35,7 +35,7 @@ from books.views import GenreViewSet, BookViewSet
 
 
 def home(request):
-    return HttpResponse('Welcome to the Inkwell API!')
+    return HttpResponse('Welcome to the Inkwell API! Testing if this change really gets pushed.')
 
 router = DefaultRouter()
 router.register(r'books', BookViewSet, basename='book')

@@ -92,7 +92,7 @@ const HomePage = () => {
     <div className="home-page">
       <WatercolorBackground />
       <div className="hero-section">
-        <h1>Welcome to Inkwell</h1>
+        <h1>Testing Page</h1>
         <p>Discover, read, and share your favorite books</p>
       </div>
       
