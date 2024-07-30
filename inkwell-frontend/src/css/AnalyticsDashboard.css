@@ -1,99 +1,201 @@
 .analytics-dashboard {
-    background-color: rgba(26, 26, 26, 0.8);
-    border-radius: 12px;
-    padding: 20px;
-    margin-top: 20px;
-    color: #fff;
+  background-color: rgba(26, 26, 26, 0.8);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  color: #fff;
+}
+
+.analytics-selector {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.analytics-dropdown {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  appearance: none;
+  cursor: pointer;
+}
+
+.dropdown-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.analytics-content {
+  display: flex;
+  gap: 20px;
+}
+
+.analytics-charts {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.analytics-stats {
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.analytics-chart {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.stat-label {
+  font-weight: bold;
+}
+
+.stat-value {
+  font-size: 1.2rem;
+  color: #45b7d1;
+}
+
+.collapsible-section {
+  margin-bottom: 20px;
+}
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(50, 145, 255, 0.2);
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.collapsible-header:hover {
+  background-color: rgba(50, 145, 255, 0.3);
+}
+
+.collapsible-header h2 {
+  margin: 0;
+}
+
+.collapsible-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.collapsible-content.expanded {
+  max-height: 5000px; /* Adjust this value based on your content */
+}
+
+.toggle-icon {
+  transition: transform 0.3s ease;
+}
+
+.toggle-icon.expanded {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 768px) {
+  .analytics-content {
+    flex-direction: column;
   }
-  
-  .analytics-dashboard h2 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    color: #3291ff;
+
+  .analytics-stats {
+    order: -1;
   }
-  
-  .analytics-dashboard h3 {
-    font-size: 1.4rem;
-    margin-top: 30px;
-    margin-bottom: 15px;
-    color: #45b7d1;
+}
+
+.analytics-selector {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.analytics-dropdown {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 1rem;
+  background-color: rgba(40, 40, 40, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  appearance: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.analytics-dropdown:hover,
+.analytics-dropdown:focus {
+  background-color: rgba(60, 60, 60, 0.9);
+  outline: none;
+}
+
+.analytics-dropdown option {
+  background-color: rgba(40, 40, 40, 0.9);
+  color: #fff;
+  padding: 10px;
+}
+
+.analytics-dropdown option:hover,
+.analytics-dropdown option:focus {
+  background-color: rgba(60, 60, 60, 0.9);
+}
+
+.dropdown-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #fff;
+}
+
+/* Ensure the dropdown arrow is hidden in Firefox */
+@-moz-document url-prefix() {
+  .analytics-dropdown {
+    text-indent: 0.01px;
+    text-overflow: '';
+    padding-right: 1rem;
   }
-  
-  .analytics-dashboard p {
-    font-size: 1rem;
-    margin-bottom: 10px;
-  }
-  
-  .user-analytics, .book-analytics {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 20px;
-  }
-  
-  .book-analytics-item {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 20px;
-    margin-top: 20px;
-  }
-  
-  .book-analytics-item:first-child {
-    border-top: none;
-    padding-top: 0;
-    margin-top: 0;
-  }
-  
-  .book-analytics-item h4 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    color: #ff6b6b;
-  }
-  
-  .analytics-chart {
-    margin-top: 20px;
-    margin-bottom: 30px;
-    background-color: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
-    padding: 15px;
-  }
-  
-  .collapsible-section {
-    margin-bottom: 20px;
-  }
-  
-  .collapsible-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgba(50, 145, 255, 0.2);
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .collapsible-header:hover {
-    background-color: rgba(50, 145, 255, 0.3);
-  }
-  
-  .collapsible-header h2 {
-    margin: 0;
-  }
-  
-  .collapsible-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-  }
-  
-  .collapsible-content.expanded {
-    max-height: 5000px; /* Adjust this value based on your content */
-  }
-  
-  .toggle-icon {
-    transition: transform 0.3s ease;
-  }
-  
-  .toggle-icon.expanded {
-    transform: rotate(180deg);
-  }
+}
+
+/* Style for Webkit browsers like Chrome and Safari */
+.analytics-dropdown::-webkit-scrollbar {
+  width: 10px;
+}
+
+.analytics-dropdown::-webkit-scrollbar-track {
+  background: rgba(60, 60, 60, 0.9);
+}
+
+.analytics-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 100, 0.9);
+  border-radius: 5px;
+}
+
+.analytics-dropdown::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 120, 0.9);
+}

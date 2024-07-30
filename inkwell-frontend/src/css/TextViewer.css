@@ -1,7 +1,15 @@
-.text-viewer {
+/* .text-viewer {
   display: flex;
   flex-direction: column;
   height: 100%;
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+.text-viewer .page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px;
+  line-height: 1.6;
 }
 
 .text-viewer.horizontal {
@@ -46,6 +54,53 @@
   padding: 10px;
   background-color: rgba(26, 26, 26, 0.9);
   color: #fff;
+} */
+
+/* In your TextViewer.css file */
+
+.text-viewer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+.text-viewer.vertical {
+  height: auto;
+}
+.text-viewer .page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px;
+  line-height: 1.6;
+}
+
+.text-viewer h1, .text-viewer h2, .text-viewer h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.text-viewer p {
+  margin-bottom: 15px;
+}
+
+.text-viewer ul, .text-viewer ol {
+  margin-left: 30px;
+  margin-bottom: 15px;
+}
+
+.text-viewer li {
+  margin-bottom: 5px;
+}
+
+.text-viewer a {
+  color: #3291ff;
+  text-decoration: none;
+}
+
+.text-viewer a:hover {
+  text-decoration: underline;
 }
 
 .nav-button {

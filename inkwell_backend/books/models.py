@@ -3,6 +3,7 @@ from django.db import models
 from users.models import UserProfile
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.db.models import JSONField  # Update this import
+import bleach
 
 
 class Genre(models.Model):
@@ -46,6 +47,13 @@ class Book(models.Model):
         return cls.objects.annotate(
             rank=SearchRank(search_vector, search_query)
         ).filter(rank__gte=0.1).order_by('-rank').distinct()
+
+    def clean(self):
+        super().clean()
+        if self.content:
+            allowed_tags = ['p', 'b', 'i', 'u', 'em', 'strong', 'a', 'h1', 'h2', 'h3', 'br', 'ul', 'ol', 'li']
+            allowed_attributes = {'a': ['href', 'title']}
+            self.content = bleach.clean(self.content, tags=allowed_tags, attributes=allowed_attributes, strip=True)
 
 
     
