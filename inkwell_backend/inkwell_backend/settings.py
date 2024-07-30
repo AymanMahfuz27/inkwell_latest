@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
@@ -14,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-secret-key-here')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -71,18 +72,12 @@ WSGI_APPLICATION = 'inkwell_backend.wsgi.application'
 
 DJANGO_ENV = os.getenv('DJANGO_ENV', 'development')
 
-if DJANGO_ENV == 'production':
-    # Database
+if os.environ.get('DATABASE_URL'):
+    # Heroku database configuration
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DB_NAME'),
-            'USER': os.getenv('DB_USER'),
-            'PASSWORD': os.getenv('DB_PASSWORD'),
-            'HOST': os.getenv('DB_HOST'),
-            'PORT': os.getenv('DB_PORT'),
-        }
+        'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
     }
+
 else:
     # Database
     DATABASES = {
