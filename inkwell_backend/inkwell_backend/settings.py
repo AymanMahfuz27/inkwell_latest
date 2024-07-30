@@ -15,7 +15,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-secret-key-here')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -77,8 +76,11 @@ if os.environ.get('DATABASE_URL'):
     DATABASES = {
         'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
     }
+    DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
+
 
 else:
+
     # Database
     DATABASES = {
         'default': {
@@ -91,6 +93,7 @@ else:
         }
 
     }
+    DEBUG = True
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
