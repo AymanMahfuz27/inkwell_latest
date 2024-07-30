@@ -1,25 +1,49 @@
-import React from 'react'; // Import the React library
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Facebook, Twitter, Instagram, Mail } from 'lucide-react';
+import '../css/Footer.css';
 
-// Define the Footer component
 const Footer = () => {
   return (
-    <footer style = {styles.footer}>
-      <p>Inkwell, all rights reserved, this is a footer lol</p>
+    <footer className="inkwell-footer">
+      <div className="inkwell-footer-content">
+        <div className="inkwell-footer-section">
+          <h3>About Inkwell</h3>
+          <p>Inkwell is a modern platform for book lovers {"\n"}to discover, read, and share their favorite stories.</p>
+        </div>
+        <div className="inkwell-footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/books">All Books</Link></li>
+            <li><Link to="/about">About Us</Link></li>
+            <li><Link to="/upload">Upload a Book</Link></li>
+          </ul>
+        </div>
+        <div className="inkwell-footer-section">
+          <h3>Contact Us</h3>
+          <p>Email: support@inkwell.com</p>
+          <p>Phone: (123) 456-7890</p>
+          <p>Address: 123 Book Street, Literary City, 12345</p>
+        </div>
+        <div className="inkwell-footer-section">
+          <h3>Follow Us</h3>
+          <div className="inkwell-footer-social">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"><Facebook size={20} /></a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"><Twitter size={20} /></a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"><Instagram size={20} /></a>
+            <a href="mailto:support@inkwell.com"><Mail size={20} /></a>
+          </div>
+        </div>
+      </div>
+      <div className="inkwell-footer-bottom">
+        <p>&copy; 2024 Inkwell. All rights reserved.</p>
+        <div>
+          <Link to="/privacy">Privacy Policy</Link> | <Link to="/terms">Terms of Service</Link>
+        </div>
+      </div>
     </footer>
   );
 };
-const styles = {
-    footer: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '10px 20px',
-        backgroundColor: 'rgba(51, 51, 51, 0.8)', // Translucent background
-        color: '#fff',
-        position: 'fixed',
-        width: '100%',
-        bottom: 0,
-        zIndex: 1000,
-    },
-  };
-export default Footer; // Export the Footer component
+
+export default Footer;

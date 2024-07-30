@@ -1,0 +1,85 @@
+/* Add this to your UploadBookPage.css file or create a new CSS file for Quill styles */
+
+.inkwell-upload-page-rich-editor {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin:10px;
+  }
+  
+  .inkwell-upload-page-rich-editor .ql-toolbar {
+    background-color: #1a1a1a;
+    border-color: #3a3a3a;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+  }
+  
+  .inkwell-upload-page-rich-editor .ql-toolbar button {
+    color: #ffffff;
+  }
+  
+  .inkwell-upload-page-rich-editor .ql-toolbar button:hover {
+    color: #3291ff;
+  }
+  
+  .inkwell-upload-page-rich-editor .ql-toolbar .ql-stroke {
+    stroke: #ffffff;
+  }
+  
+  .inkwell-upload-page-rich-editor .ql-toolbar .ql-fill {
+    fill: #ffffff;
+  }
+  
+  .inkwell-upload-page-rich-editor .ql-toolbar button:hover .ql-stroke {
+    stroke: #3291ff;
+  }
+  
+  .inkwell-upload-page-rich-editor .ql-toolbar button:hover .ql-fill {
+    fill: #3291ff;
+  }
+  
+  .inkwell-upload-page-rich-editor .ql-container {
+    flex-grow: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #3a3a3a;
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
+  }
+  
+  .inkwell-upload-page-rich-editor .ql-editor {
+    color: #ffffff;
+    min-height: 300px;
+  }
+  
+  .inkwell-upload-page-rich-editor .ql-editor.ql-blank::before {
+    color: rgba(255, 255, 255, 0.4);
+  }
+  
+  .inkwell-upload-page-rich-editor .ql-toolbar button[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  
+  .ql-snow.ql-toolbar button,
+  .ql-snow .ql-toolbar button {
+    width: 28px;
+    height: 28px;
+    padding: 3px 5px;
+    margin-left: 13px;
+  }
+  
+  /* .ql-insertPageBreak {
+    font-size: 18px;
+    line-height: 1;
+  } */

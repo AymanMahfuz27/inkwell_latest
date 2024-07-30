@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Mail, Lock, UserPlus, LogIn, FileText } from 'lucide-react';
+import { User, Mail, Lock, UserPlus, LogIn, FileText,Image } from 'lucide-react';
 import api from "../services/api";
 import { login as authLogin } from "../services/authService";
 import WatercolorBackground from '../components/WatercolorBackground';
@@ -16,8 +16,54 @@ const SignUpSignInPage = () => {
   const [lastName, setLastName] = useState("");
   const [bio, setBio] = useState("");
   const [error, setError] = useState("");
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [profilePictureName, setProfilePictureName] = useState('');
   const navigate = useNavigate();
 
+  const handleProfilePictureChange = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      setProfilePicture(file);
+      setProfilePictureName(file.name);
+    } else {
+      setError("Please upload a valid image file.");
+      setProfilePicture(null);
+      setProfilePictureName('');
+    }
+  };
+
+
+
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   setError("");
+
+  //   try {
+  //     if (isSignUp) {
+  //       if (password !== confirmPassword) {
+  //         setError("Passwords do not match");
+  //         return;
+  //       }
+  //       const response = await api.post("/api/users/register/", {
+  //         username,
+  //         email,
+  //         password,
+  //         first_name: firstName,
+  //         last_name: lastName,
+  //         bio,
+  //       });
+  //       localStorage.setItem("access_token", response.data.access);
+  //       localStorage.setItem("refresh_token", response.data.refresh);
+  //       navigate("/");
+  //     } else {
+  //       await authLogin(username, password);
+  //       navigate("/");
+  //     }
+  //   } catch (error) {
+  //     console.error("Authentication failed:", error);
+  //     setError("Authentication failed. Please check your credentials and try again.");
+  //   }
+  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
@@ -28,13 +74,21 @@ const SignUpSignInPage = () => {
           setError("Passwords do not match");
           return;
         }
-        const response = await api.post("/api/users/register/", {
-          username,
-          email,
-          password,
-          first_name: firstName,
-          last_name: lastName,
-          bio,
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("first_name", firstName);
+        formData.append("last_name", lastName);
+        formData.append("bio", bio);
+        if (profilePicture) {
+          formData.append("profile_picture", profilePicture);
+        }
+
+        const response = await api.post("/api/users/register/", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         });
         localStorage.setItem("access_token", response.data.access);
         localStorage.setItem("refresh_token", response.data.refresh);
@@ -48,7 +102,6 @@ const SignUpSignInPage = () => {
       setError("Authentication failed. Please check your credentials and try again.");
     }
   };
-
   return (
     <div className="inkwell-signup-signin-page-container">
       <WatercolorBackground />
@@ -124,6 +177,30 @@ const SignUpSignInPage = () => {
                   onChange={(e) => setBio(e.target.value)}
                   className="inkwell-signup-signin-page-textarea"
                 />
+              </div>
+              <div className="inkwell-signup-signin-page-input-group">
+                <label htmlFor="profilePicture" className="inkwell-signup-signin-page-label">
+                  <Image size={20} />
+                  Profile Picture
+                </label>
+                <div className="inkwell-signup-signin-page-file-input-container">
+                  <input
+                    id="profilePicture"
+                    type="file"
+                    onChange={handleProfilePictureChange}
+                    accept="image/*"
+                    className="inkwell-signup-signin-page-file-input"
+                  />
+                  <div className="inkwell-signup-signin-page-file-input-button">
+                    <Image size={20} />
+                    Choose Profile Picture
+                  </div>
+                </div>
+                {profilePictureName && (
+                  <div className="inkwell-signup-signin-page-file-name">
+                    {profilePictureName}
+                  </div>
+                )}
               </div>
             </>
           )}

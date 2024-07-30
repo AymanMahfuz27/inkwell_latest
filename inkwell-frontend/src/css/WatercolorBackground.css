@@ -41,7 +41,13 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
+.blob4 {
+  width: 90vh;
+  height: 90vh;
+  background-color: #caffbf; /* Light Green */
+  bottom: 25%;
+  left: 25%;
+}
 @keyframes float {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50% { transform: translateY(-20px) rotate(5deg); }

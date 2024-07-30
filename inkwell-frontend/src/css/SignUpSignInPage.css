@@ -1,142 +1,185 @@
 /* src/css/SignUpSignInPage.css */
 .inkwell-signup-signin-page-container {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-    position: relative;
-  }
-  
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  position: relative;
+}
+
+.inkwell-signup-signin-page-content {
+  background-color: rgba(26, 26, 26, 0.8);
+  border-radius: 12px;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 1;
+}
+
+.inkwell-signup-signin-page-title {
+  font-size: 2.5rem;
+  color: #fff;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.inkwell-signup-signin-page-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inkwell-signup-signin-page-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.inkwell-signup-signin-page-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  margin-bottom: 5px;
+  font-size: 1rem;
+}
+
+.inkwell-signup-signin-page-input,
+.inkwell-signup-signin-page-textarea {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.inkwell-signup-signin-page-input:focus,
+.inkwell-signup-signin-page-textarea:focus {
+  outline: none;
+  border-color: #3291ff;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.inkwell-signup-signin-page-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.inkwell-signup-signin-page-submit-button {
+  background-color: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.inkwell-signup-signin-page-submit-button::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+  z-index: -1;
+  filter: blur(10px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.inkwell-signup-signin-page-submit-button:hover {
+  color: #000;
+  background-color: #fff;
+}
+
+.inkwell-signup-signin-page-submit-button:hover::before {
+  opacity: 1;
+}
+
+.inkwell-signup-signin-page-toggle-button {
+  background: none;
+  border: none;
+  color: #3291ff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 20px;
+  text-align: center;
+  width: 100%;
+  transition: color 0.3s ease;
+}
+
+.inkwell-signup-signin-page-toggle-button:hover {
+  color: #45b7d1;
+}
+
+.inkwell-signup-signin-page-error {
+  color: #ff6b6b;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.inkwell-signup-signin-page-file-input-container {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+.inkwell-signup-signin-page-file-input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.inkwell-signup-signin-page-file-input-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.inkwell-signup-signin-page-file-input-button:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.inkwell-signup-signin-page-file-name {
+  margin-top: 5px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 480px) {
   .inkwell-signup-signin-page-content {
-    background-color: rgba(26, 26, 26, 0.8);
-    border-radius: 12px;
-    padding: 40px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    position: relative;
-    z-index: 1;
+    padding: 30px 20px;
   }
-  
+
   .inkwell-signup-signin-page-title {
-    font-size: 2.5rem;
-    color: #fff;
-    margin-bottom: 30px;
-    text-align: center;
+    font-size: 2rem;
   }
-  
-  .inkwell-signup-signin-page-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .inkwell-signup-signin-page-input-group {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .inkwell-signup-signin-page-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #fff;
-    margin-bottom: 5px;
-    font-size: 1rem;
-  }
-  
-  .inkwell-signup-signin-page-input,
-  .inkwell-signup-signin-page-textarea {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    padding: 10px;
-    color: #fff;
-    font-size: 1rem;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
-  }
-  
-  .inkwell-signup-signin-page-input:focus,
-  .inkwell-signup-signin-page-textarea:focus {
-    outline: none;
-    border-color: #3291ff;
-    background-color: rgba(255, 255, 255, 0.15);
-  }
-  
-  .inkwell-signup-signin-page-textarea {
-    min-height: 100px;
-    resize: vertical;
-  }
-  
-  .inkwell-signup-signin-page-submit-button {
-    background-color: transparent;
-    color: #fff;
-    border: 2px solid #fff;
-    padding: 12px 20px;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    /* overflow: hidden; */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  .inkwell-signup-signin-page-submit-button::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
-    z-index: -1;
-    filter: blur(10px);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  
-  .inkwell-signup-signin-page-submit-button:hover {
-    color: #000;
-    background-color: #fff;
-  }
-  
-  .inkwell-signup-signin-page-submit-button:hover::before {
-    opacity: 1;
-  }
-  
-  .inkwell-signup-signin-page-toggle-button {
-    background: none;
-    border: none;
-    color: #3291ff;
-    font-size: 0.9rem;
-    cursor: pointer;
-    margin-top: 20px;
-    text-align: center;
-    width: 100%;
-    transition: color 0.3s ease;
-  }
-  
-  .inkwell-signup-signin-page-toggle-button:hover {
-    color: #45b7d1;
-  }
-  
-  .inkwell-signup-signin-page-error {
-    color: #ff6b6b;
-    text-align: center;
-    font-size: 0.9rem;
-  }
-  
-  @media (max-width: 480px) {
-    .inkwell-signup-signin-page-content {
-      padding: 30px 20px;
-    }
-  
-    .inkwell-signup-signin-page-title {
-      font-size: 2rem;
-    }
-  }
+}

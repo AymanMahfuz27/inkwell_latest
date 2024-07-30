@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.db.models import JSONField  # Update this import
 
 # Create your models here.
 
@@ -37,6 +39,14 @@ class UserProfile(AbstractUser):
     #add a field to store the users that this user visited their profile
     visited_profiles = models.ManyToManyField('self', related_name='user_visited_profiles', symmetrical=False, blank=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    # New analytics fields
+    profile_views = models.IntegerField(default=0)
+    follower_count_history = JSONField(default=dict)  # Store counts with timestamps
+    total_book_likes = models.IntegerField(default=0)
+    total_book_views = models.IntegerField(default=0)
+    total_revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    geographic_distribution = JSONField(default=dict)
+
 
     def __str__(self):
         return self.username
@@ -47,6 +57,16 @@ class UserProfile(AbstractUser):
     def get_following(self):
         return self.following.all()
     
+    @classmethod
+    def search(cls, query):
+        search_vector = SearchVector('username', weight='A') + \
+                        SearchVector('first_name', weight='B') + \
+                        SearchVector('last_name', weight='B') + \
+                        SearchVector('bio', weight='C')
+        search_query = SearchQuery(query)
+        return cls.objects.annotate(
+            rank=SearchRank(search_vector, search_query)
+        ).filter(rank__gte=0.1).order_by('-rank').distinct()
 
 class BookCollection(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='book_collections')

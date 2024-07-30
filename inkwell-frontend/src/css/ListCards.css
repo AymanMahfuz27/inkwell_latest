@@ -1,0 +1,226 @@
+/* src/css/ListCards.css */
+.inkwell-list-card {
+    display: flex;
+    align-items: stretch;
+    background-color: rgba(26, 26, 26, 0.8);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 95%;
+  }
+  
+  .inkwell-list-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+  }
+  
+  /* Book List Card */
+  .book-list-card {
+    flex-wrap: nowrap;
+  }
+  
+  .book-list-card-cover {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 20px;
+    flex-shrink: 0;
+  }
+  
+  .book-list-card-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .book-list-card-title {
+    font-size: 1.4rem;
+    margin: 0 0 5px;
+    color: #fff;
+  }
+  
+  .book-list-card-author {
+    font-size: 1rem;
+    color: #a0a0a0;
+    margin: 0 0 10px;
+  }
+  
+  .book-list-card-description {
+    font-size: 0.9rem;
+    color: #d0d0d0;
+    margin: 0 0 10px;
+    flex-grow: 1;
+  }
+  
+  .book-list-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    font-size: 0.8rem;
+    color: #a0a0a0;
+    margin-bottom: 10px;
+  }
+  
+  .book-list-card-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .book-list-card-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .book-list-card-genre {
+    font-size: 0.8rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  
+  .book-list-card-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background-color: #3291ff;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    margin-left: 40px;
+    align-self: flex-end;
+    white-space: nowrap;
+  }
+  
+  .book-list-card-link:hover {
+    background-color: #2b7ad4;
+  }
+  
+  /* User List Card */
+  .user-list-card {
+    align-items: center;
+  }
+  
+  .user-list-card-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
+    flex-shrink: 0;
+  }
+  
+  .user-list-card-info {
+    flex: 1;
+  }
+  
+  .user-list-card-username {
+    font-size: 1.2rem;
+    margin: 0 0 5px;
+    color: #fff;
+  }
+  
+  .user-list-card-name {
+    font-size: 1rem;
+    color: #a0a0a0;
+    margin: 0 0 5px;
+  }
+  
+  .user-list-card-bio {
+    font-size: 0.9rem;
+    color: #d0d0d0;
+    margin: 0;
+    flex-grow: 1;
+  }
+  
+  .user-list-card-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background-color: #4ecdc4;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    margin-left: 40px;
+    white-space: nowrap;
+  }
+  
+  .user-list-card-link:hover {
+    background-color: #45b7d1;
+  }
+  
+  /* Genre List Card */
+  .genre-list-card {
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .genre-list-card-icon {
+    color: #ff6b6b;
+    margin-right: 15px;
+    flex-shrink: 0;
+  }
+  
+  .genre-list-card-info {
+    flex: 1;
+  }
+  
+  .genre-list-card-name {
+    font-size: 1.2rem;
+    margin: 0 0 5px;
+    color: #fff;
+  }
+  
+  .genre-list-card-count {
+    font-size: 0.9rem;
+    color: #a0a0a0;
+    margin: 0;
+  }
+  
+  .genre-list-card-link {
+    background-color: #ff6b6b;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    margin-left: 40px;
+    white-space: nowrap;
+  }
+  
+  .genre-list-card-link:hover {
+    background-color: #ff4757;
+  }
+  
+  @media (max-width: 768px) {
+    .inkwell-list-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .book-list-card-cover,
+    .user-list-card-avatar {
+      margin-right: 0;
+      margin-bottom: 15px;
+    }
+  
+    .book-list-card-link,
+    .user-list-card-link,
+    .genre-list-card-link {
+      align-self: flex-start;
+      margin-top: 15px;
+      margin-left: 0;
+    }
+  }

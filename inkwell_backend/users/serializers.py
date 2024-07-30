@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate
 class UserProfileSerializer(serializers.ModelSerializer):
     followers = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     following = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    books_liked = BookSerializer(many=True, read_only=True)  # Changed from liked_books to books_liked
+    books_liked = BookSerializer(many=True, read_only=True)
     favorite_genres = GenreSerializer(many=True, read_only=True)
 
     class Meta:
@@ -19,12 +19,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'username', 'followers', 'following', 'books_liked', 
                             'favorite_genres', 'visitors', 'visited_profiles', 'created_at']
 
-# ... rest of the serializer remains the same
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email', instance.email)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.bio = validated_data.get('bio', instance.bio)
+        if 'profile_picture' in validated_data:
+            instance.profile_picture = validated_data.get('profile_picture')
         instance.save()
         return instance
 class BookCollectionSerializer(serializers.ModelSerializer):
@@ -77,10 +78,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ('username', 'email', 'password', 'first_name', 'last_name', 'bio')
+        fields = ('username', 'email', 'password', 'first_name', 'last_name', 'bio', 'profile_picture')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
+        profile_picture = validated_data.pop('profile_picture', None)
         user = UserProfile.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
@@ -89,6 +91,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             last_name=validated_data.get('last_name', ''),
             bio=validated_data.get('bio', ''),
         )
-        user.set_password(validated_data['password'])
+        if profile_picture:
+            user.profile_picture = profile_picture
         user.save()
         return user
