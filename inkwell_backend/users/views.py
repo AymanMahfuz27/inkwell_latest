@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from books.models import Book
 from rest_framework.parsers import MultiPartParser, FormParser
+from books.serializers import BookSerializer
 
 
 
@@ -22,7 +23,7 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = 'username'
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def get_queryset(self):
         username = self.kwargs.get('username')
@@ -55,6 +56,33 @@ class UserProfileViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(users, many=True)
             return Response(serializer.data)
         return Response([])
+    
+    @action(detail=True, methods=['get'])
+    def books(self, request, username=None):
+        user = self.get_object()
+        books = Book.objects.filter(uploaded_by=user)
+        serializer = BookSerializer(books, many=True, context={'request': request})
+        return Response(serializer.data)
+
+
+    @action(detail=True, methods=['delete'], parser_classes=[JSONParser])
+    def delete_book(self, request, username=None):
+        user = self.get_object()
+        if user != request.user:
+            return Response({"detail": "You don't have permission to delete this book."}, status=status.HTTP_403_FORBIDDEN)
+        
+        book_id = request.data.get('book_id')
+        if not book_id:
+            return Response({"detail": "Book ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            book = Book.objects.get(id=book_id, uploaded_by=user)
+            book.delete()
+            return Response({"detail": "Book deleted successfully."}, status=status.HTTP_200_OK)
+        except Book.DoesNotExist:
+            return Response({"detail": "Book not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+    
 
 
 class BookCollectionViewSet(viewsets.ModelViewSet):

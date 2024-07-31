@@ -9,6 +9,7 @@ class AnalyticsView(APIView):
 
     def get(self, request):
         user = request.user
+        total_books_uploaded = Book.objects.filter(uploaded_by=user).count()
         user_analytics = {
             'profile_views': user.profile_views,
             'follower_count_history': user.follower_count_history,
@@ -16,6 +17,7 @@ class AnalyticsView(APIView):
             'total_book_views': user.total_book_views,
             'total_revenue': float(user.total_revenue),
             'geographic_distribution': user.geographic_distribution,
+            'total_books_uploaded': total_books_uploaded
         }
 
         books = Book.objects.filter(uploaded_by=user)

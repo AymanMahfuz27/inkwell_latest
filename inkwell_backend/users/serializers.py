@@ -4,6 +4,7 @@ from .models import UserProfile, BookCollection
 from books.serializers import BookSerializer, GenreSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
+from books.models import Book
 
 class UserProfileSerializer(serializers.ModelSerializer):
     followers = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
@@ -28,6 +29,26 @@ class UserProfileSerializer(serializers.ModelSerializer):
             instance.profile_picture = validated_data.get('profile_picture')
         instance.save()
         return instance
+    
+    def get_books(self, obj):
+        books = Book.objects.filter(uploaded_by=obj)
+        return BookSerializer(books, many=True).data
+
+    def get_followers(self, obj):
+        followers = obj.followers.all()
+        return UserProfileSerializer(followers, many=True).data
+    
+    def get_following(self, obj):
+        following = obj.following.all()
+        return UserProfileSerializer(following, many=True).data
+    
+    def get_books_liked(self, obj):
+        books_liked = obj.books_liked.all()
+        return BookSerializer(books_liked, many=True).data
+    
+    def get_total_books_uploaded(self, obj):
+        return obj.books_uploaded.count()
+
 class BookCollectionSerializer(serializers.ModelSerializer):
     book_count = serializers.SerializerMethodField()
     books = BookSerializer(many=True, read_only=True)
