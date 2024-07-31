@@ -31,6 +31,8 @@ const ProfilePage = () => {
   const [newProfilePicture, setNewProfilePicture] = useState(null);
   const [newCollectionName, setNewCollectionName] = useState("");
   const [first_name, setFirstName] = useState(getUserFirstName());
+  const [likedBooks, setLikedBooks] = useState([]);
+
 
   useEffect(() => {
     fetchProfile();
@@ -38,6 +40,9 @@ const ProfilePage = () => {
     fetchBooks();
     setIsOwnProfile(username === getUsername());
     setFirstName(getUserFirstName());
+    if (isOwnProfile) {
+      fetchLikedBooks();
+    }
   }, [username, first_name]);
 
   const CollapsibleSection = ({ title, children }) => {
@@ -60,7 +65,14 @@ const ProfilePage = () => {
       </div>
     );
   };
-
+  const fetchLikedBooks = async () => {
+    try {
+      const response = await api.get(`/api/users/profiles/${username}/liked_books/`);
+      setLikedBooks(response.data);
+    } catch (err) {
+      setError('Failed to fetch liked books. Please try again later.');
+    }
+  };
   const fetchProfile = async () => {
     try {
       const response = await api.get(`/api/users/profiles/${username}/`);
@@ -296,23 +308,29 @@ const ProfilePage = () => {
           </div>
         )}
         <div className="inkwell-profile-page-tabs">
-          <button
-            className={`tab ${activeTab === "books" ? "active" : ""}`}
-            onClick={() => setActiveTab("books")}
+          <button 
+            className={`tab ${activeTab === 'books' ? 'active' : ''}`} 
+            onClick={() => setActiveTab('books')}
           >
             All Books
           </button>
           {isOwnProfile && (
             <>
-              <button
-                className={`tab ${activeTab === "collections" ? "active" : ""}`}
-                onClick={() => setActiveTab("collections")}
+              <button 
+                className={`tab ${activeTab === 'liked' ? 'active' : ''}`} 
+                onClick={() => setActiveTab('liked')}
+              >
+                Liked Books
+              </button>
+              <button 
+                className={`tab ${activeTab === 'collections' ? 'active' : ''}`} 
+                onClick={() => setActiveTab('collections')}
               >
                 Book Collections
               </button>
-              <button
-                className={`tab ${activeTab === "analytics" ? "active" : ""}`}
-                onClick={() => setActiveTab("analytics")}
+              <button 
+                className={`tab ${activeTab === 'analytics' ? 'active' : ''}`} 
+                onClick={() => setActiveTab('analytics')}
               >
                 Analytics
               </button>
@@ -334,6 +352,18 @@ const ProfilePage = () => {
               ))
             ) : (
               <p>No books uploaded yet.</p>
+            )}
+          </div>
+        )}
+        {isOwnProfile && activeTab === 'liked' && (
+          <div className="inkwell-profile-page-liked-books">
+            <h2 className="inkwell-profile-page-subtitle">Liked Books</h2>
+            {likedBooks.length > 0 ? (
+              likedBooks.map(book => (
+                <BookListCard key={book.id} book={book} />
+              ))
+            ) : (
+              <p>You haven't liked any books yet.</p>
             )}
           </div>
         )}
@@ -390,6 +420,7 @@ const ProfilePage = () => {
             <AnalyticsDashboard />
           </div>
         )}
+        
 
         {error && <p className="inkwell-profile-page-error">{error}</p>}
       </div>

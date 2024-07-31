@@ -82,7 +82,16 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         except Book.DoesNotExist:
             return Response({"detail": "Book not found."}, status=status.HTTP_404_NOT_FOUND)
     
-    
+    @action(detail=True, methods=['get'])
+    def liked_books(self, request, username=None):
+        user = self.get_object()
+        if user != request.user:
+            return Response({"detail": "You don't have permission to view this."}, status=status.HTTP_403_FORBIDDEN)
+        liked_books = user.books_liked.all()
+        serializer = BookSerializer(liked_books, many=True, context={'request': request})
+        return Response(serializer.data)
+
+
 
 
 class BookCollectionViewSet(viewsets.ModelViewSet):
