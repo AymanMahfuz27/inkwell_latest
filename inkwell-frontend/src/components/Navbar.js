@@ -60,10 +60,12 @@ const Navbar = () => {
     <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
       <div className="navbar-content">
         <Link to="/" className="logo">Inkwell</Link>
+        <div className="nav-center">
         <div className={`nav-links ${isSearchExpanded ? 'hidden' : ''}`}>
           <Link to="/all-books">Books</Link>
           <Link to="/upload">Upload</Link>
           <Link to="/about">About</Link>
+        </div>
         </div>
         <div className="nav-actions">
           <form onSubmit={handleSearch} className={`search-form ${isSearchExpanded ? 'expanded' : ''}`}>
