@@ -12,11 +12,22 @@ import {
   Trash2,
 } from "lucide-react";
 import api from "../services/api";
-import { getUsername, getUserFirstName } from "../services/authService";
+import {
+  isAuthenticated,
+  getUsername,
+  getUserFirstName,
+  followUser,
+  unfollowUser,
+  getFollowers,
+  getFollowing,
+} from "../services/authService";
+
 import WatercolorBackground from "../components/WatercolorBackground";
 import "../css/ProfilePage.css";
 import AnalyticsDashboard from "../components/AnalyticsDashboard";
 import { BookListCard } from "../components/ListCards";
+import FollowersList from "../components/FollowersList";
+import FollowingList from "../components/FollowingList";
 
 const ProfilePage = () => {
   const { username } = useParams();
@@ -32,7 +43,11 @@ const ProfilePage = () => {
   const [newCollectionName, setNewCollectionName] = useState("");
   const [first_name, setFirstName] = useState(getUserFirstName());
   const [likedBooks, setLikedBooks] = useState([]);
-
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
 
   useEffect(() => {
     fetchProfile();
@@ -43,7 +58,12 @@ const ProfilePage = () => {
     if (isOwnProfile) {
       fetchLikedBooks();
     }
-  }, [username, first_name]);
+    if (activeTab === "followers") {
+      fetchFollowers();
+    } else if (activeTab === "following") {
+      fetchFollowing();
+    }
+  }, [username, first_name, activeTab]);
 
   const CollapsibleSection = ({ title, children }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -67,10 +87,12 @@ const ProfilePage = () => {
   };
   const fetchLikedBooks = async () => {
     try {
-      const response = await api.get(`/api/users/profiles/${username}/liked_books/`);
+      const response = await api.get(
+        `/api/users/profiles/${username}/liked_books/`
+      );
       setLikedBooks(response.data);
     } catch (err) {
-      setError('Failed to fetch liked books. Please try again later.');
+      setError("Failed to fetch liked books. Please try again later.");
     }
   };
   const fetchProfile = async () => {
@@ -78,8 +100,44 @@ const ProfilePage = () => {
       const response = await api.get(`/api/users/profiles/${username}/`);
       setProfile(response.data);
       setEditedProfile(response.data);
+      setIsFollowing(response.data.is_following);
+      setFollowersCount(response.data.followers_count);
+      setFollowingCount(response.data.following_count);
     } catch (err) {
       setError("Failed to fetch profile. Please try again later.");
+    }
+  };
+  const handleFollow = async () => {
+    try {
+      if (isFollowing) {
+        await unfollowUser(profile.username);
+        setIsFollowing(false);
+        setFollowersCount((prevCount) => prevCount - 1);
+      } else {
+        await followUser(profile.username);
+        setIsFollowing(true);
+        setFollowersCount((prevCount) => prevCount + 1);
+      }
+    } catch (err) {
+      setError("Failed to update follow status. Please try again.");
+    }
+  };
+
+  const fetchFollowers = async () => {
+    try {
+      const data = await getFollowers(profile.username);
+      setFollowers(data);
+    } catch (err) {
+      setError("Failed to fetch followers. Please try again.");
+    }
+  };
+
+  const fetchFollowing = async () => {
+    try {
+      const data = await getFollowing(profile.username);
+      setFollowing(data);
+    } catch (err) {
+      setError("Failed to fetch following. Please try again.");
     }
   };
 
@@ -187,9 +245,23 @@ const ProfilePage = () => {
     <div className="inkwell-profile-page-container">
       <WatercolorBackground />
       <div className="inkwell-profile-page-content">
-        <h1 className="inkwell-profile-page-title">
-          Welcome back, {profile.first_name}
-        </h1>
+        {isOwnProfile ? (
+          <h1 className="inkwell-profile-page-title">
+            Welcome back, {profile.first_name}
+          </h1>
+        ) : (
+          <>
+            <h1 className="inkwell-profile-page-title">
+              {profile.first_name} {profile.last_name}'s Profile
+            </h1>
+            <button
+              onClick={handleFollow}
+              className="inkwell-profile-page-button"
+            >
+              {isFollowing ? "Unfollow" : "Follow"}
+            </button>
+          </>
+        )}
 
         <div className="inkwell-profile-page-picture-container">
           <img
@@ -296,6 +368,12 @@ const ProfilePage = () => {
             <p>
               <strong>Bio:</strong> {profile.bio}
             </p>
+            <p>
+              <strong>Followers:</strong> {followersCount}
+            </p>
+            <p>
+              <strong>Following:</strong> {followingCount}
+            </p>
             {isOwnProfile && (
               <button
                 onClick={handleEdit}
@@ -308,29 +386,41 @@ const ProfilePage = () => {
           </div>
         )}
         <div className="inkwell-profile-page-tabs">
-          <button 
-            className={`tab ${activeTab === 'books' ? 'active' : ''}`} 
-            onClick={() => setActiveTab('books')}
+          <button
+            className={`tab ${activeTab === "books" ? "active" : ""}`}
+            onClick={() => setActiveTab("books")}
           >
             All Books
           </button>
           {isOwnProfile && (
             <>
-              <button 
-                className={`tab ${activeTab === 'liked' ? 'active' : ''}`} 
-                onClick={() => setActiveTab('liked')}
+              <button
+                className={`tab ${activeTab === "liked" ? "active" : ""}`}
+                onClick={() => setActiveTab("liked")}
               >
                 Liked Books
               </button>
-              <button 
-                className={`tab ${activeTab === 'collections' ? 'active' : ''}`} 
-                onClick={() => setActiveTab('collections')}
+              <button
+                className={`tab ${activeTab === "collections" ? "active" : ""}`}
+                onClick={() => setActiveTab("collections")}
               >
                 Book Collections
               </button>
-              <button 
-                className={`tab ${activeTab === 'analytics' ? 'active' : ''}`} 
-                onClick={() => setActiveTab('analytics')}
+              <button
+                className={`tab ${activeTab === "followers" ? "active" : ""}`}
+                onClick={() => setActiveTab("followers")}
+              >
+                Followers
+              </button>
+              <button
+                className={`tab ${activeTab === "following" ? "active" : ""}`}
+                onClick={() => setActiveTab("following")}
+              >
+                Following
+              </button>
+              <button
+                className={`tab ${activeTab === "analytics" ? "active" : ""}`}
+                onClick={() => setActiveTab("analytics")}
               >
                 Analytics
               </button>
@@ -355,11 +445,11 @@ const ProfilePage = () => {
             )}
           </div>
         )}
-        {isOwnProfile && activeTab === 'liked' && (
+        {isOwnProfile && activeTab === "liked" && (
           <div className="inkwell-profile-page-liked-books">
             <h2 className="inkwell-profile-page-subtitle">Liked Books</h2>
             {likedBooks.length > 0 ? (
-              likedBooks.map(book => (
+              likedBooks.map((book) => (
                 <BookListCard key={book.id} book={book} />
               ))
             ) : (
@@ -420,7 +510,9 @@ const ProfilePage = () => {
             <AnalyticsDashboard />
           </div>
         )}
-        
+        {activeTab === "followers" && <FollowersList followers={followers} />}
+
+        {activeTab === "following" && <FollowingList following={following} />}
 
         {error && <p className="inkwell-profile-page-error">{error}</p>}
       </div>

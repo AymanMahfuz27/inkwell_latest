@@ -214,7 +214,8 @@
 .inkwell-profile-page-tabs {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  margin-top: 30px;
 }
 
 .inkwell-profile-page-tabs .tab {

@@ -29,6 +29,9 @@ from django.conf.urls.static import static
 from django.urls import get_resolver
 from rest_framework.routers import DefaultRouter
 from books.views import GenreViewSet, BookViewSet
+from colorama import Fore, Style, init
+
+init(autoreset=True)
 
 
 
@@ -61,10 +64,51 @@ if settings.DEBUG:
     ] + urlpatterns
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+def print_nested_endpoints(endpoints):
+    """
+    This function prints endpoints in a nested hierarchy with colors.
+    """
+    tree = {}
+    for endpoint in endpoints:
+        parts = endpoint.strip('/').split('/')
+        node = tree
+        for part in parts:
+            if part not in node:
+                node[part] = {}
+            node = node[part]
+
+    def print_tree(node, depth=0):
+        for key, child in node.items():
+            # Set color based on depth level
+            if depth == 0:
+                color = Fore.GREEN + Style.BRIGHT
+            elif depth == 1:
+                color = Fore.RED + Style.BRIGHT
+            elif depth == 2:
+                color = Fore.CYAN + Style.BRIGHT
+            elif depth == 3:
+                color = Fore.YELLOW + Style.BRIGHT
+            else:
+                color = Fore.MAGENTA + Style.BRIGHT
+
+            # Determine the arrow and vertical bar pattern
+            arrow = '--' * depth + '> '
+            vertical_bar = '|   ' * depth
+            print(vertical_bar + color + arrow + key + '/')
+            print_tree(child, depth + 1)
+
+    print_tree(tree)
+
+
+
+
+
 #print out all the endpoints
 endpoints = set(v[1] for k,v in get_resolver(None).reverse_dict.items())
+endpoints = sorted(endpoints)
 
 print("All Endpoints:")
 for i in endpoints:
     print(i)
 print('\n\n')
+print_nested_endpoints(endpoints)

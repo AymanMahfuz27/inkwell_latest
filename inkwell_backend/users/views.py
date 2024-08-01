@@ -2,7 +2,7 @@
 from rest_framework import viewsets, generics,status
 from .models import UserProfile, BookCollection
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .serializers import UserProfileSerializer, BookCollectionSerializer,CustomTokenObtainPairSerializer, RegisterSerializer
+from .serializers import UserProfileSerializer, BookCollectionSerializer,CustomTokenObtainPairSerializer, RegisterSerializer, FollowSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
@@ -14,6 +14,7 @@ from rest_framework.decorators import action
 from books.models import Book
 from rest_framework.parsers import MultiPartParser, FormParser
 from books.serializers import BookSerializer
+
 
 
 
@@ -90,6 +91,45 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         liked_books = user.books_liked.all()
         serializer = BookSerializer(liked_books, many=True, context={'request': request})
         return Response(serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def follow(self, request, username=None):
+        user_to_follow = self.get_object()
+        if request.user.is_following(user_to_follow):
+            return Response({'detail': 'You are already following this user.'}, status=status.HTTP_400_BAD_REQUEST)
+        request.user.follow(user_to_follow)
+        return Response({'detail': 'You are now following this user.'}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def unfollow(self, request, username=None):
+        user_to_unfollow = self.get_object()
+        if not request.user.is_following(user_to_unfollow):
+            return Response({'detail': 'You are not following this user.'}, status=status.HTTP_400_BAD_REQUEST)
+        request.user.unfollow(user_to_unfollow)
+        return Response({'detail': 'You have unfollowed this user.'}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['get'])
+    def followers(self, request, username=None):
+        user = self.get_object()
+        followers = user.followers.all()
+        serializer = FollowSerializer(followers, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'])
+    def following(self, request, username=None):
+        user = self.get_object()
+        following = user.following.all()
+        serializer = FollowSerializer(following, many=True)
+        return Response(serializer.data)
+    
+    # def retrieve(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     if instance == request.user:
+    #         serializer = self.get_serializer(instance, context={'request': request})
+    #     else:
+    #         serializer = UserProfileSerializer(instance, context={'request': request})
+    #     return Response(serializer.data)
+
 
 
 

@@ -67,6 +67,18 @@ class UserProfile(AbstractUser):
         return cls.objects.annotate(
             rank=SearchRank(search_vector, search_query)
         ).filter(rank__gte=0.1).order_by('-rank').distinct()
+    
+    def follow(self, user):
+        if user != self:
+            self.following.add(user)
+
+    def unfollow(self, user):
+        self.following.remove(user)
+
+    def is_following(self, user):
+        return self.following.filter(id=user.id).exists()
+
+
 
 class BookCollection(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='book_collections')

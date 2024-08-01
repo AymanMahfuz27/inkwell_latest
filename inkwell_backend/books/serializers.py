@@ -51,16 +51,18 @@ class BookSerializer(serializers.ModelSerializer):
     banner_picture = serializers.ImageField(required=False, allow_null=True)
     pdf_file = serializers.FileField(required=False, allow_null=True)
     uploaded_by = serializers.SerializerMethodField()
+    uploaded_by_username = serializers.SerializerMethodField()  # Add this line
     like_count = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
     view_count = serializers.ReadOnlyField()
     content = serializers.CharField(allow_blank=True, required=False)
 
 
+
     class Meta:
         model = Book
         fields = ['id', 'title', 'genres', 'genre_names', 'content', 'pdf_file',
-                  'description', 'cover_picture', 'banner_picture', 'uploaded_by',
+                  'description', 'cover_picture', 'banner_picture', 'uploaded_by','uploaded_by_username',
                   'upload_date', 'like_count', 'is_liked', 'view_count']
         read_only_fields = ['uploaded_by', 'upload_date','like_count', 'is_liked', 'view_count']
 
@@ -84,6 +86,9 @@ class BookSerializer(serializers.ModelSerializer):
     
     def get_uploaded_by(self, obj):
         return f"{obj.uploaded_by.first_name} {obj.uploaded_by.last_name}"
+    
+    def get_uploaded_by_username(self, obj):
+        return obj.uploaded_by.username
 
     def get_like_count(self, obj):
         return obj.likes.count()

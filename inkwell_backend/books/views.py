@@ -69,8 +69,11 @@ class BookViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         instance.view_count += 1
         instance.save()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+        serializer = self.get_serializer(instance, context={'request': request})
+        data = serializer.data
+        data['is_following_author'] = request.user.is_following(instance.uploaded_by) if request.user.is_authenticated else False
+        return Response(data)
+
 
     
     @action(detail=True, methods=['get'])
