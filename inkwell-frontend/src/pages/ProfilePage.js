@@ -49,21 +49,47 @@ const ProfilePage = () => {
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
 
+  // useEffect(() => {
+  //   fetchProfile();
+  //   fetchCollections();
+  //   fetchBooks();
+  //   setIsOwnProfile(username === getUsername());
+  //   setFirstName(getUserFirstName());
+  //   if (isOwnProfile) {
+  //     fetchLikedBooks();
+  //     fetchFollowers();
+  //     fetchFollowing();
+  //   }
+     
+  // }, [username, first_name, activeTab]);
+
   useEffect(() => {
-    fetchProfile();
-    fetchCollections();
-    fetchBooks();
-    setIsOwnProfile(username === getUsername());
-    setFirstName(getUserFirstName());
-    if (isOwnProfile) {
-      fetchLikedBooks();
-    }
+    setActiveTab("books");
+    const loadProfileData = async () => {
+      await fetchProfile();
+      const isOwnProfile = username === getUsername();
+      setIsOwnProfile(isOwnProfile);
+      setFirstName(getUserFirstName());
+
+      if (isOwnProfile) {
+        await fetchCollections();
+        await fetchLikedBooks();
+      }
+
+      await fetchBooks();
+    };
+    loadProfileData();
+  }, [username]);
+
+  useEffect(() => {
     if (activeTab === "followers") {
       fetchFollowers();
     } else if (activeTab === "following") {
       fetchFollowing();
     }
-  }, [username, first_name, activeTab]);
+  }, [activeTab, username]);
+
+
 
   const CollapsibleSection = ({ title, children }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -86,6 +112,7 @@ const ProfilePage = () => {
     );
   };
   const fetchLikedBooks = async () => {
+    if (!isOwnProfile) return;
     try {
       const response = await api.get(
         `/api/users/profiles/${username}/liked_books/`
@@ -236,6 +263,8 @@ const ProfilePage = () => {
       setError("Failed to create collection. Please try again.");
     }
   };
+
+  
 
   if (error) return <div className="inkwell-profile-page-error">{error}</div>;
   if (!profile)
@@ -510,9 +539,9 @@ const ProfilePage = () => {
             <AnalyticsDashboard />
           </div>
         )}
-        {activeTab === "followers" && <FollowersList followers={followers} />}
+        {isOwnProfile && activeTab === "followers" && <FollowersList followers={followers} />}
 
-        {activeTab === "following" && <FollowingList following={following} />}
+        {isOwnProfile && activeTab === "following" && <FollowingList following={following} />}
 
         {error && <p className="inkwell-profile-page-error">{error}</p>}
       </div>
