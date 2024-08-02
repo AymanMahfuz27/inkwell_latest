@@ -25,6 +25,8 @@ const MultiStepSignupForm = () => {
   const [error, setError] = useState('');
   const [direction, setDirection] = useState(1);
   const navigate = useNavigate();
+  const [passwordError, setPasswordError] = useState('');
+
 
   const nextStep = () => {
     setDirection(1);
@@ -37,8 +39,13 @@ const MultiStepSignupForm = () => {
   };
 
   const handleChange = (input) => (e) => {
-    setFormData({ ...formData, [input]: e.target.value });
+    const value = e.target.value;
+    setFormData({ ...formData, [input]: value });
+    if (input === 'password') {
+      validatePassword(value);
+    }
   };
+
 
   const handleFileChange = (e) => {
     setFormData({ ...formData, profilePicture: e.target.files[0] });
@@ -55,12 +62,25 @@ const MultiStepSignupForm = () => {
       </div>
     );
   };
+  const validatePassword = (password) => {
+    if (password.length < 10) {
+      setPasswordError('Password must be at least 10 characters long');
+      return false;
+    }
+    setPasswordError('');
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
+      return;
+    }
+
+    if (!validatePassword(formData.password)) {
       return;
     }
 
@@ -71,7 +91,6 @@ const MultiStepSignupForm = () => {
           submitData.append(key, formData[key]);
         }
       }
-
 
       const response = await api.post("/api/users/register/", submitData, {
         headers: {
@@ -85,9 +104,14 @@ const MultiStepSignupForm = () => {
       navigate("/");
     } catch (error) {
       console.error("Registration failed:", error);
-      setError("Registration failed. Please check your information and try again.");
+      if (error.response && error.response.data.email) {
+        setError("This email is already registered. Please use a different email.");
+      } else {
+        setError("Registration failed. Please check your information and try again.");
+      }
     }
   };
+
 
   const pageVariants = {
     initial: (direction) => ({
@@ -162,12 +186,15 @@ const MultiStepSignupForm = () => {
 
   return (
     <div className="multi-step-signup-container">
-        <ParticleBackground />
+      <ParticleBackground />
       <ProgressBar step={step} />
       {renderStep()}
       {error && <p className="error-message">{error}</p>}
+      {passwordError && <p className="error-message">{passwordError}</p>}
     </div>
   );
 };
+
+
 
 export default MultiStepSignupForm;

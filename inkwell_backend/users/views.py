@@ -14,6 +14,10 @@ from rest_framework.decorators import action
 from books.models import Book
 from rest_framework.parsers import MultiPartParser, FormParser
 from books.serializers import BookSerializer
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.contrib.auth import authenticate, get_user_model
+
 
 
 
@@ -177,6 +181,20 @@ class RegisterView(generics.CreateAPIView):
         response.data['access'] = str(refresh.access_token)
         return response
 
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                validate_password(request.data['password'])
+            except ValidationError as e:
+                return Response({'password': e.messages}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user = serializer.save()
+            if user:
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+User = get_user_model()
 
 # Simplified login view
 @api_view(['POST'])
@@ -184,12 +202,34 @@ class RegisterView(generics.CreateAPIView):
 def login_view(request):
     print("Login request received.")
     print("Request data:", request.data)
-    serializer = CustomTokenObtainPairSerializer(data=request.data)
-    try:
-        serializer.is_valid(raise_exception=True)
-        print("Serializer validation successful.")
-    except Exception as e:
-        print("Serializer validation failed. Error:", str(e))
-        return Response({"detail": "Invalid credentials"}, status=400)
-    print("Login successful. Sending response...")
-    return Response(serializer.validated_data, status=200)
+    
+    username_or_email = request.data.get('username')  # Assuming the field is named 'username' in the frontend
+    password = request.data.get('password')
+
+    if not username_or_email or not password:
+        return Response({"detail": "Both username/email and password are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Check if the input is an email
+    if '@' in username_or_email:
+        try:
+            user = User.objects.get(email=username_or_email)
+            username = user.username
+        except User.DoesNotExist:
+            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+    else:
+        username = username_or_email
+
+    user = authenticate(username=username, password=password)
+
+    if user:
+        serializer = CustomTokenObtainPairSerializer(data={'username': username, 'password': password})
+        try:
+            serializer.is_valid(raise_exception=True)
+            print("Serializer validation successful.")
+            return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        except Exception as e:
+            print("Serializer validation failed. Error:", str(e))
+            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+    else:
+        return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
