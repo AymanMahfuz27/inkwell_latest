@@ -16,23 +16,91 @@
   z-index: 1;
 }
 
-.inkwell-profile-page-title {
-  font-size: 2.5rem;
-  color: #fff;
-  margin-bottom: 30px;
-  text-align: center;
+.inkwell-profile-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
 }
 
-.inkwell-profile-page-subtitle {
-  font-size: 2rem;
+.inkwell-profile-page-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-right: 30px;
+}
+
+.inkwell-profile-page-info {
+  flex: 1;
+  margin-right: 20px;
+}
+
+
+.inkwell-profile-page-name {
+  font-size: 2.5rem;
+  margin: 0 0 10px;
+}
+
+.inkwell-profile-page-username {
+  font-size: 1.4rem;
+  color: #a0a0a0;
+  margin: 0 0 15px;
+}
+
+.inkwell-profile-page-bio {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.inkwell-profile-page-stats-and-actions {
+  text-align: right;
+}
+
+.inkwell-profile-page-stats {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.inkwell-profile-page-stats span {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.inkwell-profile-page-follow-button,
+.inkwell-profile-page-edit-button {
+  width: 100%;
+  max-width: 200px;
+}
+
+
+.inkwell-profile-page-follow-button,
+.inkwell-profile-page-edit-button {
+  background-color: transparent;
   color: #fff;
-  margin-top: 40px;
-  margin-bottom: 20px;
+  border: 2px solid #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inkwell-profile-page-follow-button:hover,
+.inkwell-profile-page-edit-button:hover {
+  background-color: #fff;
+  color: #000;
 }
 
 .inkwell-profile-page-form {
   display: grid;
   gap: 20px;
+  margin-top: 30px;
 }
 
 .inkwell-profile-page-input-group {
@@ -72,6 +140,13 @@
   resize: vertical;
 }
 
+.inkwell-profile-page-button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
 .inkwell-profile-page-button {
   background-color: transparent;
   color: #fff;
@@ -85,12 +160,11 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin-top: 15px;
 }
 
 .inkwell-profile-page-button:hover {
-  color: #000;
   background-color: #fff;
+  color: #000;
 }
 
 .inkwell-profile-page-button.secondary {
@@ -102,6 +176,8 @@
   background-color: #666;
   color: #fff;
 }
+
+/* Keep the rest of your existing CSS unchanged */
 
 .inkwell-profile-page-info {
   color: #fff;
@@ -261,3 +337,5 @@
 .delete-book-button svg {
   margin-right: 5px;
 }
+
+

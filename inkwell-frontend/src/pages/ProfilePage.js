@@ -60,14 +60,18 @@ const ProfilePage = () => {
   //     fetchFollowers();
   //     fetchFollowing();
   //   }
-     
+
   // }, [username, first_name, activeTab]);
 
   useEffect(() => {
     setActiveTab("books");
     const loadProfileData = async () => {
-      await fetchProfile();
+      console.log("Loading profile data for username:", username);
+      if (!profile || profile.username !== username) {
+        await fetchProfile();
+      }
       const isOwnProfile = username === getUsername();
+      console.log("Is own profile:", isOwnProfile);
       setIsOwnProfile(isOwnProfile);
       setFirstName(getUserFirstName());
 
@@ -79,7 +83,7 @@ const ProfilePage = () => {
       await fetchBooks();
     };
     loadProfileData();
-  }, [username]);
+  }, [username, profile]);
 
   useEffect(() => {
     if (activeTab === "followers") {
@@ -89,7 +93,18 @@ const ProfilePage = () => {
     }
   }, [activeTab, username]);
 
+  useEffect(() => {
+    if (profile) {
+      setEditedProfile(profile);
+    }
+  }, [profile]);
 
+  useEffect(() => {
+    if (profile) {
+      console.log("Profile updated:", profile);
+      setEditedProfile(profile);
+    }
+  }, [profile]);
 
   const CollapsibleSection = ({ title, children }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -125,15 +140,23 @@ const ProfilePage = () => {
   const fetchProfile = async () => {
     try {
       const response = await api.get(`/api/users/profiles/${username}/`);
-      setProfile(response.data);
-      setEditedProfile(response.data);
-      setIsFollowing(response.data.is_following);
-      setFollowersCount(response.data.followers_count);
-      setFollowingCount(response.data.following_count);
+      const profileData = response.data;
+      if (
+        profileData.profile_picture &&
+        !profileData.profile_picture.startsWith("http")
+      ) {
+        profileData.profile_picture = `${process.env.REACT_APP_API_URL}${profileData.profile_picture}`;
+      }
+      setProfile(profileData);
+      setEditedProfile(profileData);
+      setIsFollowing(profileData.is_following);
+      setFollowersCount(profileData.followers_count);
+      setFollowingCount(profileData.following_count);
     } catch (err) {
+      console.error("Error fetching profile:", err);
       setError("Failed to fetch profile. Please try again later.");
     }
-  };  
+  };
 
   const handleFollow = async () => {
     try {
@@ -215,13 +238,27 @@ const ProfilePage = () => {
   };
 
   const handleChange = (e) => {
-    setEditedProfile({ ...editedProfile, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setEditedProfile((prevProfile) => ({
+      ...prevProfile,
+      [name]: value || "",
+    }));
   };
 
   const handleProfilePictureChange = (event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
       setNewProfilePicture(file);
+      console.log("New profile picture set:", file);
+      // Create a preview URL for the selected image
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditedProfile((prev) => ({
+          ...prev,
+          profile_picture: reader.result,
+        }));
+      };
+      reader.readAsDataURL(file);
     } else {
       setError("Please upload a valid image file.");
     }
@@ -232,12 +269,22 @@ const ProfilePage = () => {
     try {
       const formData = new FormData();
       for (const key in editedProfile) {
-        formData.append(key, editedProfile[key]);
+        if (editedProfile[key] !== null && editedProfile[key] !== undefined && key !== 'profile_picture') {
+          formData.append(key, editedProfile[key]);
+        }
       }
       if (newProfilePicture) {
-        formData.append("profile_picture", newProfilePicture);
+        formData.append("profile_picture", newProfilePicture, newProfilePicture.name);
+      } else if (profile.profile_picture && typeof profile.profile_picture === 'string') {
+        // If no new picture is selected, don't send the existing one
+        // The backend should keep the existing picture if none is provided
       }
-
+  
+      console.log("FormData entries:");
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+  
       const response = await api.put(
         `/api/users/profiles/${username}/`,
         formData,
@@ -247,10 +294,15 @@ const ProfilePage = () => {
           },
         }
       );
+      console.log("Profile update response:", response.data);
       setProfile(response.data);
       setIsEditing(false);
       setNewProfilePicture(null);
     } catch (err) {
+      console.error(
+        "Error updating profile:",
+        err.response ? err.response.data : err.message
+      );
       setError("Failed to update profile. Please try again.");
     }
   };
@@ -266,156 +318,124 @@ const ProfilePage = () => {
     }
   };
 
-  
-
-  if (error) return <div className="inkwell-profile-page-error">{error}</div>;
-  if (!profile)
-    return <div className="inkwell-profile-page-loading">Loading...</div>;
+  if (error) return <div className="error">{error}</div>;
+  if (!profile) return <div className="loading">Loading...</div>;
 
   return (
     <div className="inkwell-profile-page-container">
       <WatercolorBackground />
       <div className="inkwell-profile-page-content">
-        {isOwnProfile ? (
-          <h1 className="inkwell-profile-page-title">
-            Welcome back, {profile.first_name}
-          </h1>
-        ) : (
-          <>
-            <h1 className="inkwell-profile-page-title">
-              {profile.first_name} {profile.last_name}'s Profile
-            </h1>
-            <button
-              onClick={handleFollow}
-              className="inkwell-profile-page-button"
-            >
-              {isFollowing ? "Unfollow" : "Follow"}
-            </button>
-          </>
-        )}
-
-        <div className="inkwell-profile-page-picture-container">
+        <div className="inkwell-profile-page-header">
           <img
             src={profile.profile_picture || "/default-avatar.jpg"}
             alt={`${profile.username}'s profile`}
             className="inkwell-profile-page-picture"
           />
-          {isOwnProfile && isEditing && (
-            <div className="inkwell-profile-page-picture-upload">
-              <label
-                htmlFor="profile-picture-upload"
-                className="inkwell-profile-page-picture-label"
-              >
-                <Image size={20} />
-                Change Picture
-              </label>
-              <input
-                id="profile-picture-upload"
-                type="file"
-                onChange={handleProfilePictureChange}
-                accept="image/*"
-                className="inkwell-profile-page-picture-input"
-              />
+          <div className="inkwell-profile-page-info">
+            <h1 className="inkwell-profile-page-name">
+              {profile.first_name} {profile.last_name}
+            </h1>
+            <p className="inkwell-profile-page-username">@{profile.username}</p>
+            <p className="inkwell-profile-page-bio">{profile.bio}</p>
+          </div>
+          <div className="inkwell-profile-page-stats-and-actions">
+            <div className="inkwell-profile-page-stats">
+              <span>Followers: {followersCount}</span>
+              <span>Following: {followingCount}</span>
             </div>
-          )}
+            {!isOwnProfile ? (
+              <button
+                onClick={handleFollow}
+                className="inkwell-profile-page-follow-button"
+              >
+                {isFollowing ? "Unfollow" : "Follow"}
+              </button>
+            ) : !isEditing ? (
+              <button
+                onClick={handleEdit}
+                className="inkwell-profile-page-edit-button"
+              >
+                <Edit2 size={20} /> Edit Profile
+              </button>
+            ) : null}
+          </div>
         </div>
 
-        {isEditing ? (
+        {isEditing && (
           <form onSubmit={handleSubmit} className="inkwell-profile-page-form">
             <div className="inkwell-profile-page-input-group">
               <label className="inkwell-profile-page-label">
-                <User size={20} />
-                First Name
+                <Image size={20} />
+                Profile Picture
               </label>
               <input
-                type="text"
-                name="first_name"
-                value={editedProfile.first_name}
-                onChange={handleChange}
+                key={isEditing ? "editing" : "not-editing"}
+
+                type="file"
+                accept="image/*"
+                onChange={handleProfilePictureChange}
                 className="inkwell-profile-page-input"
               />
+              {profile.profile_picture && (
+                <img
+                  src={profile.profile_picture}
+                  alt="Current profile picture"
+                  className="inkwell-profile-page-current-picture"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    objectFit: "cover",
+                  }}
+                />
+              )}
             </div>
-            <div className="inkwell-profile-page-input-group">
-              <label className="inkwell-profile-page-label">
-                <User size={20} />
-                Last Name
-              </label>
-              <input
-                type="text"
-                name="last_name"
-                value={editedProfile.last_name}
-                onChange={handleChange}
-                className="inkwell-profile-page-input"
-              />
-            </div>
-            <div className="inkwell-profile-page-input-group">
-              <label className="inkwell-profile-page-label">
-                <Mail size={20} />
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={editedProfile.email}
-                onChange={handleChange}
-                className="inkwell-profile-page-input"
-              />
-            </div>
-            <div className="inkwell-profile-page-input-group">
-              <label className="inkwell-profile-page-label">
-                <BookOpen size={20} />
-                Bio
-              </label>
-              <textarea
-                name="bio"
-                value={editedProfile.bio}
-                onChange={handleChange}
-                className="inkwell-profile-page-textarea"
-              />
-            </div>
+            {["first_name", "last_name", "email", "bio"].map(
+              (field) =>
+                editedProfile[field] !== undefined && (
+                  <div key={field} className="inkwell-profile-page-input-group">
+                    <label className="inkwell-profile-page-label">
+                      {field === "bio" ? (
+                        <BookOpen size={20} />
+                      ) : (
+                        <User size={20} />
+                      )}
+                      {field.charAt(0).toUpperCase() +
+                        field.slice(1).replace("_", " ")}
+                    </label>
+                    {field === "bio" ? (
+                      <textarea
+                        name={field}
+                        value={editedProfile[field] || ""}
+                        onChange={handleChange}
+                        className="inkwell-profile-page-textarea"
+                      />
+                    ) : (
+                      <input
+                        type={field === "email" ? "email" : "text"}
+                        name={field}
+                        value={editedProfile[field] || ""}
+                        onChange={handleChange}
+                        className="inkwell-profile-page-input"
+                      />
+                    )}
+                  </div>
+                )
+            )}
             <div className="inkwell-profile-page-button-group">
               <button type="submit" className="inkwell-profile-page-button">
-                <Save size={20} />
-                Save
+                <Save size={20} /> Save
               </button>
               <button
                 type="button"
                 onClick={handleCancel}
                 className="inkwell-profile-page-button secondary"
               >
-                <X size={20} />
-                Cancel
+                <X size={20} /> Cancel
               </button>
             </div>
           </form>
-        ) : (
-          <div className="inkwell-profile-page-info">
-            <p>
-              <strong>Name:</strong> {profile.first_name} {profile.last_name}
-            </p>
-            <p>
-              <strong>Email:</strong> {profile.email}
-            </p>
-            <p>
-              <strong>Bio:</strong> {profile.bio}
-            </p>
-            <p>
-              <strong>Followers:</strong> {followersCount}
-            </p>
-            <p>
-              <strong>Following:</strong> {followingCount}
-            </p>
-            {isOwnProfile && (
-              <button
-                onClick={handleEdit}
-                className="inkwell-profile-page-button"
-              >
-                <Edit2 size={20} />
-                Edit Profile
-              </button>
-            )}
-          </div>
         )}
+
         <div className="inkwell-profile-page-tabs">
           <button
             className={`tab ${activeTab === "books" ? "active" : ""}`}
@@ -541,9 +561,13 @@ const ProfilePage = () => {
             <AnalyticsDashboard />
           </div>
         )}
-        {isOwnProfile && activeTab === "followers" && <FollowersList followers={followers} />}
+        {isOwnProfile && activeTab === "followers" && (
+          <FollowersList followers={followers} />
+        )}
 
-        {isOwnProfile && activeTab === "following" && <FollowingList following={following} />}
+        {isOwnProfile && activeTab === "following" && (
+          <FollowingList following={following} />
+        )}
 
         {error && <p className="inkwell-profile-page-error">{error}</p>}
       </div>
