@@ -13,8 +13,7 @@ class UserProfile(AbstractUser):
     last_name = models.CharField(max_length=100, blank=True, db_index=True)
     bio = models.TextField(max_length=500, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures', blank=True, null=True)
-    followers = models.ManyToManyField('self', related_name='user_following', symmetrical=False, blank=True, db_index=True)
-    following = models.ManyToManyField('self', related_name='user_followers', symmetrical=False, blank=True, db_index=True)
+    following = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
 
     #add a field to store the user's favorite genres
     favorite_genres = models.ManyToManyField('books.Genre', related_name='users_fav_genres', blank=True, db_index=True)
@@ -57,6 +56,12 @@ class UserProfile(AbstractUser):
     def get_following(self):
         return self.following.all()
     
+    def get_following_count(self):
+        return self.following.count()
+    
+    def get_followers_count(self):
+        return self.followers.count()
+
     @classmethod
     def search(cls, query):
         search_vector = SearchVector('username', weight='A') + \

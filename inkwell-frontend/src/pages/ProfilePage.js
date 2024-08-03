@@ -133,7 +133,8 @@ const ProfilePage = () => {
     } catch (err) {
       setError("Failed to fetch profile. Please try again later.");
     }
-  };
+  };  
+
   const handleFollow = async () => {
     try {
       if (isFollowing) {
@@ -145,6 +146,7 @@ const ProfilePage = () => {
         setIsFollowing(true);
         setFollowersCount((prevCount) => prevCount + 1);
       }
+      await fetchProfile();
     } catch (err) {
       setError("Failed to update follow status. Please try again.");
     }

@@ -17,7 +17,7 @@ from books.serializers import BookSerializer
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate, get_user_model
-
+from django.db.models import F
 
 
 
@@ -115,24 +115,32 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def followers(self, request, username=None):
         user = self.get_object()
-        followers = user.followers.all()
-        serializer = FollowSerializer(followers, many=True)
+        followers = user.get_followers()
+        serializer = self.get_serializer(followers, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'])
     def following(self, request, username=None):
         user = self.get_object()
-        following = user.following.all()
-        serializer = FollowSerializer(following, many=True)
+        following = user.get_following()
+        serializer = self.get_serializer(following, many=True)
         return Response(serializer.data)
-    
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, context={'request': request})
+        return Response(serializer.data)
+
     # def retrieve(self, request, *args, **kwargs):
     #     instance = self.get_object()
-    #     if instance == request.user:
-    #         serializer = self.get_serializer(instance, context={'request': request})
-    #     else:
-    #         serializer = UserProfileSerializer(instance, context={'request': request})
-    #     return Response(serializer.data)
+    #     serializer = self.get_serializer(instance)
+    #     data = serializer.data
+    #     data['followers_count'] = instance.get_followers_count()
+    #     data['following_count'] = instance.get_following_count()
+    #     data['is_following'] = request.user.is_following(instance) if request.user.is_authenticated else False
+    #     return Response(data)
+
+
 
 
 

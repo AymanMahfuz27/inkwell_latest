@@ -12,14 +12,14 @@ class FollowSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'first_name', 'last_name', 'profile_picture']
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    followers = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    following = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    followers = serializers.SerializerMethodField()
+    following = serializers.SerializerMethodField()
     books_liked = BookSerializer(many=True, read_only=True)
     favorite_genres = GenreSerializer(many=True, read_only=True)
     followers_count = serializers.SerializerMethodField()
     following_count = serializers.SerializerMethodField()
     is_following = serializers.SerializerMethodField()
-    # books_liked = serializers.SerializerMethodField()
+    books_liked = serializers.SerializerMethodField()
 
 
     class Meta:
@@ -51,17 +51,24 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_total_books_uploaded(self, obj):
         return obj.books_uploaded.count()
     
+    def get_followers(self, obj):
+        return [user.id for user in obj.get_followers()]
+
+    def get_following(self, obj):
+        return [user.id for user in obj.get_following()]
+
     def get_followers_count(self, obj):
-        return obj.followers.count()
+        return obj.get_followers_count()
 
     def get_following_count(self, obj):
-        return obj.following.count()
+        return obj.get_following_count()
 
     def get_is_following(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
             return request.user.is_following(obj)
         return False
+
 
 class BookCollectionSerializer(serializers.ModelSerializer):
     book_count = serializers.SerializerMethodField()

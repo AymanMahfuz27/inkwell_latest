@@ -5,7 +5,7 @@ import { login as authLogin } from "../services/authService";
 import WatercolorBackground from '../components/WatercolorBackground';
 import MultiStepSignupForm from '../components/MultiStepSignupForm';
 import '../css/SignUpSignInPage.css';
-import api from '../services/api';
+
 const SignUpSignInPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
@@ -16,23 +16,15 @@ const SignUpSignInPage = () => {
   const handleSignIn = async (event) => {
     event.preventDefault();
     setError("");
-  
+
     try {
-      const response = await api.post("/api/users/login/", {
-        username: usernameOrEmail,  // This field name should match what the backend expects
-        password: password
-      });
-      
-      // Handle successful login (e.g., store tokens, redirect)
-      localStorage.setItem("access_token", response.data.access);
-      localStorage.setItem("refresh_token", response.data.refresh);
+      await authLogin(usernameOrEmail, password);
       navigate("/");
     } catch (error) {
       console.error("Authentication failed:", error);
       setError("Authentication failed. Please check your credentials and try again.");
     }
   };
-  
 
 
   return (
