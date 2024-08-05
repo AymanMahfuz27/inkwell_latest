@@ -28,7 +28,7 @@ from django.http import HttpResponse
 from django.conf.urls.static import static
 from django.urls import get_resolver
 from rest_framework.routers import DefaultRouter
-from books.views import GenreViewSet, BookViewSet
+from books.views import GenreViewSet, BookViewSet, BookDraftViewSet
 from colorama import Fore, Style, init
 
 init(autoreset=True)
@@ -43,6 +43,8 @@ def home(request):
 router = DefaultRouter()
 router.register(r'books', BookViewSet, basename='book')
 router.register(r'genres', GenreViewSet, basename='genre')
+router.register(r'drafts', BookDraftViewSet)
+
 urlpatterns = [
     #need a home page
     path('', home, name='home'),

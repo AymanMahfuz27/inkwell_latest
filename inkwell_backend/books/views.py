@@ -4,10 +4,12 @@ from rest_framework import viewsets, status,permissions
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 import logging
 from rest_framework.response import Response
-from .models import Genre, Book, Comment
-from .serializers import GenreSerializer, BookSerializer, BookInteractionSerializer, CommentSerializer
+from .models import Genre, Book, Comment, BookDraft
+from .serializers import GenreSerializer, BookSerializer, BookInteractionSerializer, CommentSerializer, BookDraftSerializer
 from rest_framework.decorators import action
 import PyPDF2
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -134,4 +136,40 @@ class BookViewSet(viewsets.ModelViewSet):
 
 
 
+
+class BookDraftViewSet(viewsets.ModelViewSet):
+    queryset = BookDraft.objects.all()
+    serializer_class = BookDraftSerializer
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        try:
+            instance = self.get_object()
+            logger.info(f"views.py - update function - Retrieved draft instance ID: {instance.id}")
+        except BookDraft.DoesNotExist:
+            logger.error("views.py - update function - Draft does not exist")
+            return Response({"error": "Draft not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        logger.info(f"views.py - update function - Updated draft with ID: {instance.id}")
+        logger.info(f"views.py - update function - Request data: {request.data}")
+
+        return Response(serializer.data)
+
+
+
+    def get_queryset(self):
+        return BookDraft.objects.filter(user=self.request.user)
+
+    @action(detail=False, methods=['get'])
+    def user_drafts(self, request):
+        drafts = self.get_queryset()
+        serializer = self.get_serializer(drafts, many=True)
+        return Response(serializer.data)
 

@@ -235,6 +235,24 @@
   .genre-list-card-link:hover {
     background-color: #ff4757;
   }
+
+  .book-list-card-custom-action {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #3291ff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .book-list-card-custom-action:hover {
+    background-color: #2b7ad4;
+  }
   
   @media (max-width: 768px) {
     .inkwell-list-card {
@@ -256,3 +274,4 @@
       margin-left: 0;
     }
   }
+

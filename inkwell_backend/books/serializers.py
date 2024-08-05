@@ -1,6 +1,6 @@
 # books/serializers.py
 from rest_framework import serializers
-from .models import Genre, Book, Comment
+from .models import Genre, Book, Comment, BookDraft
 import logging
 
 logger = logging.getLogger(__name__)
@@ -111,3 +111,29 @@ class BookSerializer(serializers.ModelSerializer):
             book.genres.add(genre)
         logger.info(f"Book created: {book}")
         return book
+    
+
+class BookDraftSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookDraft
+        fields = ['id', 'title', 'genres', 'description', 'upload_type', 'pdf_file', 'text_content', 'cover_picture', 'banner_picture', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'user']
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        return BookDraft.objects.create(user=user, **validated_data)
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            if attr in ['pdf_file', 'cover_picture', 'banner_picture']:
+                if value:  # Only update if a new file is provided
+                    setattr(instance, attr, value)
+                    logger.info(f"serializers.py - update function - Updated {attr}")
+            else:
+                setattr(instance, attr, value)
+                logger.info(f"serializers.py - update function - Updated {attr}")
+
+        instance.save()
+        logger.info(f"serializers.py - update function - Book draft updated: {instance}")
+        return instance
+

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   User,
   Mail,
@@ -10,6 +10,7 @@ import {
   Image,
   ChevronDown,
   Trash2,
+  FileText,
 } from "lucide-react";
 import api from "../services/api";
 import {
@@ -49,19 +50,10 @@ const ProfilePage = () => {
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
 
-  // useEffect(() => {
-  //   fetchProfile();
-  //   fetchCollections();
-  //   fetchBooks();
-  //   setIsOwnProfile(username === getUsername());
-  //   setFirstName(getUserFirstName());
-  //   if (isOwnProfile) {
-  //     fetchLikedBooks();
-  //     fetchFollowers();
-  //     fetchFollowing();
-  //   }
+  const [drafts, setDrafts] = useState([]);
+  const navigate = useNavigate();
 
-  // }, [username, first_name, activeTab]);
+
 
   useEffect(() => {
     setActiveTab("books");
@@ -105,27 +97,12 @@ const ProfilePage = () => {
       setEditedProfile(profile);
     }
   }, [profile]);
+  useEffect(() => {
+    if (isOwnProfile && activeTab === "drafts") {
+      fetchDrafts();
+    }
+  }, [isOwnProfile, activeTab]);
 
-  const CollapsibleSection = ({ title, children }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
-
-    return (
-      <div className="collapsible-section">
-        <div
-          className="collapsible-header"
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
-          <h2 className="inkwell-profile-page-subtitle">{title}</h2>
-          <ChevronDown
-            className={`toggle-icon ${isExpanded ? "expanded" : ""}`}
-          />
-        </div>
-        <div className={`collapsible-content ${isExpanded ? "expanded" : ""}`}>
-          {children}
-        </div>
-      </div>
-    );
-  };
   const fetchLikedBooks = async () => {
     if (!isOwnProfile) return;
     try {
@@ -155,6 +132,31 @@ const ProfilePage = () => {
     } catch (err) {
       console.error("Error fetching profile:", err);
       setError("Failed to fetch profile. Please try again later.");
+    }
+  };
+
+  const fetchDrafts = async () => {
+    try {
+      const response = await api.get("/api/books/drafts/user_drafts/");
+      setDrafts(response.data);
+    } catch (err) {
+      setError("Failed to fetch drafts. Please try again later.");
+    }
+  };
+
+  const handleEditDraft = (draftId) => {
+    navigate(`/upload?draftId=${draftId}`);
+  };
+
+  const handleDeleteDraft = async (draftId) => {
+    if (window.confirm("Are you sure you want to delete this draft?")) {
+      try {
+        await api.delete(`/api/books/drafts/${draftId}/`);
+        setDrafts(drafts.filter((draft) => draft.id !== draftId));
+      } catch (err) {
+        console.error("Error deleting draft:", err);
+        setError("Failed to delete draft. Please try again.");
+      }
     }
   };
 
@@ -445,6 +447,12 @@ const ProfilePage = () => {
           </button>
           {isOwnProfile && (
             <>
+            <button
+                className={`tab ${activeTab === "drafts" ? "active" : ""}`}
+                onClick={() => setActiveTab("drafts")}
+              >
+                Drafts
+              </button>
               <button
                 className={`tab ${activeTab === "liked" ? "active" : ""}`}
                 onClick={() => setActiveTab("liked")}
@@ -508,7 +516,26 @@ const ProfilePage = () => {
             )}
           </div>
         )}
-
+      {isOwnProfile && activeTab === "drafts" && (
+          <div className="inkwell-profile-page-drafts">
+            <h2 className="inkwell-profile-page-subtitle">Book Drafts</h2>
+            {drafts.length > 0 ? (
+              drafts.map((draft) => (
+                <BookListCard
+                  key={draft.id}
+                  book={draft}
+                  onDelete={() => handleDeleteDraft(draft.id)}
+                  showDeleteButton={true}
+                  customAction={() => handleEditDraft(draft.id)}
+                  customActionText="Edit Draft"
+                  customActionIcon={<FileText size={20} />}
+                />
+              ))
+            ) : (
+              <p>No drafts available.</p>
+            )}
+          </div>
+        )}
         {isOwnProfile && activeTab === "collections" && (
           <div className="inkwell-profile-page-collections">
             <h2 className="inkwell-profile-page-subtitle">Book Collections</h2>
