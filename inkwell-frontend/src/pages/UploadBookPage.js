@@ -17,13 +17,11 @@ const UploadBookPage = () => {
     const fetchDraftData = async () => {
       const searchParams = new URLSearchParams(location.search);
       const draftId = searchParams.get('draftId');
-      console.log('Upload book page - draftId:', draftId);
       
       if (draftId) {
         try {
           const response = await api.get(`/api/books/drafts/${draftId}/`);
           setDraftData(response.data);
-          console.log('Upload book page - draftData:', response.data);
 
         } catch (err) {
           console.error('Error fetching draft:', err);
@@ -34,7 +32,6 @@ const UploadBookPage = () => {
     };
 
     fetchDraftData();
-    console.log('Upload book page - draftData:', draftData);
 
   }, [location]);
 

@@ -47,7 +47,6 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
     // Effect to initialize form data with initial data (if provided)
     useEffect(() => {
       if (initialData) {
-        console.log("MultiStep form - Initial data received:", initialData);
         setFormData({
           title: initialData.title || "",
           genres: initialData.genres || "",
@@ -66,7 +65,6 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
     const handleChange = (e) => {
       const { name, value, files: inputFiles } = e.target;
       if (inputFiles && inputFiles[0]) {
-        console.log(`File selected for ${name}:`, inputFiles[0]);
         setFiles(prev => ({ ...prev, [name]: inputFiles[0] }));
         setFileNames(prev => ({ ...prev, [name]: inputFiles[0].name }));
         
@@ -115,14 +113,10 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
       if (files.pdfFile) draftData.append("pdf_file", files.pdfFile);
       if (files.coverPicture) draftData.append("cover_picture", files.coverPicture);
       if (files.bannerPicture) draftData.append("banner_picture", files.bannerPicture);
-      console.log("Multistep upload form - Draft data:", Object.fromEntries(draftData));
-      console.log("Multistep upload form - Initial data:", initialData);
-      console.log("Multistep upload form - Initial data ID:", initialData.id);
     
       try {
         let response;
         if (initialData && initialData.id) {
-          console.log("Multistep upload form - Updating existing draft:", initialData.id);
           response = await api.put(`/api/books/drafts/${initialData.id}/`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -130,7 +124,6 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
           });
           setSuccessMessage('Draft updated successfully!');
         } else {
-          console.log("Multistep upload form - Creating new draft because initialData looks like this:", initialData);
           response = await api.post('/api/books/drafts/', formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -138,7 +131,6 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
           });
           setSuccessMessage('Draft saved successfully!');
         }
-        console.log("API Response:", response.data);
         setTimeout(() => navigate('/profile'), 2000);
       } catch (error) {
         console.error('Error saving draft:', error.response?.data || error.message);
