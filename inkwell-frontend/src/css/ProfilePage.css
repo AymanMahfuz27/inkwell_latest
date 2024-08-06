@@ -197,12 +197,35 @@
   color: #fff;
   margin-bottom: 15px;
 }
+.inkwell-profile-page-collection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin-top: 40px;
+}
+
+.inkwell-profile-page-collection-toggle {
+  font-size: 1.2em;
+}
+
+.inkwell-profile-page-collection-title {
+  margin: 0;
+}
 
 .inkwell-profile-page-book-scroll {
-  overflow-x: auto;
-  gap: 20px;
-  padding-bottom: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  transition: ease-in 0.3s ease-out; 
 }
+
+
 
 .inkwell-profile-page-error,
 .inkwell-profile-page-loading {

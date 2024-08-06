@@ -54,6 +54,7 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const defaultCover = 'default_images/book_default.webp';
   const defaultAvatar = 'default_images/profile_pic_default.jpg';
+  const [expandedCollections, setExpandedCollections] = useState({});
 
 
 
@@ -322,7 +323,12 @@ const ProfilePage = () => {
       setError("Failed to create collection. Please try again.");
     }
   };
-
+  const toggleCollection = (collectionId) => {
+    setExpandedCollections(prev => ({
+      ...prev,
+      [collectionId]: !prev[collectionId]
+    }));
+  };
   if (error) return <div className="error">{error}</div>;
   if (!profile) return <div className="loading">Loading...</div>;
 
@@ -540,48 +546,58 @@ const ProfilePage = () => {
           </div>
         )}
         {isOwnProfile && activeTab === "collections" && (
-          <div className="inkwell-profile-page-collections">
-            <h2 className="inkwell-profile-page-subtitle">Book Collections</h2>
-            <form
-              onSubmit={createCollection}
-              className="inkwell-profile-page-form"
-            >
-              <div className="inkwell-profile-page-input-group">
-                <input
-                  type="text"
-                  value={newCollectionName}
-                  onChange={(e) => setNewCollectionName(e.target.value)}
-                  placeholder="New collection name"
-                  required
-                  className="inkwell-profile-page-input"
-                />
-                <button type="submit" className="inkwell-profile-page-button">
-                  Create Collection
-                </button>
-              </div>
-            </form>
+  <div className="inkwell-profile-page-collections">
+    <h2 className="inkwell-profile-page-subtitle">Book Collections</h2>
+    <form
+      onSubmit={createCollection}
+      className="inkwell-profile-page-form"
+    >
+      <div className="inkwell-profile-page-input-group">
+        <input
+          type="text"
+          value={newCollectionName}
+          onChange={(e) => setNewCollectionName(e.target.value)}
+          placeholder="New collection name"
+          required
+          className="inkwell-profile-page-input"
+        />
+        <button type="submit" className="inkwell-profile-page-button">
+          Create Collection
+        </button>
+      </div>
+    </form>
 
-            {collections.map((collection) => (
-              <div
-                key={collection.id}
-                className="inkwell-profile-page-collection"
-              >
-                <h3 className="inkwell-profile-page-collection-title">
-                  {collection.name}
-                </h3>
-                {collection.books.length === 0 ? (
-                  <p>This collection is empty.</p>
-                ) : (
-                  <div className="inkwell-profile-page-book-scroll">
-                    {collection.books.map((book) => (
-                      <BookListCard key={book.id} book={book} />
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+    {collections.map((collection) => (
+      <div
+        key={collection.id}
+        className="inkwell-profile-page-collection"
+      >
+        <div 
+          className="inkwell-profile-page-collection-header"
+          onClick={() => toggleCollection(collection.id)}
+        >
+          <h3 className="inkwell-profile-page-collection-title">
+            {collection.name}
+          </h3>
+          <span className="inkwell-profile-page-collection-toggle">
+            {expandedCollections[collection.id] ? '▼' : '►'}
+          </span>
+        </div>
+        {expandedCollections[collection.id] && (
+          collection.books.length === 0 ? (
+            <p>This collection is empty.</p>
+          ) : (
+            <div className="inkwell-profile-page-book-scroll">
+              {collection.books.map((book) => (
+                <BookListCard key={book.id} book={book} />
+              ))}
+            </div>
+          )
         )}
+      </div>
+    ))}
+  </div>
+)}
 
         {isOwnProfile && activeTab === "analytics" && (
           <div className="inkwell-profile-page-analytics">
