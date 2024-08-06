@@ -1,5 +1,5 @@
 // src/components/MultiStepUploadForm.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Book,
   FileText,
@@ -13,9 +13,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import api from "../services/api";
 import Editor from "./Editor";
 import "../css/MultiStepUploadForm.css";
+import useAuth from "../hooks/useAuth";
 
 const MultiStepUploadForm = ({ navigate, initialData }) => {
   const [step, setStep] = useState(1);
+  const { auth, username, firstName } = useAuth();
+
   const [direction, setDirection] = useState(1);
   const [formData, setFormData] = useState({
     title: "",
@@ -31,22 +34,44 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
     bannerPicture: null,
   });
 
-  const [fileNames, setFileNames] = useState({
-    pdfFile: "",
-    coverPicture: "",
-    bannerPicture: "",
+  const [fileUrls, setFileUrls] = useState({
+    pdfFile: null,
+    coverPicture: null,
+    bannerPicture: null,
   });
+
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
   const [submitData, setSubmitData] = useState(null);
+  const [isUploadingBook, setIsUploadingBook] = useState(false);
+
   
   
 
     // Effect to initialize form data with initial data (if provided)
+    // useEffect(() => {
+    //   if (initialData) {
+    //     setFormData({
+    //       title: initialData.title || "",
+    //       genres: initialData.genres || "",
+    //       description: initialData.description || "",
+    //       uploadType: initialData.upload_type || "text",
+    //       text_content: initialData.text_content || "",
+    //     });
+    //     setFileNames({
+    //       pdfFile: initialData.pdf_file ? initialData.pdf_file.split("/").pop() : "",
+    //       coverPicture: initialData.cover_picture ? initialData.cover_picture.split("/").pop() : "",
+    //       bannerPicture: initialData.banner_picture ? initialData.banner_picture.split("/").pop() : "",
+    //     });
+    //   }
+    // }, [initialData]);
+
+
     useEffect(() => {
       if (initialData) {
+        console.log("MultiStep form - Initial data received:", initialData);
         setFormData({
           title: initialData.title || "",
           genres: initialData.genres || "",
@@ -54,10 +79,10 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
           uploadType: initialData.upload_type || "text",
           text_content: initialData.text_content || "",
         });
-        setFileNames({
-          pdfFile: initialData.pdf_file ? initialData.pdf_file.split("/").pop() : "",
-          coverPicture: initialData.cover_picture ? initialData.cover_picture.split("/").pop() : "",
-          bannerPicture: initialData.banner_picture ? initialData.banner_picture.split("/").pop() : "",
+        setFileUrls({
+          pdfFile: initialData.pdf_file || null,
+          coverPicture: initialData.cover_picture || null,
+          bannerPicture: initialData.banner_picture || null,
         });
       }
     }, [initialData]);
@@ -66,72 +91,57 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
       const { name, value, files: inputFiles } = e.target;
       if (inputFiles && inputFiles[0]) {
         setFiles(prev => ({ ...prev, [name]: inputFiles[0] }));
-        setFileNames(prev => ({ ...prev, [name]: inputFiles[0].name }));
-        
-        // Create a preview URL for the selected image
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setFormData(prev => ({ ...prev, [`${name}_preview`]: reader.result }));
-        };
-        reader.readAsDataURL(inputFiles[0]);
-      } else if (name === "uploadType") {
-        setFormData(prev => ({
-          ...prev,
-          [name]: value,
-          text_content: value === "pdf" ? "" : prev.text_content,
-        }));
-        if (value === "pdf") {
-          setFileNames(prev => ({ ...prev, pdfFile: "" }));
-          setFiles(prev => ({ ...prev, pdfFile: null }));
-        }
+        setFileUrls(prev => ({ ...prev, [name]: URL.createObjectURL(inputFiles[0]) }));
       } else {
         setFormData(prev => ({ ...prev, [name]: value }));
       }
     };
   
+  
     const handleContentChange = (content) => {
       setFormData(prev => ({ ...prev, text_content: content }));
     };
   
-    const handleSubmit = async (event) => {
-      event.preventDefault();
+    const prepareFormData = () => {
+      const bookData = new FormData();
+      bookData.append("title", formData.title);
+      bookData.append("genres", formData.genres);
+      bookData.append("description", formData.description);
+      bookData.append("upload_type", formData.uploadType);
+      bookData.append("text_content", formData.text_content);
+  
+      if (files.pdfFile) bookData.append("pdf_file", files.pdfFile);
+      if (files.coverPicture) bookData.append("cover_picture", files.coverPicture);
+      if (files.bannerPicture) bookData.append("banner_picture", files.bannerPicture);
+  
+      console.log("Form data being sent:", Object.fromEntries(bookData));
+      return bookData;
+    };
+  
+    const handleSaveDraft = async () => {
+      console.log("Saving as a draft");
+      setIsLoading(true);
       setErrorMessage(null);
       setSuccessMessage(null);
-      setIsLoading(true);
-    
-      const draftData = new FormData();
-    
-      // Append text fields
-      draftData.append("title", formData.title);  // Access the state formData, not the FormData object
-      draftData.append("genres", formData.genres);
-      draftData.append("description", formData.description);
-      draftData.append("upload_type", formData.uploadType);
-      draftData.append("text_content", formData.text_content);
-
-    
-      // Append file fields only if they exist
-      if (files.pdfFile) draftData.append("pdf_file", files.pdfFile);
-      if (files.coverPicture) draftData.append("cover_picture", files.coverPicture);
-      if (files.bannerPicture) draftData.append("banner_picture", files.bannerPicture);
-    
+  
+      const bookData = prepareFormData();
+  
       try {
         let response;
         if (initialData && initialData.id) {
-          response = await api.put(`/api/books/drafts/${initialData.id}/`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            }
+          console.log("Updating existing draft. Draft ID:", initialData.id);
+          response = await api.put(`/api/books/drafts/${initialData.id}/`, bookData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
           });
-          setSuccessMessage('Draft updated successfully!');
         } else {
-          response = await api.post('/api/books/drafts/', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            }
+          console.log("Creating new draft");
+          response = await api.post('/api/books/drafts/', bookData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
           });
-          setSuccessMessage('Draft saved successfully!');
         }
-        setTimeout(() => navigate('/profile'), 2000);
+        console.log("Draft save/update response:", response.data);
+        setSuccessMessage(initialData?.id ? 'Draft updated successfully!' : 'Draft saved successfully!');
+        setTimeout(() => navigate(`/profile/${username}`), 2000);
       } catch (error) {
         console.error('Error saving draft:', error.response?.data || error.message);
         setErrorMessage('Error saving draft. Please try again.');
@@ -140,11 +150,35 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
       }
     };
   
-    
+    const handleUploadBook = async () => {
+      console.log("Uploading as a final book");
+      setIsLoading(true);
+      setErrorMessage(null);
+      setSuccessMessage(null);
   
-
+      const bookData = prepareFormData();
+      if (initialData && initialData.id) {
+        console.log("Uploading from draft. Draft ID:", initialData.id);
+        bookData.append("draft_id", initialData.id);
+      }
   
-
+      try {
+        const response = await api.post('/api/books/books/', bookData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        console.log("Book upload response:", response.data);
+        setSuccessMessage('Book uploaded successfully!');
+        setTimeout(() => navigate(`/profile/${username}`), 2000);
+      } catch (error) {
+        console.error('Error uploading book:', error.response?.data || error.message);
+        setErrorMessage('Error uploading book. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+  
+  
   const pageVariants = {
     initial: (direction) => ({
       opacity: 0,
@@ -173,24 +207,6 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
         <div className={`divider ${step >= 2 ? "active" : ""}`}></div>
         <div className={`step ${step >= 2 ? "active" : ""}`}>2</div>
       </div>
-    );
-  };
-
-  const renderStep = () => {
-    return (
-      <AnimatePresence initial={false} custom={direction}>
-        <motion.div
-          key={step}
-          custom={direction}
-          variants={pageVariants}
-          initial="initial"
-          animate="in"
-          exit="out"
-          transition={pageTransition}
-        >
-          {step === 1 ? renderStep1() : renderStep2()}
-        </motion.div>
-      </AnimatePresence>
     );
   };
 
@@ -304,7 +320,7 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
             accept=".pdf"
             className="inkwell-upload-page-file-input"
           />
-          {fileNames.pdfFile && <p>Current file: {fileNames.pdfFile}</p>}
+        {fileUrls.pdfFile && <p>Current file: {fileUrls.pdfFile.split('/').pop()}</p>}
         </div>
       ) : (
         <div className="inkwell-upload-page-input-group full-width">
@@ -338,12 +354,12 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
     accept="image/*"
     className="inkwell-upload-page-file-input"
   />
-  {(fileNames.coverPicture || formData.cover_picture_preview) && (
-    <div>
-      <p>Current file: {fileNames.coverPicture}</p>
-      <img src={formData.cover_picture_preview || formData.cover_picture} alt="Cover Preview" style={{maxWidth: '200px'}} />
-    </div>
-  )}
+{fileUrls.coverPicture && (
+  <><h2 style={{ color: 'white' }}>Current cover picture:</h2><img
+            src={fileUrls.coverPicture}
+            alt="Cover Preview"
+            style={{ maxWidth: '200px', marginTop: '10px' }} /></>
+        )}
 </div>
       <div className="inkwell-upload-page-input-group">
         <label
@@ -361,14 +377,24 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
           accept="image/*"
           className="inkwell-upload-page-file-input"
         />
-        {fileNames.bannerPicture && <p>Current file: {fileNames.bannerPicture}</p>}
+        {fileUrls.bannerPicture && (
+          <>
+          <h2 style={{ color: 'white' }}>Current banner picture:</h2>
+          <img 
+            src={fileUrls.bannerPicture} 
+            alt="Banner Preview" 
+            style={{maxWidth: '200px', marginTop: '10px'}} 
+          />
+          </>
+        )}
+
       </div>
     </>
   );
 
 
   return (
-    <form onSubmit={handleSubmit} className="inkwell-upload-page-form">
+    <form className="inkwell-upload-page-form">
       <ProgressBar />
       {step === 1 ? renderStep1() : renderStep2()}
       {errorMessage && (
@@ -399,24 +425,31 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
         {step === 2 && (
           <>
             <button
-              type="submit"
+              type="button"
               className="inkwell-upload-page-save-button"
               disabled={isLoading}
+              onClick={handleSaveDraft}
             >
               <Save size={20} /> {initialData?.id ? 'Update Draft' : 'Save Draft'}
             </button>
             <button
-              type="submit"
+              type="button"
               className="inkwell-upload-page-submit-button"
               disabled={isLoading}
+              onClick={handleUploadBook}
             >
               {isLoading ? "Uploading..." : "Upload Book"}
             </button>
           </>
         )}
       </div>
+      {errorMessage && <p className="inkwell-upload-page-error">{errorMessage}</p>}
+      {successMessage && <p className="inkwell-upload-page-success">{successMessage}</p>}
     </form>
   );
+
 };
+
+
 
 export default MultiStepUploadForm;

@@ -49,20 +49,25 @@ class BookViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         logger.info(f"User {request.user.username} is attempting to create a book")
         logger.info(f"Request data: {request.data}")
+        
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             logger.info("Serializer is valid")
             try:
-                book = self.perform_create(serializer)
+                book = serializer.save(uploaded_by=request.user)
                 headers = self.get_success_headers(serializer.data)
                 logger.info(f"Book created successfully: {book.id}")
                 return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
             except Exception as e:
                 logger.error(f"Error creating book: {str(e)}")
-                return Response({"detail": "Book created successfully, but there was an error processing some data."}, status=status.HTTP_201_CREATED)
+                return Response({"detail": "An error occurred while creating the book."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             logger.error(f"Serializer errors: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
 
     def perform_create(self, serializer):
         return serializer.save(uploaded_by=self.request.user)
@@ -134,6 +139,11 @@ class BookViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response([])
 
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [permissions.AllowAny()]
+        return super().get_permissions()
+
 
 
 
@@ -141,15 +151,19 @@ class BookDraftViewSet(viewsets.ModelViewSet):
     queryset = BookDraft.objects.all()
     serializer_class = BookDraftSerializer
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"request": self.request})
+        return context
+
+    def get_queryset(self):
+        return BookDraft.objects.filter(user=self.request.user)
+
+
+
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
-        try:
-            instance = self.get_object()
-            logger.info(f"views.py - update function - Retrieved draft instance ID: {instance.id}")
-        except BookDraft.DoesNotExist:
-            logger.error("views.py - update function - Draft does not exist")
-            return Response({"error": "Draft not found"}, status=status.HTTP_404_NOT_FOUND)
-
+        instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
@@ -157,15 +171,14 @@ class BookDraftViewSet(viewsets.ModelViewSet):
         if getattr(instance, '_prefetched_objects_cache', None):
             instance._prefetched_objects_cache = {}
 
-        logger.info(f"views.py - update function - Updated draft with ID: {instance.id}")
-        logger.info(f"views.py - update function - Request data: {request.data}")
+        logger.info(f"Updating draft with ID: {instance.id}")
+        logger.info(f"Request data: {request.data}")
 
         return Response(serializer.data)
 
+    def perform_update(self, serializer):
+        serializer.save()
 
-
-    def get_queryset(self):
-        return BookDraft.objects.filter(user=self.request.user)
 
     @action(detail=False, methods=['get'])
     def user_drafts(self, request):
