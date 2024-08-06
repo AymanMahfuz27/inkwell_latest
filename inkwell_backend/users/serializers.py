@@ -20,6 +20,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     following_count = serializers.SerializerMethodField()
     is_following = serializers.SerializerMethodField()
     books_liked = serializers.SerializerMethodField()
+    profile_picture = serializers.SerializerMethodField()
 
 
     class Meta:
@@ -68,7 +69,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             return request.user.is_following(obj)
         return False
-
+    def get_profile_picture(self, obj):
+        if obj.profile_picture:
+            return obj.profile_picture.url
+        return None
 
 class BookCollectionSerializer(serializers.ModelSerializer):
     book_count = serializers.SerializerMethodField()

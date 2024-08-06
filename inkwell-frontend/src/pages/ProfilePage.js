@@ -52,6 +52,9 @@ const ProfilePage = () => {
 
   const [drafts, setDrafts] = useState([]);
   const navigate = useNavigate();
+  const defaultCover = 'default_images/book_default.webp';
+  const defaultAvatar = 'default_images/profile_pic_default.jpg';
+
 
 
 
@@ -329,7 +332,7 @@ const ProfilePage = () => {
       <div className="inkwell-profile-page-content">
         <div className="inkwell-profile-page-header">
           <img
-            src={profile.profile_picture || "/default-avatar.jpg"}
+            src={profile.profile_picture ||defaultAvatar}
             alt={`${profile.username}'s profile`}
             className="inkwell-profile-page-picture"
           />

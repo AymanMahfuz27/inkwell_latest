@@ -22,6 +22,8 @@ const BookOverlay = ({ book, onClose, onLikeUpdate }) => {
   const [isOwnBook, setIsOwnBook] = useState(false);
   const [authorFullName, setAuthorFullName] = useState("");
   const navigate = useNavigate();
+  const defaultCover = 'default_images/book_default.webp';
+  const defaultAvatar = 'default_images/profile_pic_default.jpg';
 
 
   useEffect(() => {
@@ -179,7 +181,7 @@ const BookOverlay = ({ book, onClose, onLikeUpdate }) => {
         <div className="inkwell-book-overlay-banner">
           <img
             src={
-              book.banner_picture || book.cover_picture || "/default-banner.jpg"
+              book.banner_picture || book.cover_picture || defaultCover
             }
             alt={`${book.title} banner`}
             className="inkwell-book-overlay-banner-image"
@@ -188,7 +190,7 @@ const BookOverlay = ({ book, onClose, onLikeUpdate }) => {
         </div>
         <div className="inkwell-book-overlay-header">
           <img
-            src={book.cover_picture || "/default-cover.jpg"}
+            src={book.cover_picture || defaultCover}
             alt={`${book.title} cover`}
             className="inkwell-book-overlay-cover"
           />
