@@ -131,14 +131,7 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance, context={'request': request})
         return Response(serializer.data)
 
-    # def retrieve(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     serializer = self.get_serializer(instance)
-    #     data = serializer.data
-    #     data['followers_count'] = instance.get_followers_count()
-    #     data['following_count'] = instance.get_following_count()
-    #     data['is_following'] = request.user.is_following(instance) if request.user.is_authenticated else False
-    #     return Response(data)
+   
 
 
 

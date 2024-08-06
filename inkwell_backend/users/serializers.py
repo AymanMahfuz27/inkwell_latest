@@ -70,8 +70,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
             return request.user.is_following(obj)
         return False
     def get_profile_picture(self, obj):
-        if obj.profile_picture:
-            return obj.profile_picture.url
+        request = self.context.get('request')
+        if obj.profile_picture and request:
+            return request.build_absolute_uri(obj.profile_picture.url)
         return None
 
 class BookCollectionSerializer(serializers.ModelSerializer):

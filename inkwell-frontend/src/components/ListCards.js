@@ -3,7 +3,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Book, User, Tag, Star, Eye, Clock, Trash2 } from "lucide-react";
 import "../css/ListCards.css";
-
+const defaultCover = 'default_images/book_default.webp';
+const defaultAvatar = 'default_images/profile_pic_default.jpg';
 export const BookListCard = ({
   book,
   onDelete,
@@ -14,7 +15,7 @@ export const BookListCard = ({
 }) => (
   <div className="inkwell-list-card book-list-card">
     <img
-      src={book.cover_picture || "/default-cover.jpg"}
+      src={book.cover_picture || defaultCover}
       alt={`${book.title} cover`}
       className="book-list-card-cover"
     />
@@ -69,7 +70,7 @@ export const BookListCard = ({
 export const UserListCard = ({ user }) => (
   <div className="inkwell-list-card user-list-card">
     <img
-      src={user.profile_picture || "/default-avatar.jpg"}
+      src={user.profile_picture || defaultAvatar}
       alt={`${user.username}'s avatar`}
       className="user-list-card-avatar"
     />
