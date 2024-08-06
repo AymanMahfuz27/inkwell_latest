@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'uploads',
     'ads',
     'analytics',
+    'feedback',
 ]
 
 MIDDLEWARE = [

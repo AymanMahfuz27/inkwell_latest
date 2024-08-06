@@ -114,3 +114,75 @@
     font-size: 1.5rem;
   }
 }
+
+.inkwell-about-page-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.inkwell-about-page-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.inkwell-about-page-list li svg {
+  margin-right: 10px;
+  color: #3291ff;
+}
+
+.inkwell-about-page-columns {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.inkwell-about-page-column {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .inkwell-about-page-columns {
+    flex-direction: column;
+  }
+}
+
+.inkwell-about-page-intro {
+  font-size: 1.1em;
+  margin-bottom: 2em;
+  color: #e0e0e0;
+}
+
+.inkwell-author-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2em;
+}
+
+.inkwell-author-group {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 1.5em;
+  transition: all 0.3s ease;
+}
+
+.inkwell-author-group:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-5px);
+}
+
+.inkwell-author-group h3 {
+  display: flex;
+  align-items: center;
+  color: #3291ff;
+  margin-bottom: 0.5em;
+}
+
+.inkwell-author-group h3 svg {
+  margin-right: 0.5em;
+}
+
+.inkwell-author-group p {
+  color: #d0d0d0;
+  line-height: 1.6;
+}

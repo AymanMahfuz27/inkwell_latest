@@ -1,9 +1,23 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Mail } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Facebook, Twitter, Instagram, Mail, Bug } from 'lucide-react';
 import '../css/Footer.css';
+import BugReportForm from './BugReportForm';
+import { isAuthenticated } from '../services/authService';
+
+
 
 const Footer = () => {
+  const [showBugReport, setShowBugReport] = useState(false);
+  const navigate = useNavigate();
+  const handleBugReportClick = () => {
+    if (isAuthenticated()) {
+      setShowBugReport(true);
+    } else {
+      navigate('/login');
+    }
+  };
+
   return (
     <footer className="inkwell-footer">
       <div className="inkwell-footer-content">
@@ -35,14 +49,24 @@ const Footer = () => {
             <a href="mailto:support@inkwell.com"><Mail size={20} /></a>
           </div>
         </div>
+        <div className="inkwell-footer-section inkwell-footer-bug-report">
+          <button className="report-bug-button" onClick={handleBugReportClick}>
+            <Bug size={24} />
+            Report a Bug / Suggest a Feature
+          </button>
+        </div>
       </div>
+      
       <div className="inkwell-footer-bottom">
         <p>&copy; 2024 Inkwell. All rights reserved.</p>
         <div>
           <Link to="/privacy">Privacy Policy</Link> | <Link to="/terms">Terms of Service</Link>
         </div>
       </div>
+      
+      {showBugReport && <BugReportForm onClose={() => setShowBugReport(false)} />}
     </footer>
+
   );
 };
 
