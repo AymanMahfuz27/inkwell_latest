@@ -5,6 +5,8 @@ import api from '../services/api';
 const Step2AccountDetails = ({ formData, handleChange, nextStep, prevStep }) => {
   const [usernameError, setUsernameError] = useState('');
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
   useEffect(() => {
     const checkUsername = async () => {
@@ -28,9 +30,25 @@ const Step2AccountDetails = ({ formData, handleChange, nextStep, prevStep }) => 
     return () => clearTimeout(debounceTimer);
   }, [formData.username]);
 
+  const validatePassword = () => {
+    if (formData.password.length < 10) {
+      setPasswordError('Password must be at least 10 characters long');
+    } else {
+      setPasswordError('');
+    }
+  };
+
+  const validateConfirmPassword = () => {
+    if (formData.password !== formData.confirmPassword) {
+      setConfirmPasswordError('Passwords do not match');
+    } else {
+      setConfirmPasswordError('');
+    }
+  };
+
   const isValid = () => {
     return formData.username && formData.password && formData.confirmPassword &&
-           formData.password === formData.confirmPassword && !usernameError;
+           formData.password === formData.confirmPassword && !usernameError && !passwordError && !confirmPasswordError;
   };
 
   return (
@@ -61,8 +79,10 @@ const Step2AccountDetails = ({ formData, handleChange, nextStep, prevStep }) => 
           id="password"
           value={formData.password}
           onChange={handleChange('password')}
+          onBlur={validatePassword}
           required
         />
+        {passwordError && <p className="error-message">{passwordError}</p>}
       </div>
       <div className="input-group">
         <label htmlFor="confirmPassword">
@@ -74,8 +94,10 @@ const Step2AccountDetails = ({ formData, handleChange, nextStep, prevStep }) => 
           id="confirmPassword"
           value={formData.confirmPassword}
           onChange={handleChange('confirmPassword')}
+          onBlur={validateConfirmPassword}
           required
         />
+        {confirmPasswordError && <p className="error-message">{confirmPasswordError}</p>}
       </div>
       <div className="button-group">
         <button onClick={prevStep} className="back-button">
