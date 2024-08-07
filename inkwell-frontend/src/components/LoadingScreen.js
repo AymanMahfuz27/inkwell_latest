@@ -3,12 +3,12 @@ import React from 'react';
 import '../css/LoadingScreen.css';
 
 const LoadingScreen = () => {
+  const inkwellLogo = 'inkwell-logo.svg';
+
   return (
     <div className="loading-screen">
       <div className="loading-icon">
-        <svg width="50" height="50" viewBox="0 0 50 50">
-          <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5" stroke="#3291ff" strokeLinecap="round" />
-        </svg>
+      <img src={inkwellLogo} alt="Inkwell" className="loading-logo" />
       </div>
       <p className="loading-text">Loading Inkwell...</p>
     </div>

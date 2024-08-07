@@ -36,6 +36,8 @@ const HomePage = () => {
   const [selectedGenre, setSelectedGenre] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const inkwellLogo = 'inkwell-logo.svg';
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,8 +94,13 @@ const HomePage = () => {
     <div className="home-page">
       <WatercolorBackground />
       <div className="hero-section">
-        <h1>Welcome to Inkwell</h1>
-        <p>Discover, read, and share your favorite books</p>
+        <div className="hero-content">
+          <img src={inkwellLogo} alt="Inkwell" className="hero-logo" />
+          <div className="hero-text">
+            <h1>Welcome to Inkwell</h1>
+            <p>Discover, read, and share your favorite books</p>
+          </div>
+        </div>
       </div>
       
       <BookRow 
