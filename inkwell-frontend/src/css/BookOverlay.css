@@ -273,6 +273,47 @@
   background-color: #45b7d1;
 }
 
+.inkwell-book-overlay-follow-button,
+.inkwell-book-overlay-edit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.inkwell-book-overlay-follow-button {
+  background-color: #3291ff;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+}
+
+.inkwell-book-overlay-follow-button:hover {
+  background-color: #2176ff;
+}
+
+.inkwell-book-overlay-edit-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.inkwell-book-overlay-edit-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.inkwell-book-overlay-follow-button svg,
+.inkwell-book-overlay-edit-button svg {
+  margin-right: 8px;
+}
+
+
 @keyframes float {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50% { transform: translateY(-20px) rotate(5deg); }

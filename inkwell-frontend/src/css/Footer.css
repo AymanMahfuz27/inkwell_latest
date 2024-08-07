@@ -96,3 +96,49 @@
       margin-bottom: 30px;
     }
   }
+
+  .inkwell-footer-bug-report {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .report-bug-button {
+    background-color: #3291ff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .report-bug-button:hover {
+    background-color: #45b7d1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .report-bug-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Adjust the layout for smaller screens */
+  @media (max-width: 768px) {
+    .inkwell-footer-content {
+      flex-direction: column;
+    }
+  
+    .inkwell-footer-bug-report {
+      order: -1; /* Move the bug report button to the top on mobile */
+      margin-bottom: 20px;
+    }
+  }
+  

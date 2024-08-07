@@ -7,14 +7,13 @@ from django.db.models import JSONField  # Update this import
 
 #create a custom user model
 class UserProfile(AbstractUser):
-    email = models.EmailField(max_length=255, db_index=True)
+    email = models.EmailField(unique=True, max_length=255, db_index=True)
     username = models.CharField(max_length=100, unique=True, db_index=True)
     first_name = models.CharField(max_length=100, blank=True, db_index=True)
     last_name = models.CharField(max_length=100, blank=True, db_index=True)
     bio = models.TextField(max_length=500, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures', blank=True, null=True)
-    followers = models.ManyToManyField('self', related_name='user_following', symmetrical=False, blank=True, db_index=True)
-    following = models.ManyToManyField('self', related_name='user_followers', symmetrical=False, blank=True, db_index=True)
+    following = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
 
     #add a field to store the user's favorite genres
     favorite_genres = models.ManyToManyField('books.Genre', related_name='users_fav_genres', blank=True, db_index=True)
@@ -57,6 +56,12 @@ class UserProfile(AbstractUser):
     def get_following(self):
         return self.following.all()
     
+    def get_following_count(self):
+        return self.following.count()
+    
+    def get_followers_count(self):
+        return self.followers.count()
+
     @classmethod
     def search(cls, query):
         search_vector = SearchVector('username', weight='A') + \
@@ -67,6 +72,18 @@ class UserProfile(AbstractUser):
         return cls.objects.annotate(
             rank=SearchRank(search_vector, search_query)
         ).filter(rank__gte=0.1).order_by('-rank').distinct()
+    
+    def follow(self, user):
+        if user != self:
+            self.following.add(user)
+
+    def unfollow(self, user):
+        self.following.remove(user)
+
+    def is_following(self, user):
+        return self.following.filter(id=user.id).exists()
+
+
 
 class BookCollection(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='book_collections')

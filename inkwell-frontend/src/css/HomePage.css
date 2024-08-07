@@ -18,7 +18,56 @@ body {
 }
 
 
+.hero-section {
+  text-align: center;
+  padding: 80px 40px 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
+.hero-content {
+  display: flex;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.hero-logo {
+  width: 200px;
+  height: auto;
+  filter: brightness(0) invert(1); /* This makes the logo white */
+}
+
+.hero-text {
+  text-align: left;
+}
+
+.hero-text h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+  color: #a0a0a0;
+}
+
+/* Media query for responsiveness */
+@media (max-width: 768px) {
+  .hero-content {
+    flex-direction: column;
+  }
+
+  .hero-logo {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .hero-text {
+    text-align: center;
+  }
+}
 
 .hero-section h1 {
   font-size: 3rem;

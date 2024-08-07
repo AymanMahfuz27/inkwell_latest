@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,11 +10,11 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
-import { Line, Bar, Pie } from 'react-chartjs-2';
-import { ChevronDown } from 'lucide-react';
-import api from '../services/api';
-import '../css/AnalyticsDashboard.css';
+} from "chart.js";
+import { Line, Bar, Pie } from "react-chartjs-2";
+import { ChevronDown } from "lucide-react";
+import api from "../services/api";
+import "../css/AnalyticsDashboard.css";
 
 ChartJS.register(
   CategoryScale,
@@ -30,7 +30,7 @@ ChartJS.register(
 
 const AnalyticsDashboard = () => {
   const [analytics, setAnalytics] = useState(null);
-  const [selectedView, setSelectedView] = useState('profile');
+  const [selectedView, setSelectedView] = useState("profile");
   const [selectedBook, setSelectedBook] = useState(null);
 
   useEffect(() => {
@@ -39,13 +39,13 @@ const AnalyticsDashboard = () => {
 
   const fetchAnalytics = async () => {
     try {
-      const response = await api.get('/api/analytics/');
+      const response = await api.get("/api/analytics/");
       setAnalytics(response.data);
       if (response.data.book_analytics.length > 0) {
         setSelectedBook(response.data.book_analytics[0].id);
       }
     } catch (error) {
-      console.error('Error fetching analytics:', error);
+      console.error("Error fetching analytics:", error);
     }
   };
 
@@ -58,20 +58,22 @@ const AnalyticsDashboard = () => {
   const renderProfileAnalytics = () => {
     const followerData = {
       labels: Object.keys(user_analytics.follower_count_history),
-      datasets: [{
-        label: 'Follower Growth',
-        data: Object.values(user_analytics.follower_count_history),
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1
-      }]
+      datasets: [
+        {
+          label: "Follower Growth",
+          data: Object.values(user_analytics.follower_count_history),
+          borderColor: "rgb(75, 192, 192)",
+          tension: 0.1,
+        },
+      ],
     };
 
     const followerOptions = {
       responsive: true,
       plugins: {
-        legend: { position: 'top' },
-        title: { display: true, text: 'Follower Growth Over Time' }
-      }
+        legend: { position: "top" },
+        title: { display: true, text: "Follower Growth Over Time" },
+      },
     };
 
     return (
@@ -88,15 +90,27 @@ const AnalyticsDashboard = () => {
           </div>
           <div className="stat-item">
             <span className="stat-label">Total Book Likes</span>
-            <span className="stat-value">{user_analytics.total_book_likes}</span>
+            <span className="stat-value">
+              {user_analytics.total_book_likes}
+            </span>
           </div>
           <div className="stat-item">
             <span className="stat-label">Total Book Views</span>
-            <span className="stat-value">{user_analytics.total_book_views}</span>
+            <span className="stat-value">
+              {user_analytics.total_book_views}
+            </span>
           </div>
           <div className="stat-item">
             <span className="stat-label">Total Revenue</span>
-            <span className="stat-value">${user_analytics.total_revenue.toFixed(2)}</span>
+            <span className="stat-value">
+              ${user_analytics.total_revenue.toFixed(2)}
+            </span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-label">Total Number of Books Uploaded</span>
+            <span className="stat-value">
+              {user_analytics.total_books_uploaded}
+            </span>
           </div>
         </div>
       </div>
@@ -104,42 +118,51 @@ const AnalyticsDashboard = () => {
   };
 
   const renderBookAnalytics = () => {
-    const book = book_analytics.find(b => b.id === selectedBook);
+    const book = book_analytics.find((b) => b.id === selectedBook);
     if (!book) return null;
 
     const engagementData = {
-      labels: ['Views', 'Unique Views', 'Completed Reads', 'Likes'],
-      datasets: [{
-        label: 'Book Engagement',
-        data: [book.view_count, book.unique_view_count, book.completed_reads, book.likes_count],
-        backgroundColor: [
-          'rgba(75, 192, 192, 0.6)',
-          'rgba(255, 99, 132, 0.6)',
-          'rgba(255, 206, 86, 0.6)',
-          'rgba(54, 162, 235, 0.6)'
-        ]
-      }]
+      labels: ["Views", "Unique Views", "Completed Reads", "Likes"],
+      datasets: [
+        {
+          label: "Book Engagement",
+          data: [
+            book.view_count,
+            book.unique_view_count,
+            book.completed_reads,
+            book.likes_count,
+          ],
+          backgroundColor: [
+            "rgba(75, 192, 192, 0.6)",
+            "rgba(255, 99, 132, 0.6)",
+            "rgba(255, 206, 86, 0.6)",
+            "rgba(54, 162, 235, 0.6)",
+          ],
+        },
+      ],
     };
 
     const geoData = {
       labels: Object.keys(book.geographic_distribution),
-      datasets: [{
-        data: Object.values(book.geographic_distribution),
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.6)',
-          'rgba(54, 162, 235, 0.6)',
-          'rgba(255, 206, 86, 0.6)',
-          'rgba(75, 192, 192, 0.6)'
-        ]
-      }]
+      datasets: [
+        {
+          data: Object.values(book.geographic_distribution),
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.6)",
+            "rgba(54, 162, 235, 0.6)",
+            "rgba(255, 206, 86, 0.6)",
+            "rgba(75, 192, 192, 0.6)",
+          ],
+        },
+      ],
     };
 
     const chartOptions = {
       responsive: true,
       plugins: {
-        legend: { position: 'top' },
-        title: { display: true, text: 'Book Analytics' }
-      }
+        legend: { position: "top" },
+        title: { display: true, text: "Book Analytics" },
+      },
     };
 
     return (
@@ -185,8 +208,8 @@ const AnalyticsDashboard = () => {
   return (
     <div className="analytics-dashboard">
       <div className="analytics-selector">
-        <select 
-          value={selectedView} 
+        <select
+          value={selectedView}
           onChange={(e) => setSelectedView(e.target.value)}
           className="analytics-dropdown"
         >
@@ -195,18 +218,20 @@ const AnalyticsDashboard = () => {
         </select>
         <ChevronDown className="dropdown-icon" />
       </div>
-      {selectedView === 'profile' ? (
+      {selectedView === "profile" ? (
         renderProfileAnalytics()
       ) : (
         <>
           <div className="analytics-selector">
-            <select 
-              value={selectedBook} 
+            <select
+              value={selectedBook}
               onChange={(e) => setSelectedBook(Number(e.target.value))}
               className="analytics-dropdown"
             >
-              {book_analytics.map(book => (
-                <option key={book.id} value={book.id}>{book.title}</option>
+              {book_analytics.map((book) => (
+                <option key={book.id} value={book.id}>
+                  {book.title}
+                </option>
               ))}
             </select>
             <ChevronDown className="dropdown-icon" />

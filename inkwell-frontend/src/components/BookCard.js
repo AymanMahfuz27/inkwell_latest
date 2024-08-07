@@ -7,6 +7,8 @@ import BookOverlay from './BookOverlay';
 const BookCard = ({ book, onLikeUpdate }) => {
   const [showOverlay, setShowOverlay] = useState(false);
   const [localBook, setLocalBook] = useState(book);
+  const defaultCover = 'default_images/book_default.webp';
+  const defaultAvatar = 'default_images/profile_pic_default.jpg';
 
   const handleLikeUpdate = (newLikeCount, newIsLiked) => {
     setLocalBook(prevBook => ({
@@ -18,7 +20,7 @@ const BookCard = ({ book, onLikeUpdate }) => {
   };
 
   const getImageUrl = (imageUrl) => {
-    if (!imageUrl) return '/default-cover.jpg';
+    if (!imageUrl) return defaultCover;
     if (imageUrl.startsWith('http')) return imageUrl;
     return `${process.env.REACT_APP_API_URL}${imageUrl}`;
   };
@@ -34,7 +36,7 @@ const BookCard = ({ book, onLikeUpdate }) => {
               className="inkwell-bookcard-cover-image"
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = '/default-cover.jpg';
+                e.target.src = defaultCover;
               }}
             />
           </div>

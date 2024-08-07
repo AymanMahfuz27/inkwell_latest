@@ -35,6 +35,9 @@ class Book(models.Model):
     completed_reads = models.IntegerField(default=0)
     total_reading_time = models.DurationField(default=timedelta())
     geographic_distribution = JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     @classmethod
@@ -69,3 +72,17 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+class BookDraft(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='book_drafts')
+    title = models.CharField(max_length=255, blank=True, null=True)
+    genres = models.CharField(max_length=255, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    upload_type = models.CharField(max_length=10, default='pdf')
+    pdf_file = models.FileField(upload_to='book_drafts/pdfs/', null=True, blank=True)
+    text_content = models.TextField(null=True, blank=True)
+    cover_picture = models.ImageField(upload_to='book_drafts/covers/', null=True, blank=True)
+    banner_picture = models.ImageField(upload_to='book_drafts/banners/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

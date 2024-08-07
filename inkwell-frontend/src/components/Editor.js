@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import 'react-quill/dist/quill.snow.css';
 import '../css/Editor.css';
 
-const CustomButton = () => <span title="Insert Page Break">⊟</span>;
+const CustomButton = () => <span title="Insert Page Break">⏎</span>;
 
 function insertPageBreak() {
   const cursorPosition = this.quill.getSelection().index;
@@ -29,70 +29,56 @@ const CustomToolbar = () => (
   </div>
 );
 
-class Editor extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { editorHtml: "" };
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(html) {
-    this.setState({ editorHtml: html });
-    if (this.props.onChange) {
-      this.props.onChange(html);
+const Editor = ({ html, onChange, placeholder }) => {
+  const modules = {
+    toolbar: {
+      container: "#toolbar",
+      handlers: {
+        insertPageBreak: insertPageBreak
+      }
+    },
+    clipboard: {
+      matchVisual: false,
     }
-  }
+  };
 
-  render() {
-    return (
-      <div className="inkwell-upload-page-rich-editor">
-        <CustomToolbar />
-        <ReactQuill
-          onChange={this.handleChange}
-          value={this.state.editorHtml}
-          placeholder={this.props.placeholder}
-          modules={Editor.modules}
-          formats={Editor.formats}
-          theme={"snow"}
-          className="inkwell-upload-page-quill-editor"
-        />
-      </div>
-    );
-  }
-}
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+    "color"
+  ];
 
-Editor.modules = {
-  toolbar: {
-    container: "#toolbar",
-    handlers: {
-      insertPageBreak: insertPageBreak
-    }
-  },
-  clipboard: {
-    matchVisual: false,
-  }
+  return (
+    <div className="inkwell-upload-page-rich-editor">
+      <CustomToolbar />
+      <ReactQuill
+        defaultValue={html}
+        onChange={onChange}
+        placeholder={placeholder}
+        modules={modules}
+        formats={formats}
+        theme="snow"
+        className="inkwell-upload-page-quill-editor"
+      />
+    </div>
+  );
 };
-
-Editor.formats = [
-  "header",
-  "font",
-  "size",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "blockquote",
-  "list",
-  "bullet",
-  "indent",
-  "link",
-  "image",
-  "color"
-];
 
 Editor.propTypes = {
   placeholder: PropTypes.string,
-  onChange: PropTypes.func
+  onChange: PropTypes.func.isRequired,
+  html: PropTypes.string
 };
 
 export default Editor;

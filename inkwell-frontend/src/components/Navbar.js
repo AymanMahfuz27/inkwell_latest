@@ -13,6 +13,7 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const searchInputRef = useRef(null);
+  const inkwellLogo = 'inkwell-logo.svg';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,11 +60,15 @@ const Navbar = () => {
   return (
     <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
       <div className="navbar-content">
-        <Link to="/" className="logo">Inkwell</Link>
+      <Link to="/" className="logo">
+  <img src={inkwellLogo} alt="Inkwell" className="navbar-logo" />
+</Link>
+        <div className="nav-center">
         <div className={`nav-links ${isSearchExpanded ? 'hidden' : ''}`}>
           <Link to="/all-books">Books</Link>
           <Link to="/upload">Upload</Link>
           <Link to="/about">About</Link>
+        </div>
         </div>
         <div className="nav-actions">
           <form onSubmit={handleSearch} className={`search-form ${isSearchExpanded ? 'expanded' : ''}`}>
