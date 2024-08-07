@@ -74,44 +74,46 @@ const MultiStepSignupForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
+  
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
       return;
     }
-
+  
     if (!validatePassword(formData.password)) {
       return;
     }
-
+  
     try {
       const submitData = new FormData();
-      for (const key in formData) {
-        if (key !== 'confirmPassword') {
-          submitData.append(key, formData[key]);
-        }
+      submitData.append('username', formData.username);
+      submitData.append('email', formData.email);
+      submitData.append('password', formData.password);
+      submitData.append('first_name', formData.firstName);
+      submitData.append('last_name', formData.lastName);
+      submitData.append('bio', formData.bio || '');
+      
+      if (formData.profilePicture) {
+        submitData.append('profile_picture', formData.profilePicture);
       }
-
+  
       const response = await api.post("/api/users/register/", submitData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
+  
+      console.log("Registration response:", response.data);
+  
       localStorage.setItem("access_token", response.data.access);
       localStorage.setItem("refresh_token", response.data.refresh);
       await login(formData.username, formData.password);
       navigate("/");
     } catch (error) {
-      console.error("Registration failed:", error);
-      if (error.response && error.response.data.email) {
-        setError("This email is already registered. Please use a different email.");
-      } else {
-        setError("Registration failed. Please check your information and try again.");
-      }
+      console.error("Registration failed:", error.response?.data);
+      setError("Registration failed. Please check your information and try again.");
     }
   };
-
 
   const pageVariants = {
     initial: (direction) => ({

@@ -1,9 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Mail } from 'lucide-react';
+import api from '../services/api';
 
 const Step1PersonalInfo = ({ formData, handleChange, nextStep }) => {
+  const [emailError, setEmailError] = useState('');
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+
+  useEffect(() => {
+    const checkEmail = async () => {
+      if (formData.email.length > 0) {
+        setIsCheckingEmail(true);
+        try {
+          const response = await api.get(`/api/users/check-email/?email=${formData.email}`);
+          if (response.data.is_taken) {
+            setEmailError('This email is already registered');
+          } else {
+            setEmailError('');
+          }
+        } catch (error) {
+          console.error('Error checking email:', error);
+        }
+        setIsCheckingEmail(false);
+      }
+    };
+
+    const debounceTimer = setTimeout(checkEmail, 500);
+    return () => clearTimeout(debounceTimer);
+  }, [formData.email]);
+
   const isValid = () => {
-    return formData.firstName && formData.lastName && formData.email;
+    return formData.firstName && formData.lastName && formData.email && !emailError;
   };
 
   return (
@@ -47,6 +73,8 @@ const Step1PersonalInfo = ({ formData, handleChange, nextStep }) => {
           onChange={handleChange('email')}
           required
         />
+        {isCheckingEmail && <p className="checking-message">Checking email...</p>}
+        {emailError && <p className="error-message">{emailError}</p>}
       </div>
       <button onClick={nextStep} disabled={!isValid()} className="next-button">
         Next

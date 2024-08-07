@@ -13,6 +13,16 @@
     align-items: center;
     margin-bottom: 20px;
   }
+  .error-message {
+    color: #ff6b6b;
+    font-size: 0.9rem;
+    margin-top: 5px;
+  }
+  
+  .inkwell-upload-page-input.error,
+  .inkwell-upload-page-file-input.error {
+    border-color: #ff6b6b;
+  }
   
   .inkwell-upload-page-progress-bar .step {
     width: 30px;

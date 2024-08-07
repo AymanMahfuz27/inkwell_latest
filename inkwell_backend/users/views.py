@@ -18,7 +18,10 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate, get_user_model
 from django.db.models import F
+from rest_framework import serializers
+import logging 
 
+logger = logging.getLogger(__name__)
 
 
 
@@ -171,19 +174,11 @@ class RegisterView(generics.CreateAPIView):
     queryset = UserProfile.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def create(self, request, *args, **kwargs):
-        print("Request data: ", request.data)
-        response = super().create(request, *args, **kwargs)
-        user = UserProfile.objects.get(username=response.data['username'])
-        refresh = RefreshToken.for_user(user)
-        response.data['refresh'] = str(refresh)
-        response.data['access'] = str(refresh.access_token)
-        return response
-
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
+        logger.info(f"Received registration request. Data: {request.data}")
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             try:
                 validate_password(request.data['password'])
@@ -191,10 +186,22 @@ class RegisterView(generics.CreateAPIView):
                 return Response({'password': e.messages}, status=status.HTTP_400_BAD_REQUEST)
             
             user = serializer.save()
-            if user:
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            refresh = RefreshToken.for_user(user)
+            data = serializer.data
+            data['refresh'] = str(refresh)
+            data['access'] = str(refresh.access_token)
+            return Response(data, status=status.HTTP_201_CREATED)
+        logger.error(f"Registration failed. Errors: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+    def perform_create(self, serializer):
+        try:
+            validate_password(self.request.data['password'])
+        except ValidationError as e:
+            raise serializers.ValidationError({'password': e.messages})
+        serializer.save()
 User = get_user_model()
 
 # Simplified login view
@@ -234,3 +241,16 @@ def login_view(request):
     else:
         return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def check_username(request):
+    username = request.GET.get('username', '')
+    is_taken = UserProfile.objects.filter(username=username).exists()
+    return Response({'is_taken': is_taken})
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def check_email(request):
+    email = request.GET.get('email', '')
+    is_taken = UserProfile.objects.filter(email=email).exists()
+    return Response({'is_taken': is_taken})

@@ -45,6 +45,7 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [submitData, setSubmitData] = useState(null);
   const [isUploadingBook, setIsUploadingBook] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (initialData) {
@@ -100,6 +101,11 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
   };
 
   const handleSaveDraft = async () => {
+    if (!validateStep1()) {
+      setErrorMessage("Please fill out all required fields in Step 1.");
+      return;
+    }
+  
     console.log("Saving as a draft");
     setIsLoading(true);
     setErrorMessage(null);
@@ -143,6 +149,11 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
   };
 
   const handleUploadBook = async () => {
+    if (!validateStep1() || !validateStep2()) {
+      setErrorMessage("Please fill out all required fields.");
+      return;
+    }
+  
     console.log("Uploading as a final book");
     setIsLoading(true);
     setErrorMessage(null);
@@ -205,6 +216,30 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
       </div>
     );
   };
+  const validateStep1 = () => {
+    const newErrors = {};
+    if (!formData.title.trim()) newErrors.title = "Title is required";
+    if (!formData.genres.trim()) newErrors.genres = "At least one genre is required";
+    if (!formData.description.trim()) newErrors.description = "Description is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  const validateStep2 = () => {
+    const newErrors = {};
+    if (formData.uploadType === "pdf" && !files.pdfFile) {
+      newErrors.pdfFile = "PDF file is required";
+    }
+    if (formData.uploadType === "text" && !formData.text_content.trim()) {
+      newErrors.text_content = "Book content is required";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  const handleNextClick = () => {
+    if (validateStep1()) {
+      setStep(2);
+    }
+  };
 
   const renderStep1 = () => (
     <>
@@ -223,9 +258,11 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
           value={formData.title}
           onChange={handleChange}
           required
-          className="inkwell-upload-page-input"
+          className={`inkwell-upload-page-input ${errors.title ? 'error' : ''}`}
           placeholder="Enter your book title"
         />
+        {errors.title && <span className="error-message">{errors.title}</span>}
+
       </div>
       <div className="inkwell-upload-page-input-group full-width">
         <label
@@ -260,9 +297,11 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
           value={formData.description}
           onChange={handleChange}
           required
-          className="inkwell-upload-page-textarea"
+          className={`inkwell-upload-page-input ${errors.description ? 'error' : ''}`}
           placeholder="Describe your book"
         />
+          {errors.description && <span className="error-message">{errors.description}</span>}
+
       </div>
     </>
   );
@@ -282,8 +321,10 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
               value="pdf"
               checked={formData.uploadType === "pdf"}
               onChange={handleChange}
-              className="inkwell-upload-page-radio"
-            />
+              className={`inkwell-upload-page-file-input ${errors.pdfFile ? 'error' : ''}`}
+              />
+                      {errors.pdfFile && <span className="error-message">{errors.pdfFile}</span>}
+
             PDF
           </label>
           <label className="inkwell-upload-page-radio-label">
@@ -418,7 +459,7 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
         {step < 2 && (
           <button
             type="button"
-            onClick={() => setStep(step + 1)}
+            onClick={handleNextClick}
             className="inkwell-upload-page-nav-button"
           >
             Next <ChevronRight size={20} />
