@@ -7,7 +7,17 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
   overflow: hidden; /* This ensures animations don't overflow */
 }
+.checking-message {
+  color: #3291ff;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
 
+.error-message {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
 .step-container {
   animation: fadeIn 0.5s ease-out;
 }

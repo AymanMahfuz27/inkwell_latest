@@ -1,7 +1,7 @@
 # users/urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import UserProfileViewSet, BookCollectionViewSet, RegisterView, CustomTokenObtainPairView, login_view
+from .views import UserProfileViewSet, BookCollectionViewSet, RegisterView, CustomTokenObtainPairView, login_view, check_username, check_email
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 
@@ -15,5 +15,7 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', login_view, name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('check-username/', check_username, name='check_username'),
+    path('check-email/', check_email, name='check_email'),
 
 ]

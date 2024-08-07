@@ -126,19 +126,25 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ('username', 'email', 'password', 'first_name', 'last_name', 'bio', 'profile_picture')
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'bio': {'required': False},
+            'profile_picture': {'required': False},
+            'first_name': {'required': False},
+            'last_name': {'required': False}
+        }
 
     def create(self, validated_data):
-        profile_picture = validated_data.pop('profile_picture', None)
         user = UserProfile.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
             first_name=validated_data.get('first_name', ''),
             last_name=validated_data.get('last_name', ''),
-            bio=validated_data.get('bio', ''),
+            bio=validated_data.get('bio', '')
         )
-        if profile_picture:
-            user.profile_picture = profile_picture
-        user.save()
+        if 'profile_picture' in validated_data:
+            user.profile_picture = validated_data['profile_picture']
+            user.save()
         return user
+
