@@ -11,6 +11,7 @@ import {
   ChevronDown,
   Trash2,
   FileText,
+  ChevronLeft
 } from "lucide-react";
 import api from "../services/api";
 import {
@@ -29,6 +30,8 @@ import AnalyticsDashboard from "../components/AnalyticsDashboard";
 import { BookListCard } from "../components/ListCards";
 import FollowersList from "../components/FollowersList";
 import FollowingList from "../components/FollowingList";
+import LoadingScreen from '../components/LoadingScreen';
+
 
 const ProfilePage = () => {
   const { username } = useParams();
@@ -330,7 +333,7 @@ const ProfilePage = () => {
     }));
   };
   if (error) return <div className="error">{error}</div>;
-  if (!profile) return <div className="loading">Loading...</div>;
+  if (!profile) return <LoadingScreen />;
 
   return (
     <div className="inkwell-profile-page-container">
@@ -580,7 +583,10 @@ const ProfilePage = () => {
             {collection.name}
           </h3>
           <span className="inkwell-profile-page-collection-toggle">
-            {expandedCollections[collection.id] ? '▼' : '►'}
+          {expandedCollections[collection.id] ? 
+      <ChevronDown size={20} /> : 
+      <ChevronLeft size={20} />
+    }
           </span>
         </div>
         {expandedCollections[collection.id] && (

@@ -225,6 +225,9 @@
   transition: ease-in 0.3s ease-out; 
 }
 
+.inkwell-profile-page-collection-header:hover .inkwell-profile-page-collection-toggle {
+  transform: scale(1.1);
+}
 
 
 .inkwell-profile-page-error,

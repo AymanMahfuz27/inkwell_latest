@@ -5,6 +5,7 @@ import WatercolorBackground from '../components/WatercolorBackground';
 import MultiStepUploadForm from '../components/MultiStepUploadForm';
 import api from '../services/api';
 import '../css/UploadBookPage.css';
+import LoadingScreen from '../components/LoadingScreen';
 
 const UploadBookPage = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const UploadBookPage = () => {
 
   }, [location]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <LoadingScreen />;
   if (error) return <div>{error}</div>;
 
   return (
