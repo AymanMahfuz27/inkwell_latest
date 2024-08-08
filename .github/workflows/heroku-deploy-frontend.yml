@@ -18,3 +18,4 @@ jobs:
           heroku_app_name: "inkwell-frontend"
           heroku_email: "ayman.afeef@gmail.com"
           appdir: "inkwell-frontend"
+          procfile: "web: npm start"

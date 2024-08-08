@@ -18,3 +18,4 @@ jobs:
           heroku_app_name: "inkwell-backend"
           heroku_email: "ayman.afeef@gmail.com"
           appdir: "inkwell_backend"
+          procfile: "web: gunicorn inkwell_backend.wsgi --log-file -"
