@@ -18,7 +18,3 @@ jobs:
           heroku_app_name: "inkwell-backend"
           heroku_email: "ayman.afeef@gmail.com"
           appdir: "inkwell_backend"
-      - name: Run migrations
-        run: heroku run python manage.py migrate --app inkwell-backend
-        env:
-          HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
