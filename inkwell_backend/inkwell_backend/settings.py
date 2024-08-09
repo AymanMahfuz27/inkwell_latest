@@ -154,11 +154,11 @@ CORS_ALLOW_ALL_ORIGINS = False  # Set to True for development, False for product
 CORS_ALLOWS_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://localhost:8000",
-    "http://localhost:8080",
     'https://inkwell-frontend-b355aff226c5.herokuapp.com',
     "https://www.inkwell-book.com",
-    "https://inkwell-book.com"
+    "https://inkwell-book.com",
+    "http://www.inkwell-book.com",
+    "http://inkwell-book.com"
 ]
 
 
