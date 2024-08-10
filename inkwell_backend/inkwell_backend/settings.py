@@ -5,6 +5,7 @@ from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
 import dj_database_url
+import sys
 
 load_dotenv()
 
@@ -16,7 +17,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-secret-key-here')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['inkwell-backend-291a1781d750.herokuapp.com', 'localhost', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
@@ -77,7 +78,7 @@ if os.environ.get('DATABASE_URL'):
     DATABASES = {
         'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
     }
-    DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
+    DEBUG = False
 
 
 else:
@@ -122,6 +123,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
 
 # Media files
 MEDIA_URL = '/media/'
@@ -147,16 +150,15 @@ SIMPLE_JWT = {
 }
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = True  # Set to True for development, False for production
+CORS_ALLOW_ALL_ORIGINS = False  # Set to True for development, False for production
 CORS_ALLOWS_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://localhost:8000",
-    "http://localhost:8080",
-    "https://359265b8-6edd-406f-b3a3-e869fcb2ecf8-dev.e1-us-east-azure.choreoapis.dev",
     'https://inkwell-frontend-b355aff226c5.herokuapp.com',
-    "https://www.inkwell-book.com",
-    "https://inkwell-book.com"
+    "https://www.inkwellbooks.app",
+    "https://inkwellbooks.app",
+    "http://www.inkwellbooks.app",
+    "http://inkwellbooks.app"
 ]
 
 
