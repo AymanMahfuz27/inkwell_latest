@@ -83,7 +83,7 @@ const BugReportForm = ({ onClose }) => {
             />
           </div>
           {error && <p className="error">{error}</p>}
-          <button type="submit">Submit</button>
+          <button classname="bug-report-form-button" type="submit">Submit</button>
         </form>
       </div>
     </div>

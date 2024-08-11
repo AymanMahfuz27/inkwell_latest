@@ -26,6 +26,10 @@ body {
   align-items: center;
 }
 
+.hero-section-all-books {
+  padding: 20px;
+}
+
 .hero-content {
   display: flex;
   align-items: center;

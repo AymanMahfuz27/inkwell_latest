@@ -7,6 +7,7 @@ import { isAuthenticated, getUsername } from '../services/authService';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import '../css/HomePage.css';
 import WatercolorBackground from '../components/WatercolorBackground';
+import LoadingScreen from '../components/LoadingScreen';
 
 const BookRow = ({ title, books, onScrollLeft, onScrollRight }) => (
   <div className="book-row">
@@ -87,7 +88,7 @@ const HomePage = () => {
     }
   };
 
-  if (loading) return <div className="loading">Loading books...</div>;
+  if (loading) return <LoadingScreen/>;
   if (error) return <div className="error">{error}</div>;
 
   return (

@@ -13,14 +13,14 @@
   position: absolute;
   border-radius: 50%;
   filter: blur(60px);
-  opacity: 0.1;
-  animation: float 20s ease-in-out infinite;
+  opacity: 0.2;
+  animation: float 20s ease-in-out infinite, fadeInDrop 2s ease-in-out forwards;
 }
 
 .blob1 {
   width: 100vh;
   height: 100vh;
-  background-color: #ff6b6b;
+  background-color: #04375e;
   top: -50vh;
   left: -50vh;
 }
@@ -28,7 +28,7 @@
 .blob2 {
   width: 100vh;
   height: 100vh;
-  background-color: #4ecdc4;
+  background-color: #97abaf;
   bottom: -50vh;
   right: -50vh;
 }
@@ -36,7 +36,7 @@
 .blob3 {
   width: 80vh;
   height: 80vh;
-  background-color: #45b7d1;
+  background-color: #7493b3;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -44,11 +44,30 @@
 .blob4 {
   width: 90vh;
   height: 90vh;
-  background-color: #caffbf; /* Light Green */
+  background-color: #2574a1; /* Light Green */
   bottom: 25%;
   left: 25%;
+}
+
+.blob5 {
+  width: 70vh;
+  height: 70vh;
+  background-color: #4e89ae; /* Light Blue */
+  top: 14%;
+  right:58%;
 }
 @keyframes float {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes fadeInDrop {
+  0% {
+    opacity: 0;
+    transform: translateY(-100px); /* Starts from above the viewport */
+  }
+  100% {
+    opacity: 0.2;
+    transform: translateY(0); /* Drops into place */
+  }
 }

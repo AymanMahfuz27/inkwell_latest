@@ -3,7 +3,7 @@ import axios from 'axios';
 import {jwtDecode}  from 'jwt-decode';
 import api from './api';
 
-const API_URL = process.env.REACT_APP_API_URL + '/api' || 'http://localhost:8000/api';
+const API_URL = process.env.REACT_APP_API_URL + '/api' || 'https://inkwell-backend-291a1781d750.herokuapp.com/api';
 
 export const login = async (username, password) => {
   try {

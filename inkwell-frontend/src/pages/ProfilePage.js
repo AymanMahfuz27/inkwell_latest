@@ -339,41 +339,41 @@ const ProfilePage = () => {
     <div className="inkwell-profile-page-container">
       <WatercolorBackground />
       <div className="inkwell-profile-page-content">
-        <div className="inkwell-profile-page-header">
-          <img
-            src={profile.profile_picture ||defaultAvatar}
-            alt={`${profile.username}'s profile`}
-            className="inkwell-profile-page-picture"
-          />
-          <div className="inkwell-profile-page-info">
-            <h1 className="inkwell-profile-page-name">
-              {profile.first_name} {profile.last_name}
-            </h1>
-            <p className="inkwell-profile-page-username">@{profile.username}</p>
-            <p className="inkwell-profile-page-bio">{profile.bio}</p>
-          </div>
-          <div className="inkwell-profile-page-stats-and-actions">
-            <div className="inkwell-profile-page-stats">
-              <span>Followers: {followersCount}</span>
-              <span>Following: {followingCount}</span>
-            </div>
-            {!isOwnProfile ? (
-              <button
-                onClick={handleFollow}
-                className="inkwell-profile-page-follow-button"
-              >
-                {isFollowing ? "Unfollow" : "Follow"}
-              </button>
-            ) : !isEditing ? (
-              <button
-                onClick={handleEdit}
-                className="inkwell-profile-page-edit-button"
-              >
-                <Edit2 size={20} /> Edit Profile
-              </button>
-            ) : null}
-          </div>
-        </div>
+      <div className="inkwell-profile-page-header">
+  <img
+    src={profile.profile_picture || defaultAvatar}
+    alt={`${profile.username}'s profile`}
+    className="inkwell-profile-page-picture"
+  />
+  <div className="inkwell-profile-page-info">
+    <h1 className="inkwell-profile-page-name">
+      {profile.first_name} {profile.last_name}
+    </h1>
+    <p className="inkwell-profile-page-username">@{profile.username}</p>
+    <p className="inkwell-profile-page-bio">{profile.bio}</p>
+    <div className="inkwell-profile-page-stats">
+      <span>Followers: {followersCount}</span>
+      <span>Following: {followingCount}</span>
+    </div>
+  </div>
+  <div className="inkwell-profile-page-stats-and-actions">
+    {!isOwnProfile ? (
+      <button
+        onClick={handleFollow}
+        className="inkwell-profile-page-follow-button"
+      >
+        {isFollowing ? "Unfollow" : "Follow"}
+      </button>
+    ) : !isEditing ? (
+      <button
+        onClick={handleEdit}
+        className="inkwell-profile-page-edit-button"
+      >
+        <Edit2 size={20} /> Edit Profile
+      </button>
+    ) : null}
+  </div>
+</div>
 
         {isEditing && (
           <form onSubmit={handleSubmit} className="inkwell-profile-page-form">
@@ -450,54 +450,54 @@ const ProfilePage = () => {
           </form>
         )}
 
-        <div className="inkwell-profile-page-tabs">
-          <button
-            className={`tab ${activeTab === "books" ? "active" : ""}`}
-            onClick={() => setActiveTab("books")}
-          >
-            All Books
-          </button>
-          {isOwnProfile && (
-            <>
-            <button
-                className={`tab ${activeTab === "drafts" ? "active" : ""}`}
-                onClick={() => setActiveTab("drafts")}
-              >
-                Drafts
-              </button>
-              <button
-                className={`tab ${activeTab === "liked" ? "active" : ""}`}
-                onClick={() => setActiveTab("liked")}
-              >
-                Liked Books
-              </button>
-              <button
-                className={`tab ${activeTab === "collections" ? "active" : ""}`}
-                onClick={() => setActiveTab("collections")}
-              >
-                Book Collections
-              </button>
-              <button
-                className={`tab ${activeTab === "followers" ? "active" : ""}`}
-                onClick={() => setActiveTab("followers")}
-              >
-                Followers
-              </button>
-              <button
-                className={`tab ${activeTab === "following" ? "active" : ""}`}
-                onClick={() => setActiveTab("following")}
-              >
-                Following
-              </button>
-              <button
-                className={`tab ${activeTab === "analytics" ? "active" : ""}`}
-                onClick={() => setActiveTab("analytics")}
-              >
-                Analytics
-              </button>
-            </>
-          )}
-        </div>
+<div className="inkwell-profile-page-tabs">
+  <button
+    className={`tab ${activeTab === "books" ? "active" : ""}`}
+    onClick={() => setActiveTab("books")}
+  >
+    Books
+  </button>
+  {isOwnProfile && (
+    <>
+      <button
+        className={`tab ${activeTab === "drafts" ? "active" : ""}`}
+        onClick={() => setActiveTab("drafts")}
+      >
+        Drafts
+      </button>
+      <button
+        className={`tab ${activeTab === "liked" ? "active" : ""}`}
+        onClick={() => setActiveTab("liked")}
+      >
+        Liked
+      </button>
+      <button
+        className={`tab ${activeTab === "collections" ? "active" : ""}`}
+        onClick={() => setActiveTab("collections")}
+      >
+        Collections
+      </button>
+      <button
+        className={`tab ${activeTab === "followers" ? "active" : ""}`}
+        onClick={() => setActiveTab("followers")}
+      >
+        Followers
+      </button>
+      <button
+        className={`tab ${activeTab === "following" ? "active" : ""}`}
+        onClick={() => setActiveTab("following")}
+      >
+        Following
+      </button>
+      <button
+        className={`tab ${activeTab === "analytics" ? "active" : ""}`}
+        onClick={() => setActiveTab("analytics")}
+      >
+        Analytics
+      </button>
+    </>
+  )}
+</div>
 
         {activeTab === "books" && (
           <div className="inkwell-profile-page-books">

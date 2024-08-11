@@ -1,7 +1,7 @@
 # users/views.py
 from rest_framework import viewsets, generics,status
 from .models import UserProfile, BookCollection
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAuthenticated
 from .serializers import UserProfileSerializer, BookCollectionSerializer,CustomTokenObtainPairSerializer, RegisterSerializer, FollowSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     lookup_field = 'username'
     parser_classes = (MultiPartParser, FormParser, JSONParser)
 

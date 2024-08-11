@@ -61,15 +61,15 @@
 .nav-center {
   flex-grow: 1; /* Allows the nav-center to take remaining space */
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 
-.search-form {
+.search-form-navbar {
   position: relative;
 }
 
-.search-form.expanded {
+.search-form-navbar.expanded {
   flex: 1;
 }
 
@@ -208,16 +208,134 @@
   opacity: 1;
 }
 
-@media (max-width: 768px) {
-  .navbar-content {
-    padding: 15px 20px;
+
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 5px;
+  transition: color 0.3s ease;
+  z-index: 100;
+}
+
+.menu-toggle:hover {
+  color: #3291ff;
+}
+
+
+body.menu-open {
+  overflow: hidden;
+}
+
+@media (max-width: 820px) {
+  .nav-center {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .nav-center.mobile-menu-visible {
+    transform: translateX(0);
   }
 
   .nav-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .nav-links a, .mobile-logout-button {
+    font-size: 1.5rem;
+    padding: 10px 0;
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .nav-links a:hover, .mobile-logout-button:hover {
+    color: #3291ff;
+  }
+
+  .mobile-logout-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .mobile-only {
+    display: block;
+  }
+
+  /* .desktop-only {
     display: none;
+  } */
+
+  .menu-toggle {
+    display: block;
+    z-index: 1001;
+  }
+
+  .search-input,
+  .profile-link span,
+  .sign-in-button {
+    display: none;
+  }
+  .nav-actions {
+    position: relative;
+  }
+
+  .search-form-navbar {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    padding: 10px;
+    display: none;
+    z-index: 1002;
+  }
+
+  .search-form-navbar.expanded {
+    display: flex;
   }
 
   .search-input {
-    width: 150px;
+    width: 100%;
+    display: block;
+    opacity: 1;
+    padding: 8px 15px;
+  }
+
+  .search-toggle {
+    display: block;
+  }
+
+}
+
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none;
+  }
+
+  .desktop-only {
+    display: flex;
   }
 }
+
+
+
+
+

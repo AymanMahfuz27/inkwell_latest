@@ -64,7 +64,7 @@
     resize: vertical;
   }
   
-  button[type="submit"] {
+  .bug-report-form-button {
     display: block;
     width: 100%;
     padding: 10px;
@@ -77,7 +77,7 @@
     margin: 10px 0;
   }
   
-  button[type="submit"]:hover {
+  .bug-report-form-button:hover {
     background-color: #2b7ad4;
   }
   

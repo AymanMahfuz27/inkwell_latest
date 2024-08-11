@@ -1,19 +1,25 @@
-// src/components/Navbar.js
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { isAuthenticated, getUserFirstName, getUsername, logout } from "../services/authService";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import {
+  isAuthenticated,
+  getUserFirstName,
+  getUsername,
+  logout,
+} from "../services/authService";
 import useAuth from "../hooks/useAuth";
-import { Search, User, LogOut } from 'lucide-react';
-import '../css/Navbar.css';
+import { Search, User, LogOut, Menu, X } from "lucide-react";
+import "../css/Navbar.css";
 
 const Navbar = () => {
   const { auth, username, firstName } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const searchInputRef = useRef(null);
-  const inkwellLogo = 'inkwell-logo.svg';
+  const inkwellLogo = "inkwell-logo.svg";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,33 +27,66 @@ const Navbar = () => {
     };
 
     const handleClickOutside = (event) => {
-      if (searchInputRef.current && !searchInputRef.current.contains(event.target)) {
+      if (
+        searchInputRef.current &&
+        !searchInputRef.current.contains(event.target)
+      ) {
         if (!searchQuery) {
           setIsSearchExpanded(false);
         }
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener("scroll", handleScroll);
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [searchQuery]);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isSearchExpanded &&
+        searchInputRef.current &&
+        !searchInputRef.current.contains(event.target) &&
+        !event.target.closest(".search-toggle")
+      ) {
+        setIsSearchExpanded(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSearchExpanded]);
+
+  const toggleMenu = () => {
+    // Scroll to the top of the page
+    window.scrollTo(0, 0);
+
+    // Small delay to ensure scroll completes before opening menu
+    setTimeout(() => {
+      setIsMenuOpen(!isMenuOpen);
+      document.body.classList.toggle("menu-open");
+    }, 100);
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-      setIsSearchExpanded(false);
-    }
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+    setIsMenuOpen(false);
+  };
+
+  const handleNavClick = () => {
+    setIsMenuOpen(false);
   };
 
   const toggleSearch = () => {
@@ -55,48 +94,121 @@ const Navbar = () => {
     if (!isSearchExpanded) {
       setTimeout(() => searchInputRef.current?.focus(), 100);
     }
+    // Close the menu if it's open
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+      document.body.classList.remove("menu-open");
+    }
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchExpanded(false);
+      setSearchQuery("");
+    }
   };
 
   return (
-    <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
+    <nav
+      className={`navbar ${isScrolled ? "scrolled" : ""} ${
+        isMenuOpen ? "menu-open" : ""
+      }`}
+    >
       <div className="navbar-content">
-      <Link to="/" className="logo">
-  <img src={inkwellLogo} alt="Inkwell" className="navbar-logo" />
-</Link>
-        <div className="nav-center">
-        <div className={`nav-links ${isSearchExpanded ? 'hidden' : ''}`}>
-          <Link to="/all-books">Books</Link>
-          <Link to="/upload">Upload</Link>
-          <Link to="/about">About</Link>
-        </div>
+        <Link to="/" className="logo" onClick={handleNavClick}>
+          <img src={inkwellLogo} alt="Inkwell" className="navbar-logo" />
+        </Link>
+        <div
+          className={`nav-center ${isMenuOpen ? "mobile-menu-visible" : ""}`}
+        >
+          <div className={`nav-links ${isSearchExpanded ? "hidden" : ""}`}>
+            <Link to="/all-books" onClick={handleNavClick}>
+              Books
+            </Link>
+            <Link to="/upload" onClick={handleNavClick}>
+              Upload
+            </Link>
+            <Link to="/about" onClick={handleNavClick}>
+              About
+            </Link>
+            {auth && (
+              <>
+                <Link
+                  to={`/profile/${username}`}
+                  onClick={handleNavClick}
+                  className="mobile-only"
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="mobile-only mobile-logout-button"
+                >
+                  Logout
+                </button>
+              </>
+            )}
+            {!auth && (
+              <Link
+                to="/login"
+                onClick={handleNavClick}
+                className="mobile-only"
+              >
+                Sign In
+              </Link>
+            )}
+          </div>
         </div>
         <div className="nav-actions">
-          <form onSubmit={handleSearch} className={`search-form ${isSearchExpanded ? 'expanded' : ''}`}>
+          <form
+            onSubmit={handleSearch}
+            className={`search-form-navbar ${
+              isSearchExpanded ? "expanded" : ""
+            }`}
+          >
             <input
               ref={searchInputRef}
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search Inkwell"
-              className={`search-input ${!isSearchExpanded ? 'collapsed' : ''}`}
+              className="search-input"
             />
-            <button type="button" className="icon-button" onClick={toggleSearch}>
-              <Search size={20} />
-            </button>
           </form>
+          <button
+            type="button"
+            className="icon-button search-toggle"
+            onClick={toggleSearch}
+          >
+            <Search size={20} />
+          </button>
+
           {auth ? (
             <>
-              <Link to={`/profile/${username}`} className="profile-link">
+              <Link
+                to={`/profile/${username}`}
+                className="profile-link desktop-only"
+              >
                 <User size={20} />
-                <span>{firstName || 'User'}</span>
+                <span>{firstName || "User"}</span>
               </Link>
-              <button onClick={handleLogout} className="icon-button">
+              <button
+                onClick={handleLogout}
+                className="icon-button desktop-only"
+              >
                 <LogOut size={20} />
               </button>
             </>
           ) : (
-            <Link to="/login" className="sign-in-button">Sign In</Link>
+            <Link to="/login" className="sign-in-button desktop-only">
+              Sign In
+            </Link>
           )}
+          <button className="menu-toggle" onClick={toggleMenu}>
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </div>
     </nav>

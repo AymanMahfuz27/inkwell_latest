@@ -8,6 +8,7 @@ const WatercolorBackground = () => {
       <div className="watercolor-blob blob2"></div>
       <div className="watercolor-blob blob3"></div>
       <div className="watercolor-blob blob4"></div>
+      <div className="watercolor-blob blob5"></div>
     </div>
   );
 };
