@@ -7,6 +7,7 @@ import { User, Book, Tag } from 'lucide-react';
 import '../css/SearchPage.css';
 import WatercolorBackground from '../components/WatercolorBackground';
 
+
 const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [bookResults, setBookResults] = useState([]);
@@ -48,25 +49,12 @@ const SearchPage = () => {
     }
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    performSearch(searchQuery);
-  };
+
 
   return (
     <div className="search-page">
       <WatercolorBackground />
       <h1>Search Inkwell</h1>
-      <form onSubmit={handleSearch} className="search-form">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search for books, users, or genres"
-          className="search-input"
-        />
-        <button type="submit" className="search-button">Search</button>
-      </form>
 
       {isLoading && <div className="loading">Searching...</div>}
       {error && <div className="error">{error}</div>}

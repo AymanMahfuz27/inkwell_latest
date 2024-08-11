@@ -12,6 +12,8 @@ import BookReader from './components/BookReader';
 import AllBooksPage from './pages/AllBooksPage';  
 import SearchPage from './pages/SearchPage'; 
 import LoadingScreen from './components/LoadingScreen';
+import ScrollToTop from './components/ScrollToTop';
+import NotFoundPage from './pages/NotFoundPage';
 
 
 
@@ -32,6 +34,7 @@ function App() {
 
   return (
     <div>
+      <ScrollToTop />
       <Navbar /> 
       <Routes>
         <Route path="/" element={<HomePage />} /> 
@@ -41,7 +44,9 @@ function App() {
         <Route path="/book/:bookId" element={<BookReader />} /> 
         <Route path="/about" element={<AboutPage />} /> 
         <Route path="/all-books" element={<AllBooksPage />} /> 
-        <Route path="/search" element={<SearchPage />} />  
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/loading-page" element={<LoadingScreen />} />
+        <Route path="*" element={<NotFoundPage/>} />
       </Routes>
       <Footer />
     </div>

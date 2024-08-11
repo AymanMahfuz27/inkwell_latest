@@ -10,6 +10,7 @@ const AllBooksPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
+  
 
   useEffect(() => {
     fetchBooks();
@@ -50,7 +51,7 @@ const AllBooksPage = () => {
   return (
     <div className="home-page all-books-page">
         <WatercolorBackground />
-      <div className="hero-section">
+      <div className="hero-section-all-books">
         <h1>All Books</h1>
         <p>Explore our collection of amazing books</p>
       </div>

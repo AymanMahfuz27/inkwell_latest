@@ -282,36 +282,7 @@
   display: none;
 }
 
-@media (min-width: 768px) {
-  .inkwell-profile-page-form {
-    grid-template-columns: 1fr 1fr;
-  }
 
-  .inkwell-profile-page-input-group:last-of-type {
-    grid-column: span 2;
-  }
-
-  .inkwell-profile-page-button-group {
-    grid-column: span 2;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-  }
-}
-
-@media (max-width: 767px) {
-  .inkwell-profile-page-content {
-    padding: 30px 20px;
-  }
-
-  .inkwell-profile-page-title {
-    font-size: 2rem;
-  }
-
-  .inkwell-profile-page-subtitle {
-    font-size: 1.5rem;
-  }
-}
 
 .inkwell-profile-page-tabs {
   display: flex;
@@ -362,6 +333,107 @@
 
 .delete-book-button svg {
   margin-right: 5px;
+}
+
+/* Add these new styles at the end of your existing CSS file */
+
+@media (min-width: 768px) {
+  .inkwell-profile-page-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .inkwell-profile-page-input-group:last-of-type {
+    grid-column: span 2;
+  }
+
+  .inkwell-profile-page-button-group {
+    grid-column: span 2;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+}
+
+
+@media (max-width: 870px) {
+
+
+  .inkwell-profile-page-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .inkwell-profile-page-picture {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .inkwell-profile-page-info {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .inkwell-profile-page-stats-and-actions {
+    text-align: center;
+    width: 100%;
+  }
+
+  .inkwell-profile-page-follow-button,
+  .inkwell-profile-page-edit-button {
+    max-width: none;
+    width: 100%;
+  }
+
+  .inkwell-profile-page-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 10px;
+  }
+
+  .inkwell-profile-page-tabs .tab {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .inkwell-profile-page-form {
+    grid-template-columns: 1fr;
+  }
+
+  .inkwell-profile-page-button-group {
+    flex-direction: column;
+  }
+
+  .inkwell-profile-page-button {
+    width: 100%;
+  }
+  .inkwell-profile-page-content {
+    padding: 30px 20px;
+  }
+
+  .inkwell-profile-page-title {
+    font-size: 2rem;
+  }
+
+  .inkwell-profile-page-subtitle {
+    font-size: 1.5rem;
+  }
+  .inkwell-profile-page-name {
+    font-size: 2rem;
+  }
+
+  .inkwell-profile-page-username {
+    font-size: 1.2rem;
+  }
+
+  .inkwell-profile-page-bio {
+    font-size: 0.9rem;
+  }
+
+  .inkwell-profile-page-stats {
+    font-size: 1rem;
+  }
 }
 
 

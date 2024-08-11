@@ -36,11 +36,13 @@
 
 @keyframes colorPulse {
   0%, 100% { filter: brightness(0) invert(1); }
-  25% { filter: brightness(0) saturate(100%) invert(89%) sepia(10%) saturate(1857%) hue-rotate(59deg) brightness(101%) contrast(94%); } /* #caffbf */
-  50% { filter: brightness(0) saturate(100%) invert(69%) sepia(76%) saturate(398%) hue-rotate(157deg) brightness(92%) contrast(90%); } /* #45b7d1 */
-  75% { filter: brightness(0) saturate(100%) invert(80%) sepia(11%) saturate(1485%) hue-rotate(118deg) brightness(94%) contrast(88%); } /* #4ecdc4 */
-  90% { filter: brightness(0) saturate(100%) invert(72%) sepia(32%) saturate(895%) hue-rotate(314deg) brightness(105%) contrast(103%); } /* #ff6b6b */
+  20% { filter: brightness(0) saturate(100%) invert(23%) sepia(79%) saturate(1033%) hue-rotate(176deg) brightness(96%) contrast(104%); } /* #04375e */
+  40% { filter: brightness(0) saturate(100%) invert(70%) sepia(0%) saturate(0%) hue-rotate(150deg) brightness(91%) contrast(85%); } /* #97abaf */
+  60% { filter: brightness(0) saturate(100%) invert(64%) sepia(29%) saturate(224%) hue-rotate(178deg) brightness(85%) contrast(91%); } /* #7493b3 */
+  80% { filter: brightness(0) saturate(100%) invert(17%) sepia(100%) saturate(351%) hue-rotate(185deg) brightness(85%) contrast(93%); } /* #2574a1 */
+  100% { filter: brightness(0) saturate(100%) invert(44%) sepia(10%) saturate(438%) hue-rotate(167deg) brightness(91%) contrast(92%); } /* #4e89ae */
 }
+
 
 @keyframes textPulse {
   0%, 100% { opacity: 1; }

@@ -1,0 +1,20 @@
+.not-found-container {
+    min-height: 100vh;
+    padding: 80px 20px 40px;
+    position: relative;
+  }
+  
+  .not-found-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.not-found-container h1 {
+    font-size: 3em;
+    color: #ff0000;
+}
+
+.not-found-container p {
+    font-size: 1.5em;
+    color: #333;
+}
