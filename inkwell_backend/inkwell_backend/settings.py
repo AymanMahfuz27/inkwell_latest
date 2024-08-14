@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'ads',
     'analytics',
     'feedback',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -73,17 +74,38 @@ WSGI_APPLICATION = 'inkwell_backend.wsgi.application'
 
 DJANGO_ENV = os.getenv('DJANGO_ENV', 'development')
 
-if os.environ.get('DATABASE_URL'):
-    # Heroku database configuration
+# Check if we're running on Heroku
+IS_HEROKU = os.environ.get('IS_HEROKU', None)
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+
+
+if IS_HEROKU:
+    # Production settings
     DATABASES = {
         'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
     }
-    DEBUG = False
+    
+    # AWS S3 settings
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+    AWS_DEFAULT_ACL = 'public-read'
+    AWS_LOCATION = 'static'
 
+    # Static files settings
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+    # Media files settings
+    DEFAULT_FILE_STORAGE = 'inkwell_backend.storage_backends.MediaStorage'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
 
 else:
-
-    # Database
+    # Development settings
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -93,9 +115,18 @@ else:
             'HOST': 'localhost',
             'PORT': '5432',
         }
-
     }
-    DEBUG = True
+    
+    # Static files settings
+    STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    
+    # Media files settings
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Common settings
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -119,16 +150,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-
-# Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
