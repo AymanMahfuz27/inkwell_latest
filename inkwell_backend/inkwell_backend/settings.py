@@ -83,7 +83,7 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 if IS_HEROKU:
 
     INSTALLED_APPS += ['storages']
-    
+
 
     # Production settings
     DATABASES = {
@@ -96,7 +96,7 @@ if IS_HEROKU:
     AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
     AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
-    AWS_DEFAULT_ACL = 'public-read'
+    AWS_S3_FILE_OVERWRITE = False
     AWS_LOCATION = 'static'
 
     # Static files settings
