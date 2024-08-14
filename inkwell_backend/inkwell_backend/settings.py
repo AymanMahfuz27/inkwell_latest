@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'ads',
     'analytics',
     'feedback',
-    'storages',
 ]
 
 MIDDLEWARE = [
@@ -82,6 +81,10 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 
 if IS_HEROKU:
+
+    INSTALLED_APPS += ['storages']
+    
+
     # Production settings
     DATABASES = {
         'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
