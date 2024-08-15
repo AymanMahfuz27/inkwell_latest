@@ -1,5 +1,3 @@
-# inkwell_backend/inkwell_backend/settings.py
-
 import os
 from pathlib import Path
 from datetime import timedelta
@@ -16,6 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-secret-key-here')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['inkwell-backend-291a1781d750.herokuapp.com', 'localhost', '127.0.0.1']
 
@@ -37,13 +36,14 @@ INSTALLED_APPS = [
     'ads',
     'analytics',
     'feedback',
+    'storages',  # Add this for S3
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add this for serving static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Keep this for serving static files
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # Add this for handling CORS
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -71,44 +71,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'inkwell_backend.wsgi.application'
 
-DJANGO_ENV = os.getenv('DJANGO_ENV', 'development')
-
-# Check if we're running on Heroku
-IS_HEROKU = os.environ.get('IS_HEROKU', None)
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-
-
-if IS_HEROKU:
-
-    INSTALLED_APPS += ['storages']
-
-
-    # Production settings
+# Database configuration
+if 'DATABASE_URL' in os.environ:
     DATABASES = {
         'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
     }
-    
-    # AWS S3 settings
-    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
-    AWS_S3_FILE_OVERWRITE = False
-    AWS_LOCATION = 'static'
-
-    # Static files settings
-    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-    # Media files settings
-    DEFAULT_FILE_STORAGE = 'inkwell_backend.storage_backends.MediaStorage'
-    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
-
 else:
-    # Development settings
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -119,17 +87,6 @@ else:
             'PORT': '5432',
         }
     }
-    
-    # Static files settings
-    STATIC_URL = '/static/'
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    
-    # Media files settings
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# Common settings
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -153,6 +110,33 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# S3 Configuration (only for production)
+if os.environ.get('USE_S3') == 'True':
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+    AWS_LOCATION = 'static'
+    AWS_DEFAULT_ACL = 'public-read'
+    AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'us-east-1')
+
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    DEFAULT_FILE_STORAGE = 'inkwell_backend.storage_backends.MediaStorage'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+else:
+    # Ensure local development uses local storage
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Default primary key field type
@@ -175,7 +159,7 @@ SIMPLE_JWT = {
 }
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = False  # Set to True for development, False for production
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWS_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -186,7 +170,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://inkwellbooks.app"
 ]
 
-
 # Custom user model
 AUTH_USER_MODEL = 'users.UserProfile'
 
@@ -195,4 +178,3 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10 MB
 
 # Optionally, you can also set a maximum request body size
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240  # Adjust as needed
-
