@@ -52,7 +52,9 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
       console.log("MultiStep form - Initial data received:", initialData);
       setFormData({
         title: initialData.title || "",
-        genres: initialData.genres || "",
+        genres: Array.isArray(initialData.genres)
+          ? initialData.genres.join(", ")
+          : initialData.genres || "",
         description: initialData.description || "",
         uploadType: initialData.upload_type || "text",
         text_content: initialData.text_content || "",
@@ -74,7 +76,15 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
         [name]: URL.createObjectURL(inputFiles[0]),
       }));
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      if (name === "genres") {
+        const cleanedValue = value
+          .split(",")
+          .map((g) => g.trim())
+          .join(",");
+        setFormData((prev) => ({ ...prev, [name]: cleanedValue }));
+      } else {
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      }
     }
   };
 
@@ -85,7 +95,11 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
   const prepareFormData = () => {
     const bookData = new FormData();
     bookData.append("title", formData.title);
-    bookData.append("genres", formData.genres);
+
+    // Send genres as a single comma-separated string
+    const genresArray = formData.genres.split(",").map((genre) => genre.trim());
+    genresArray.forEach((genre) => bookData.append("genres", genre));
+
     bookData.append("description", formData.description);
     bookData.append("upload_type", formData.uploadType);
     bookData.append("text_content", formData.text_content);
@@ -105,7 +119,7 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
       setErrorMessage("Please fill out all required fields in Step 1.");
       return;
     }
-  
+
     console.log("Saving as a draft");
     setIsLoading(true);
     setErrorMessage(null);
@@ -153,7 +167,7 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
       setErrorMessage("Please fill out all required fields.");
       return;
     }
-  
+
     console.log("Uploading as a final book");
     setIsLoading(true);
     setErrorMessage(null);
@@ -219,8 +233,10 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
   const validateStep1 = () => {
     const newErrors = {};
     if (!formData.title.trim()) newErrors.title = "Title is required";
-    if (!formData.genres.trim()) newErrors.genres = "At least one genre is required";
-    if (!formData.description.trim()) newErrors.description = "Description is required";
+    if (!formData.genres.trim())
+      newErrors.genres = "At least one genre is required";
+    if (!formData.description.trim())
+      newErrors.description = "Description is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -243,7 +259,7 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
 
   const renderStep1 = () => (
     <>
-    <div className="inkwell-upload-page-input-group full-width">
+      <div className="inkwell-upload-page-input-group full-width">
         <label
           htmlFor="inkwell-upload-page-title-input"
           className="inkwell-upload-page-label"
@@ -258,11 +274,11 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
           value={formData.title}
           onChange={handleChange}
           required
-          className={`inkwell-upload-page-input ${errors.title ? 'error' : ''}`}
+          className={`inkwell-upload-page-input`}
+          style={errors.title ? { borderColor: "red" } : {}}
           placeholder="Enter your book title"
         />
         {errors.title && <span className="error-message">{errors.title}</span>}
-
       </div>
       <div className="inkwell-upload-page-input-group full-width">
         <label
@@ -280,8 +296,10 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
           onChange={handleChange}
           required
           className="inkwell-upload-page-input"
+          style={errors.title ? { borderColor: "red" } : {}}
           placeholder="e.g. Fantasy, Adventure, Romance"
         />
+        {errors.genres && <span className="error-message">{errors.genres}</span>}
       </div>
       <div className="inkwell-upload-page-input-group full-width">
         <label
@@ -297,11 +315,13 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
           value={formData.description}
           onChange={handleChange}
           required
-          className={`inkwell-upload-page-input ${errors.description ? 'error' : ''}`}
+          className={`inkwell-upload-page-input`}
+          style={errors.title ? { borderColor: "red" } : {}}
           placeholder="Describe your book"
         />
-          {errors.description && <span className="error-message">{errors.description}</span>}
-
+        {errors.description && (
+          <span className="error-message">{errors.description}</span>
+        )}
       </div>
     </>
   );
@@ -321,10 +341,13 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
               value="pdf"
               checked={formData.uploadType === "pdf"}
               onChange={handleChange}
-              className={`inkwell-upload-page-file-input ${errors.pdfFile ? 'error' : ''}`}
-              />
-                      {errors.pdfFile && <span className="error-message">{errors.pdfFile}</span>}
-
+              className={`inkwell-upload-page-file-input ${
+                errors.pdfFile ? "error" : ""
+              }`}
+            />
+            {errors.pdfFile && (
+              <span className="error-message">{errors.pdfFile}</span>
+            )}
             PDF
           </label>
           <label className="inkwell-upload-page-radio-label">

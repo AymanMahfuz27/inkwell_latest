@@ -244,6 +244,12 @@ body.menu-open {
     align-items: center;
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
+    z-index: 1000; /* Ensure it's above other content */
+  }
+  
+  /* Additional adjustments if necessary */
+  .navbar.scrolled {
+    background-color: rgba(0, 0, 0, 0.8); /* Ensure it still darkens when scrolled */
   }
 
   .nav-center.mobile-menu-visible {
