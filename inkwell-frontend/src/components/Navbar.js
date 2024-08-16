@@ -67,17 +67,30 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isSearchExpanded]);
+  useEffect(() => {
+    if (!isMenuOpen) {
+      document.body.classList.remove("menu-open");
+    }
+  }, [isMenuOpen]);
+  
 
   const toggleMenu = () => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
-
-    // Small delay to ensure scroll completes before opening menu
-    setTimeout(() => {
-      setIsMenuOpen(!isMenuOpen);
-      document.body.classList.toggle("menu-open");
-    }, 100);
+  
+    // Toggle menu state immediately
+    const menuOpen = !isMenuOpen;
+  
+    setIsMenuOpen(menuOpen);
+  
+    // Enable or disable body scrolling based on the menu state
+    if (menuOpen) {
+      document.body.classList.add("menu-open");
+    } else {
+      document.body.classList.remove("menu-open");
+    }
   };
+  
 
   const handleLogout = () => {
     logout();
