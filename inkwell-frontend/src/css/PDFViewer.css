@@ -1,58 +1,64 @@
-.pdf-viewer {
+/* PDFViewer.css */
+.pdf-viewer-container {
+  width: 100%;
+  height: calc(100vh - 60px); /* Adjust based on your header height */
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
-.pdf-viewer.horizontal {
+.pdf-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.pdf-toolbar-left,
+.pdf-toolbar-center,
+.pdf-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pdf-toolbar-center {
+  flex-grow: 1;
   justify-content: center;
-  align-items: center;
 }
 
-.pdf-viewer.vertical {
-  overflow-y: auto;
+/* Hide default scrollbar */
+.rpv-core__viewer {
+  scrollbar-width: thin;
+  scrollbar-color: #444 #1a1a1a;
 }
 
-.pdf-viewer .react-pdf__Document {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.rpv-core__viewer::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-.pdf-viewer .react-pdf__Page {
-  max-width: 100%;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+.rpv-core__viewer::-webkit-scrollbar-track {
+  background: #1a1a1a;
 }
 
-.pdf-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  background-color: rgba(26, 26, 26, 0.9);
-  color: #fff;
-}
-
-.nav-button {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
+.rpv-core__viewer::-webkit-scrollbar-thumb {
+  background-color: #444;
   border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.nav-button:hover:not(:disabled) {
-  background-color: rgba(255, 255, 255, 0.2);
-}
+/* Responsive styles */
+@media (max-width: 768px) {
+  .pdf-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-.nav-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  .pdf-toolbar-left,
+  .pdf-toolbar-center,
+  .pdf-toolbar-right {
+    justify-content: center;
+    margin-bottom: 8px;
+  }
 }

@@ -20,7 +20,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     following_count = serializers.SerializerMethodField()
     is_following = serializers.SerializerMethodField()
     books_liked = serializers.SerializerMethodField()
-    profile_picture = serializers.SerializerMethodField()
+    profile_picture = serializers.ImageField(required=False)
 
 
     class Meta:
@@ -37,9 +37,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.bio = validated_data.get('bio', instance.bio)
         if 'profile_picture' in validated_data:
-            instance.profile_picture = validated_data.get('profile_picture')
+            instance.profile_picture = validated_data['profile_picture']
         instance.save()
         return instance
+
+
     
     def get_books(self, obj):
         books = Book.objects.filter(uploaded_by=obj)
