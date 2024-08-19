@@ -7,50 +7,6 @@ const TextViewer = ({ content, currentPage, totalPages, onPageChange, viewMode, 
   const baseFontSize = 16;
 
   useEffect(() => {
-    // const paginateContent = () => {
-    //   const isHTML = /<[a-z][\s\S]*>/i.test(content);
-    //   let pageContents = [];
-
-    //   if (isHTML) {
-    //     // Rich text content handling
-    //     const tempDiv = document.createElement('div');
-    //     tempDiv.innerHTML = DOMPurify.sanitize(content);
-
-    //     const pageBreakElements = ['H1', 'H2'];
-    //     const elementsPerPage = 5;
-    //     let currentPageContent = '';
-    //     let elementCount = 0;
-
-    //     tempDiv.childNodes.forEach((node) => {
-    //       if (node.nodeType === Node.ELEMENT_NODE) {
-    //         if ((pageBreakElements.includes(node.tagName) && currentPageContent !== '') || elementCount >= elementsPerPage) {
-    //           pageContents.push(currentPageContent);
-    //           currentPageContent = '';
-    //           elementCount = 0;
-    //         }
-            
-    //         currentPageContent += node.outerHTML;
-    //         elementCount++;
-    //       }
-    //     });
-
-    //     if (currentPageContent !== '') {
-    //       pageContents.push(currentPageContent);
-    //     }
-    //   } else {
-    //     // Plain text content handling
-    //     const wordsPerPage = 300;
-    //     const words = content.split(/\s+/);
-
-    //     for (let i = 0; i < words.length; i += wordsPerPage) {
-    //       pageContents.push(words.slice(i, i + wordsPerPage).join(' '));
-    //     }
-    //   }
-
-    //   setPages(pageContents);
-    //   onPageChange(Math.min(currentPage, pageContents.length), pageContents.length);
-    // };
-
     const paginateContent = () => {
       const isHTML = /<[a-z][\s\S]*>/i.test(content);
       let pageContents = [];

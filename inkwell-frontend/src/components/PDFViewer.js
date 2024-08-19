@@ -4,12 +4,15 @@ import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import { toolbarPlugin } from '@react-pdf-viewer/toolbar';
 import { scrollModePlugin } from '@react-pdf-viewer/scroll-mode';
 import { pageNavigationPlugin } from '@react-pdf-viewer/page-navigation';
+import { fullScreenPlugin } from '@react-pdf-viewer/full-screen';
+import { Expand } from 'lucide-react';
 
 // Import styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import '@react-pdf-viewer/toolbar/lib/styles/index.css';
 import '@react-pdf-viewer/page-navigation/lib/styles/index.css';
+import '@react-pdf-viewer/full-screen/lib/styles/index.css';
 import '../css/PDFViewer.css';
 
 const PDFViewer = ({ pdfUrl, viewMode, onViewModeChange, onPageChange, onTotalPagesChange, currentPage }) => {
@@ -19,8 +22,16 @@ const PDFViewer = ({ pdfUrl, viewMode, onViewModeChange, onPageChange, onTotalPa
   const toolbarPluginInstance = toolbarPlugin();
   const pageNavigationPluginInstance = pageNavigationPlugin();
 
+  // Initialize the full screen plugin
+  const fullScreenPluginInstance = fullScreenPlugin({
+    // Ensure the toolbar is visible in full-screen mode
+    getFullScreenTarget: (pagesContainer) => 
+      pagesContainer.closest('[data-testid="default-layout__body"]'),
+  });
+
   const { switchScrollMode } = scrollModePluginInstance;
   const { jumpToPage } = pageNavigationPluginInstance;
+  const { EnterFullScreen } = fullScreenPluginInstance;
   
   const isJumping = useRef(false);
   const jumpTimeout = useRef(null);
@@ -89,6 +100,20 @@ const PDFViewer = ({ pdfUrl, viewMode, onViewModeChange, onPageChange, onTotalPa
               <CurrentPageInput /> / <NumberOfPages />
               <GoToNextPage />
             </div>
+            <div className="pdf-toolbar-right">
+              {/* Custom Full Screen button */}
+              <EnterFullScreen>
+                {(props) => (
+                  <button
+                    className="full-screen-button"
+                    onClick={props.onClick}
+                    title="Enter full screen"
+                  >
+                    <Expand size={24} />
+                  </button>
+                )}
+              </EnterFullScreen>
+            </div>
           </div>
         );
       }}
@@ -105,7 +130,12 @@ const PDFViewer = ({ pdfUrl, viewMode, onViewModeChange, onPageChange, onTotalPa
       <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
         <Viewer
           fileUrl={pdfUrl}
-          plugins={[defaultLayoutPluginInstance, scrollModePluginInstance, pageNavigationPluginInstance]}
+          plugins={[
+            defaultLayoutPluginInstance,
+            scrollModePluginInstance,
+            pageNavigationPluginInstance,
+            fullScreenPluginInstance,
+          ]}
           theme="dark"
           onPageChange={handlePageChange}
           onDocumentLoad={(e) => {
