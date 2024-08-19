@@ -15,16 +15,16 @@ import '@react-pdf-viewer/page-navigation/lib/styles/index.css';
 import '@react-pdf-viewer/full-screen/lib/styles/index.css';
 import '../css/PDFViewer.css';
 
+// Define the worker URL as a constant
+const WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
 const PDFViewer = ({ pdfUrl, viewMode, onViewModeChange, onPageChange, onTotalPagesChange, currentPage }) => {
   console.log('PDFViewer render - currentPage:', currentPage);
   
   const scrollModePluginInstance = scrollModePlugin();
   const toolbarPluginInstance = toolbarPlugin();
   const pageNavigationPluginInstance = pageNavigationPlugin();
-
-  // Initialize the full screen plugin
   const fullScreenPluginInstance = fullScreenPlugin({
-    // Ensure the toolbar is visible in full-screen mode
     getFullScreenTarget: (pagesContainer) => 
       pagesContainer.closest('[data-testid="default-layout__body"]'),
   });
@@ -36,6 +36,7 @@ const PDFViewer = ({ pdfUrl, viewMode, onViewModeChange, onPageChange, onTotalPa
   const isJumping = useRef(false);
   const jumpTimeout = useRef(null);
   const [internalCurrentPage, setInternalCurrentPage] = useState(currentPage);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (viewMode === 'horizontal') {
@@ -101,7 +102,6 @@ const PDFViewer = ({ pdfUrl, viewMode, onViewModeChange, onPageChange, onTotalPa
               <GoToNextPage />
             </div>
             <div className="pdf-toolbar-right">
-              {/* Custom Full Screen button */}
               <EnterFullScreen>
                 {(props) => (
                   <button
@@ -125,9 +125,18 @@ const PDFViewer = ({ pdfUrl, viewMode, onViewModeChange, onPageChange, onTotalPa
     sidebarTabs: (defaultTabs) => [defaultTabs[0]],
   });
 
+  const handleError = (error) => {
+    console.error('PDF loading error:', error);
+    setError('Failed to load PDF. Please try again later.');
+  };
+
+  if (error) {
+    return <div className="pdf-error">{error}</div>;
+  }
+
   return (
     <div className="pdf-viewer-container">
-      <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+      <Worker workerUrl={WORKER_URL}>
         <Viewer
           fileUrl={pdfUrl}
           plugins={[
@@ -143,6 +152,7 @@ const PDFViewer = ({ pdfUrl, viewMode, onViewModeChange, onPageChange, onTotalPa
             onTotalPagesChange(e.doc.numPages);
           }}
           defaultScale={SpecialZoomLevel.PageFit}
+          onError={handleError}
         />
       </Worker>
     </div>
