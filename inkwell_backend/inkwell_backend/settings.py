@@ -160,17 +160,17 @@ SIMPLE_JWT = {
 
 # CORS settings
 CORS_ALLOWS_CREDENTIALS = True
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-#     'https://inkwell-frontend-b355aff226c5.herokuapp.com',
-#     "https://www.inkwellbooks.app",
-#     "https://inkwellbooks.app",
-#     "http://www.inkwellbooks.app",
-#     "http://inkwellbooks.app"
-# ]
 
-CORS_ALLOW_ALL_ORIGINS = True
 
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    'https://inkwell-frontend-b355aff226c5.herokuapp.com',
+    "https://www.inkwellbooks.app",
+    "https://inkwellbooks.app",
+    "http://www.inkwellbooks.app",
+    "http://inkwellbooks.app"
+]
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https://\w+\.inkwellbooks\.app$",
 ]
@@ -198,10 +198,7 @@ CORS_ALLOW_HEADERS = [
 # Custom user model
 AUTH_USER_MODEL = 'users.UserProfile'
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10 MB
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10 MB
-
-# Optionally, you can also set a maximum request body size
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240  # Adjust as needed
+DATA_UPLOAD_MAX_MEMORY_SIZE = 314572800  # 300 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 314572800  # 300 MB
 
 X_FRAME_OPTIONS = 'ALLOWALL'
