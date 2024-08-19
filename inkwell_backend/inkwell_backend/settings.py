@@ -161,14 +161,16 @@ SIMPLE_JWT = {
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWS_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    'https://inkwell-frontend-b355aff226c5.herokuapp.com',
-    "https://www.inkwellbooks.app",
-    "https://inkwellbooks.app",
-    "http://www.inkwellbooks.app",
-    "http://inkwellbooks.app"
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     'https://inkwell-frontend-b355aff226c5.herokuapp.com',
+#     "https://www.inkwellbooks.app",
+#     "https://inkwellbooks.app",
+#     "http://www.inkwellbooks.app",
+#     "http://inkwellbooks.app"
+# ]
+
+CORS_ALLOWED_ORIGINS = "*"
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^https://\w+\.inkwellbooks\.app$",
 ]
