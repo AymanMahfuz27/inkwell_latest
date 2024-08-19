@@ -41,9 +41,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -159,8 +159,10 @@ SIMPLE_JWT = {
 }
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWS_CREDENTIALS = True
+
+
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     'https://inkwell-frontend-b355aff226c5.herokuapp.com',
@@ -169,14 +171,34 @@ CORS_ALLOWED_ORIGINS = [
     "http://www.inkwellbooks.app",
     "http://inkwellbooks.app"
 ]
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://\w+\.inkwellbooks\.app$",
+]
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
 
 # Custom user model
 AUTH_USER_MODEL = 'users.UserProfile'
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10 MB
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10 MB
-
-# Optionally, you can also set a maximum request body size
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240  # Adjust as needed
+DATA_UPLOAD_MAX_MEMORY_SIZE = 314572800  # 300 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 314572800  # 300 MB
 
 X_FRAME_OPTIONS = 'ALLOWALL'

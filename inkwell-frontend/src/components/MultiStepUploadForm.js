@@ -136,6 +136,7 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
           bookData,
           {
             headers: { "Content-Type": "multipart/form-data" },
+            timeout: 300000,
           }
         );
       } else {
@@ -182,6 +183,7 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
     try {
       const response = await api.post("/api/books/books/", bookData, {
         headers: { "Content-Type": "multipart/form-data" },
+        timeout: 300000,
       });
       console.log("Book upload response:", response.data);
       setSuccessMessage("Book uploaded successfully!");
