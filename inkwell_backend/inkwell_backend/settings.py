@@ -169,6 +169,29 @@ CORS_ALLOWED_ORIGINS = [
     "http://www.inkwellbooks.app",
     "http://inkwellbooks.app"
 ]
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://\w+\.inkwellbooks\.app$",
+]
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
 
 # Custom user model
 AUTH_USER_MODEL = 'users.UserProfile'
