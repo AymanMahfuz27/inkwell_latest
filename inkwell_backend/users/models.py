@@ -40,11 +40,11 @@ class UserProfile(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     # New analytics fields
     profile_views = models.IntegerField(default=0)
-    follower_count_history = JSONField(default=dict)  # Store counts with timestamps
+    follower_count_history = JSONField(default=dict, blank=True)  # Store counts with timestamps
     total_book_likes = models.IntegerField(default=0)
     total_book_views = models.IntegerField(default=0)
     total_revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    geographic_distribution = JSONField(default=dict)
+    geographic_distribution = JSONField(default=dict, blank=True)
 
 
     def __str__(self):

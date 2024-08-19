@@ -120,12 +120,15 @@ const BookInteractionsPanel = ({
   };
 
   const handleGoToPage = () => {
+    console.log('BookInteractionsPanel handleGoToPage called - goToPage:', goToPage);
     const pageNumber = parseInt(goToPage, 10);
     if (pageNumber >= 1 && pageNumber <= totalPages) {
+      console.log('Calling onPageChange with:', pageNumber);
       onPageChange(pageNumber);
       setGoToPage('');
     }
   };
+
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -159,29 +162,37 @@ const BookInteractionsPanel = ({
           </div>
         </div>
         <div className="page-navigation">
-          <span>Page {currentPage} of {totalPages}</span>
-          <div className="go-to-page">
-            <input
-              type="number"
-              value={goToPage}
-              onChange={(e) => setGoToPage(e.target.value)}
-              placeholder="Go to page"
-              min="1"
-              max={totalPages}
-            />
-            <button onClick={handleGoToPage}>Go</button>
-          </div>
+        <span>Page {currentPage} of {totalPages}</span>
+        <div className="go-to-page">
+          <input
+            type="number"
+            value={goToPage}
+            onChange={(e) => setGoToPage(e.target.value)}
+            placeholder="Go to page"
+            min="1"
+            max={totalPages}
+          />
+          <button onClick={handleGoToPage}>Go</button>
         </div>
+      </div>
+
         <div className="view-mode-toggle">
-          <button onClick={() => onViewModeChange('horizontal')} className={viewMode === 'horizontal' ? 'active' : ''}>
-            <Layers size={20} />
-            Horizontal
-          </button>
-          <button onClick={() => onViewModeChange('vertical')} className={viewMode === 'vertical' ? 'active' : ''}>
-            <List size={20} />
-            Vertical
-          </button>
-        </div>
+        <button 
+          onClick={() => onViewModeChange('horizontal')} 
+          className={viewMode === 'horizontal' ? 'active' : ''}
+        >
+          <Layers size={20} />
+          Horizontal
+        </button>
+        <button 
+          onClick={() => onViewModeChange('vertical')} 
+          className={viewMode === 'vertical' ? 'active' : ''}
+        >
+          <List size={20} />
+          Vertical
+        </button>
+      </div>
+
         <div className="collection-section">
           <select 
             value={selectedCollection} 
