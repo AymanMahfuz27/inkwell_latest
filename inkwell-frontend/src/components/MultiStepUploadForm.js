@@ -77,11 +77,8 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
       }));
     } else {
       if (name === "genres") {
-        const cleanedValue = value
-          .split(",")
-          .map((g) => g.trim())
-          .join(",");
-        setFormData((prev) => ({ ...prev, [name]: cleanedValue }));
+        // Allow spaces in the genre field
+        setFormData((prev) => ({ ...prev, [name]: value }));
       } else {
         setFormData((prev) => ({ ...prev, [name]: value }));
       }
@@ -96,9 +93,14 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
     const bookData = new FormData();
     bookData.append("title", formData.title);
 
-    // Send genres as a single comma-separated string
+    // Handle genres
     const genresArray = formData.genres.split(",").map((genre) => genre.trim());
-    genresArray.forEach((genre) => bookData.append("genres", genre));
+    genresArray.forEach((genre) => {
+      if (genre) {
+        // Only append non-empty genres
+        bookData.append("genres", genre);
+      }
+    });
 
     bookData.append("description", formData.description);
     bookData.append("upload_type", formData.uploadType);
@@ -301,7 +303,13 @@ const MultiStepUploadForm = ({ navigate, initialData }) => {
           style={errors.title ? { borderColor: "red" } : {}}
           placeholder="e.g. Fantasy, Adventure, Romance"
         />
-        {errors.genres && <span className="error-message">{errors.genres}</span>}
+        <small style={{ color: "#a0a0a0" }}>
+          Separate multiple genres with commas. For example: "Science Fiction,
+          Fantasy, Adventure"
+        </small>
+        {errors.genres && (
+          <span className="error-message">{errors.genres}</span>
+        )}
       </div>
       <div className="inkwell-upload-page-input-group full-width">
         <label

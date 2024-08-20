@@ -38,12 +38,9 @@ init(autoreset=True)
 
 
 def home(request):
-    return HttpResponse('Welcome to the Inkwell API! Testing if this change really gets pushed.')
+    return HttpResponse('Welcome to the Inkwell API!')
 
-router = DefaultRouter()
-router.register(r'books', BookViewSet, basename='book')
-router.register(r'genres', GenreViewSet, basename='genre')
-router.register(r'drafts', BookDraftViewSet)
+
 
 urlpatterns = [
     #need a home page
@@ -53,7 +50,7 @@ urlpatterns = [
     path('api/ads/', include('ads.urls')),
     path('api/recommendations/', include('recommendations.urls')),
     path('api/uploads/', include('uploads.urls')),
-    path('api/books/', include(router.urls)),
+    path('api/books/', include('books.urls')),
     path('api/analytics/', include('analytics.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
