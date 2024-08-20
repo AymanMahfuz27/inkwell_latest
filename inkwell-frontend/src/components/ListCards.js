@@ -45,25 +45,24 @@ export const BookListCard = ({
       </div>
     </div>
     {customAction ? (
-      <button onClick={customAction} className="book-list-card-custom-action">
-        {customActionIcon}
-        {customActionText}
-      </button>
-    ) : (
-      <div className="book-list-card-actions">
-        <Link to={`/book/${book.id}`} className="book-list-card-link">
-          <Book size={24} />
-          Read Now
-        </Link>
-      </div>
-    )}
-
+  <button onClick={customAction} className="book-list-card-custom-action">
+    {customActionIcon}
+    {customActionText}
+  </button>
+) : (
+  <div className="book-list-card-actions">
+    <Link to={`/book/${book.id}`} className="book-list-card-link">
+      <Book size={24} />
+      Read Now
+    </Link>
     {showDeleteButton && (
-      <button onClick={() => onDelete(book.id)} className="delete-book-button">
+      <button onClick={() => onDelete(book.id)} className="book-list-card-delete">
         <Trash2 size={20} />
         Delete
       </button>
     )}
+  </div>
+)}
   </div>
 );
 
@@ -89,14 +88,14 @@ export const UserListCard = ({ user }) => (
 );
 
 export const GenreListCard = ({ genre }) => (
-  <div className="inkwell-list-card genre-list-card">
+  <Link to={`/genres/${encodeURIComponent(genre.name)}`} className="inkwell-list-card genre-list-card">
     <Tag size={24} className="genre-list-card-icon" />
     <div className="genre-list-card-info">
       <h3 className="genre-list-card-name">{genre.name}</h3>
       <p className="genre-list-card-count">{genre.book_count} books</p>
     </div>
-    <Link to={`/genres/${genre.id}`} className="genre-list-card-link">
+    <div className="genre-list-card-link">
       Explore Genre
-    </Link>
-  </div>
+    </div>
+  </Link>
 );

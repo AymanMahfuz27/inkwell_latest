@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from rest_framework import viewsets, status,permissions
+from rest_framework import viewsets, status,permissions, generics
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 import logging
 from rest_framework.response import Response
@@ -11,12 +11,11 @@ import PyPDF2
 
 logger = logging.getLogger(__name__)
 
-
-
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    lookup_field = 'name'
 
     @action(detail=False, methods=['get'])
     def search(self, request):
@@ -26,9 +25,25 @@ class GenreViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(genres, many=True)
             return Response(serializer.data)
         return Response([])
+    
+    @action(detail=True, methods=['get'])
+    def books(self, request, name=None):
+        genre = self.get_object()
+        books = Book.objects.filter(genres__name=name)
+        serializer = BookSerializer(books, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    
+    def list(self, request):
+        genres = self.get_queryset()
+        serializer = self.get_serializer(genres, many=True)
+        for genre_data in serializer.data:
+            genre_data['book_count'] = Book.objects.filter(genres__name=genre_data['name']).count()
+        return Response(serializer.data)
 
 
-logger = logging.getLogger(__name__)
+
+
 
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
@@ -143,6 +158,16 @@ class BookViewSet(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
         return super().get_permissions()
+    
+    @action(detail=False, methods=['get'])
+    def by_genre(self, request):
+        genre_id = request.query_params.get('genre_id')
+        if genre_id:
+            books = Book.objects.filter(genres__id=genre_id)
+            serializer = self.get_serializer(books, many=True)
+            return Response(serializer.data)
+        return Response({"error": "genre_id parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 

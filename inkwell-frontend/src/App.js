@@ -14,6 +14,8 @@ import SearchPage from './pages/SearchPage';
 import LoadingScreen from './components/LoadingScreen';
 import ScrollToTop from './components/ScrollToTop';
 import NotFoundPage from './pages/NotFoundPage';
+import GenrePage from './pages/GenrePage';
+import AllGenresPage from './pages/AllGenresPage';
 
 
 
@@ -46,6 +48,8 @@ function App() {
         <Route path="/all-books" element={<AllBooksPage />} /> 
         <Route path="/search" element={<SearchPage />} />
         <Route path="/loading-page" element={<LoadingScreen />} />
+        <Route path="/genres/:genreName" element={<GenrePage />} />
+        <Route path="/genres" element={<AllGenresPage />} />
         <Route path="*" element={<NotFoundPage/>} />
       </Routes>
       <Footer />
