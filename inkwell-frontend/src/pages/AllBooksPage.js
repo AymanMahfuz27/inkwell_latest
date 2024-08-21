@@ -50,7 +50,7 @@ const AllBooksPage = () => {
 
   return (
     <div className="home-page all-books-page">
-        <WatercolorBackground />
+        {/* <WatercolorBackground /> */}
       <div className="hero-section-all-books">
         <h1>All Books</h1>
         <p>Explore our collection of amazing books</p>

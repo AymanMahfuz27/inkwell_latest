@@ -53,7 +53,7 @@ const SearchPage = () => {
 
   return (
     <div className="search-page">
-      <WatercolorBackground />
+      {/* <WatercolorBackground /> */}
       <h1>Search Inkwell</h1>
 
       {isLoading && <div className="loading">Searching...</div>}

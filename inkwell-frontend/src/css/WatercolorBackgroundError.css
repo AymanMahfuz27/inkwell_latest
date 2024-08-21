@@ -1,0 +1,74 @@
+/* src/css/WatercolorBackground.css */
+.watercolor-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+  }
+  
+  .watercolor-blob-error {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.2;
+    animation: float 20s ease-in-out infinite, fadeInDrop 2s ease-in-out forwards;
+  }
+  
+  .blob1-error {
+    width: 100vh;
+    height: 100vh;
+    background-color: #822104;
+    top: -50vh;
+    left: -50vh;
+  }
+  
+  .blob2-error {
+    width: 100vh;
+    height: 100vh;
+    background-color: #C14222;
+    bottom: -50vh;
+    right: -50vh;
+  }
+  
+  .blob3-error {
+    width: 80vh;
+    height: 80vh;
+    background-color: #C49893;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .blob4-error {
+    width: 90vh;
+    height: 90vh;
+    background-color: #C68A75; /* Light Green */
+    bottom: 25%;
+    left: 25%;
+  }
+  
+  .blob5-error {
+    width: 70vh;
+    height: 70vh;
+    background-color: #C3664F; /* Light Blue */
+    top: 14%;
+    right:58%;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+  }
+  
+  @keyframes fadeInDrop {
+    0% {
+      opacity: 0;
+      transform: translateY(-100px); /* Starts from above the viewport */
+    }
+    100% {
+      opacity: 0.2;
+      transform: translateY(0); /* Drops into place */
+    }
+  }
+  

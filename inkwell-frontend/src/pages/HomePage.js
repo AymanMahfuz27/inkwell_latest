@@ -93,7 +93,7 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
-      <WatercolorBackground />
+      {/* <WatercolorBackground /> */}
       <div className="hero-section">
         <div className="hero-content">
           <img src={inkwellLogo} alt="Inkwell" className="hero-logo" />

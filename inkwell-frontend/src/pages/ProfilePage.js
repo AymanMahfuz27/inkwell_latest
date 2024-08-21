@@ -337,7 +337,7 @@ const ProfilePage = () => {
 
   return (
     <div className="inkwell-profile-page-container">
-      <WatercolorBackground />
+      {/* <WatercolorBackground /> */}
       <div className="inkwell-profile-page-content">
       <div className="inkwell-profile-page-header">
   <img

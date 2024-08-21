@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
-import WatercolorBackground from '../components/WatercolorBackground';
+import WatercolorBackgroundError from '../components/WatercolorBackgroundError';
 import LoadingScreen from '../components/LoadingScreen';
 import '../css/AllGenresPage.css';
 import { Tag } from 'lucide-react';
@@ -32,7 +32,7 @@ const AllGenresPage = () => {
 
   return (
     <div className="all-genres-page">
-      <WatercolorBackground />
+      <WatercolorBackgroundError />
       <div className="all-genres-content">
         <h1 className="all-genres-title">Explore All Genres</h1>
         <div className="genres-grid">
