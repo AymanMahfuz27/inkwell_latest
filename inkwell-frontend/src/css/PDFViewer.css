@@ -12,6 +12,7 @@
   align-items: center;
   width: 100%;
   padding: 8px 16px;
+  flex-wrap: wrap;
 }
 
 .pdf-toolbar-left,
@@ -65,14 +66,47 @@
 /* Responsive styles */
 @media (max-width: 768px) {
   .pdf-toolbar {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 8px 4px;
   }
 
   .pdf-toolbar-left,
   .pdf-toolbar-center,
   .pdf-toolbar-right {
+    flex-wrap: wrap;
     justify-content: center;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
+  }
+
+  .pdf-toolbar-left > *,
+  .pdf-toolbar-center > *,
+  .pdf-toolbar-right > * {
+    margin: 2px;
+  }
+
+  /* Ensure zoom buttons are always visible */
+  .rpv-core__viewer-zoom {
+    display: flex !important;
+  }
+
+  /* Adjust size of toolbar items for better touch targets */
+  .rpv-core__viewer-zoom-out,
+  .rpv-core__viewer-zoom-in,
+  .rpv-core__viewer-zoom-popover,
+  .rpv-core__viewer-current-page-input,
+  .rpv-core__viewer-total-page {
+    min-width: 36px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Ensure full-screen button is visible on mobile */
+@media (max-width: 480px) {
+  .full-screen-button {
+    display: flex !important;
   }
 }
