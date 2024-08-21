@@ -16,6 +16,7 @@ import ScrollToTop from './components/ScrollToTop';
 import NotFoundPage from './pages/NotFoundPage';
 import GenrePage from './pages/GenrePage';
 import AllGenresPage from './pages/AllGenresPage';
+import WatercolorBackground from './components/WatercolorBackground';
 
 
 
@@ -37,6 +38,7 @@ function App() {
   return (
     <div>
       <ScrollToTop />
+      <WatercolorBackground />
       <Navbar /> 
       <Routes>
         <Route path="/" element={<HomePage />} /> 

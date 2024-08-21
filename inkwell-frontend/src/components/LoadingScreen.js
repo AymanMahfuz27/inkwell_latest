@@ -1,7 +1,6 @@
 // src/components/LoadingScreen.js
 import React from 'react';
 import '../css/LoadingScreen.css';
-import WatercolorBackground from './WatercolorBackground';
 
 const LoadingScreen = () => {
   const inkwellLogo = 'inkwell-logo.svg';

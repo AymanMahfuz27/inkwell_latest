@@ -29,7 +29,7 @@ const SignUpSignInPage = () => {
 
   return (
     <div className="inkwell-signup-signin-page-container">
-      <WatercolorBackground />
+      {/* <WatercolorBackground /> */}
       <div className="inkwell-signup-signin-page-content">
         <h1 className="inkwell-signup-signin-page-title">
           {isSignUp ? "Join Inkwell" : "Welcome Back"}

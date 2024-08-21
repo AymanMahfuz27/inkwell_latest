@@ -41,7 +41,7 @@ const UploadBookPage = () => {
 
   return (
     <div className="inkwell-upload-page-container">
-      <WatercolorBackground />
+      {/* <WatercolorBackground /> */}
       <div className="inkwell-upload-page-content">
         <h1 className="inkwell-upload-page-title">
           {draftData ? 'Edit Your Book' : 'Upload Your Book'}

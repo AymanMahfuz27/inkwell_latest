@@ -43,7 +43,7 @@ const GenrePage = () => {
 
   return (
     <div className="genre-page">
-      <WatercolorBackground />
+      {/* <WatercolorBackground /> */}
       <div className="genre-page-content">
 
 

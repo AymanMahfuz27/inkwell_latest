@@ -1,8 +1,9 @@
 // src/components/BugReportForm.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import api from '../services/api';
 import '../css/BugReportForm.css';
+import WatercolorBackground from './WatercolorBackground';
 
 const BugReportForm = ({ onClose }) => {
   const [type, setType] = useState('bug');
@@ -23,12 +24,19 @@ const BugReportForm = ({ onClose }) => {
     }
   };
 
+  useEffect(() => {
+    if (submitted) {
+      const timer = setTimeout(() => {
+        onClose(); // Close the form after 3 seconds
+      }, 3000);
+      return () => clearTimeout(timer); // Clear the timeout if the component unmounts
+    }
+  }, [submitted, onClose]);
+
   if (submitted) {
     return (
-      <div className="bug-report-form">
-        <button className="close-button" onClick={onClose}>
-          <X size={24} />
-        </button>
+      <div className="bug-report-thank-you">
+        <WatercolorBackground />
         <h2>Thank You!</h2>
         <p>Your {type} report has been submitted successfully.</p>
       </div>
@@ -83,7 +91,7 @@ const BugReportForm = ({ onClose }) => {
             />
           </div>
           {error && <p className="error">{error}</p>}
-          <button classname="bug-report-form-button" type="submit">Submit</button>
+          <button className="bug-report-form-button" type="submit">Submit</button>
         </form>
       </div>
     </div>
@@ -91,4 +99,3 @@ const BugReportForm = ({ onClose }) => {
 };
 
 export default BugReportForm;
-

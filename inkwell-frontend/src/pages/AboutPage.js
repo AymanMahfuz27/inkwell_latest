@@ -24,7 +24,7 @@ const AboutPage = () => {
 
   return (
     <div className="inkwell-about-page-container">
-      <WatercolorBackground />
+      {/* <WatercolorBackground /> */}
       <div className="inkwell-about-page-content">
         
         <AnimatedSection delay={100}>
