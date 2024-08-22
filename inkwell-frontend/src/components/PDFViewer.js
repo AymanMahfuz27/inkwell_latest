@@ -7,6 +7,7 @@ import { pageNavigationPlugin } from '@react-pdf-viewer/page-navigation';
 import { fullScreenPlugin } from '@react-pdf-viewer/full-screen';
 import { Expand } from 'lucide-react';
 
+
 // Import styles
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';

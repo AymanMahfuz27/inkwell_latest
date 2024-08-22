@@ -31,7 +31,7 @@ const Footer = () => {
             <li><Link to="/">Home</Link></li>
             <li><Link to="/books">All Books</Link></li>
             <li><Link to="/about">About Us</Link></li>
-            <li><Link to="/upload">Upload a Book</Link></li>
+            <li><Link to="/genres">All Genres</Link></li>
           </ul>
         </div>
         <div className="inkwell-footer-section">

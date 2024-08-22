@@ -6,7 +6,6 @@ import BookCard from '../components/BookCard';
 import { isAuthenticated, getUsername } from '../services/authService';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import '../css/HomePage.css';
-import WatercolorBackground from '../components/WatercolorBackground';
 import LoadingScreen from '../components/LoadingScreen';
 
 const BookRow = ({ title, books, onScrollLeft, onScrollRight }) => (
@@ -93,7 +92,6 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
-      {/* <WatercolorBackground /> */}
       <div className="hero-section">
         <div className="hero-content">
           <img src={inkwellLogo} alt="Inkwell" className="hero-logo" />

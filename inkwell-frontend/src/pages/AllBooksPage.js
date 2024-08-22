@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import BookCard from '../components/BookCard';
 import '../css/HomePage.css';  // We'll continue to use the HomePage CSS for consistency
-import WatercolorBackground from '../components/WatercolorBackground';
 
 const AllBooksPage = () => {
   const [books, setBooks] = useState([]);
@@ -50,7 +49,6 @@ const AllBooksPage = () => {
 
   return (
     <div className="home-page all-books-page">
-        {/* <WatercolorBackground /> */}
       <div className="hero-section-all-books">
         <h1>All Books</h1>
         <p>Explore our collection of amazing books</p>

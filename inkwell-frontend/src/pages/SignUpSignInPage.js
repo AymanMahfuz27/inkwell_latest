@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogIn, User, Mail, Lock } from 'lucide-react';
 import { login as authLogin } from "../services/authService";
-import WatercolorBackground from '../components/WatercolorBackground';
 import MultiStepSignupForm from '../components/MultiStepSignupForm';
 import '../css/SignUpSignInPage.css';
 
@@ -29,7 +28,6 @@ const SignUpSignInPage = () => {
 
   return (
     <div className="inkwell-signup-signin-page-container">
-      {/* <WatercolorBackground /> */}
       <div className="inkwell-signup-signin-page-content">
         <h1 className="inkwell-signup-signin-page-title">
           {isSignUp ? "Join Inkwell" : "Welcome Back"}

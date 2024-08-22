@@ -110,3 +110,30 @@
     display: flex !important;
   }
 }
+
+/* Add these styles to your PDFViewer.css */
+
+
+/* iOS-specific styles */
+@supports (-webkit-touch-callout: none) {
+  .pdf-toolbar-left,
+  .pdf-toolbar-center,
+  .pdf-toolbar-right {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .rpv-core__viewer-zoom-out,
+  .rpv-core__viewer-zoom-in,
+  .rpv-core__viewer-zoom-popover,
+  .rpv-core__viewer-current-page-input,
+  .rpv-core__viewer-total-page {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    font-size: 16px !important;
+  }
+
+  .rpv-core__viewer-zoom {
+    display: flex !important;
+  }
+}

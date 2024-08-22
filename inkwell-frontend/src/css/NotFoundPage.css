@@ -1,20 +1,32 @@
+/* src/css/NotFoundPage.css */
+
 .not-found-container {
     min-height: 100vh;
     padding: 80px 20px 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
-  }
-  
-  .not-found-container {
     text-align: center;
-    margin-top: 50px;
 }
 
-.not-found-container h1 {
+.not-found-card {
+    background-color: rgba(26, 26, 26, 0.95); /* Slight transparency for the card */
+    padding: 40px 60px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Shadow effect */
+    max-width: 500px;
+    width: 100%;
+}
+
+.not-found-card h1 {
     font-size: 3em;
     color: #ff0000;
+    margin-bottom: 20px;
 }
 
-.not-found-container p {
+.not-found-card p {
     font-size: 1.5em;
-    color: #333;
+    color: #ddd; /* Lighter text color to contrast with the dark background */
+    margin-top: 20px;
 }
