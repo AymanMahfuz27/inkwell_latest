@@ -1,7 +1,6 @@
 // src/pages/UploadBookPage.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import WatercolorBackground from '../components/WatercolorBackground';
 import MultiStepUploadForm from '../components/MultiStepUploadForm';
 import api from '../services/api';
 import '../css/UploadBookPage.css';
@@ -41,7 +40,6 @@ const UploadBookPage = () => {
 
   return (
     <div className="inkwell-upload-page-container">
-      {/* <WatercolorBackground /> */}
       <div className="inkwell-upload-page-content">
         <h1 className="inkwell-upload-page-title">
           {draftData ? 'Edit Your Book' : 'Upload Your Book'}

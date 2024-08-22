@@ -24,7 +24,6 @@ import {
   getFollowing,
 } from "../services/authService";
 
-import WatercolorBackground from "../components/WatercolorBackground";
 import "../css/ProfilePage.css";
 import AnalyticsDashboard from "../components/AnalyticsDashboard";
 import { BookListCard } from "../components/ListCards";
@@ -337,7 +336,6 @@ const ProfilePage = () => {
 
   return (
     <div className="inkwell-profile-page-container">
-      {/* <WatercolorBackground /> */}
       <div className="inkwell-profile-page-content">
       <div className="inkwell-profile-page-header">
   <img

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Book, Users, Sparkles, Heart, Globe, Feather, Target, Zap, Lightbulb, Leaf, DollarSign, Bookmark, FileText, Camera, Coffee, BookOpen, Briefcase } from 'lucide-react';
-import WatercolorBackground from '../components/WatercolorBackground';
 import '../css/AboutPage.css';
 
 const AnimatedSection = ({ children, delay }) => {
@@ -24,7 +23,6 @@ const AboutPage = () => {
 
   return (
     <div className="inkwell-about-page-container">
-      {/* <WatercolorBackground /> */}
       <div className="inkwell-about-page-content">
         
         <AnimatedSection delay={100}>

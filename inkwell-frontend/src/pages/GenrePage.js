@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../services/api';
 import BookCard from '../components/BookCard';
-import WatercolorBackground from '../components/WatercolorBackground';
 import LoadingScreen from '../components/LoadingScreen';
 import '../css/GenrePage.css';
 import { Tag } from 'lucide-react';
@@ -43,7 +42,6 @@ const GenrePage = () => {
 
   return (
     <div className="genre-page">
-      {/* <WatercolorBackground /> */}
       <div className="genre-page-content">
 
 
