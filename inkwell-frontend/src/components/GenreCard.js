@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Tag } from 'lucide-react';
 
 const GenreCard = ({ genre }) => (
-  <Link to={`/genres/${genre.name}`} className="genre-card">
+  <Link to={`/genres/${genre.name}`} className="homepage-genre-card">
     <Tag size={24} />
     <h3>{genre.name}</h3>
     <p>{genre.book_count} books</p>
