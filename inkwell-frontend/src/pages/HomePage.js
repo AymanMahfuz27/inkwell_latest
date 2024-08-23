@@ -4,10 +4,12 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import BookCard from '../components/BookCard';
 import GenreCard from '../components/GenreCard';
+import {UserListCard} from '../components/ListCards';
 import { isAuthenticated, getUsername } from '../services/authService';
 import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import '../css/HomePage.css';
 import LoadingScreen from '../components/LoadingScreen';
+import WatercolorBackgroundError from '../components/WatercolorBackgroundError';
 
 const BookRow = ({ title, books, onScrollLeft, onScrollRight }) => (
   <div className="book-row">
@@ -31,42 +33,67 @@ const BookRow = ({ title, books, onScrollLeft, onScrollRight }) => (
 );
 
 const GenreRow = ({ genres }) => (
-  <div className="genre-row">
-    {genres.map(genre => (
-      <GenreCard key={genre.id} genre={genre} />
+  <div className="genre-section">
+    <h2>Explore Genres</h2>
+    <div className="genre-row">
+      <div className="genre-scroll">
+        {genres.slice(0, 10).map(genre => ( 
+          <GenreCard key={genre.id} genre={genre} />
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+
+const UserRow = ({ users }) => (
+  <div className="user-row">
+    {users.map(user => (
+      <UserListCard key={user.id} user={user} />
     ))}
   </div>
 );
 
 
+
 const HomePage = () => {
-  const [allBooks, setAllBooks] = useState([]);
+  const [featuredBooks, setFeaturedBooks] = useState([]);
   const [userBooks, setUserBooks] = useState([]);
   const [genreBooks, setGenreBooks] = useState({});
   const [popularBooks, setPopularBooks] = useState([]);
-  const [newReleases, setNewReleases] = useState([]);
+  const [recentlyAdded, setRecentlyAdded] = useState([]);
+  const [mostLikedBooks, setMostLikedBooks] = useState([]);
+  const [randomUsers, setRandomUsers] = useState([]);
   const [genres, setGenres] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const inkwellLogo = 'inkwell-logo.svg';
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [allBooksResponse, genresResponse, popularBooksResponse, newReleasesResponse] = await Promise.all([
-          api.get('/api/books/books/'),
+        const [
+          featuredBooksResponse,
+          genresResponse,
+          popularBooksResponse,
+          recentlyAddedResponse,
+          mostLikedBooksResponse,
+          randomUsersResponse
+        ] = await Promise.all([
+          api.get('/api/books/books/?limit=10'),
           api.get('/api/books/genres/'),
-          api.get('/api/books/books/?sort=popular'),
-          api.get('/api/books/books/?sort=new')
+          api.get('/api/books/books/?sort=-view_count&limit=10'),
+          api.get('/api/books/books/?sort=-created_at&limit=10'),
+          api.get('/api/books/books/?sort=-likes&limit=10'),
+          api.get('/api/users/profiles/?sort=random&limit=3')
         ]);
 
-        const allBooksData = allBooksResponse.data.results || allBooksResponse.data;
-        setAllBooks(allBooksData);
+        setFeaturedBooks(featuredBooksResponse.data.results || featuredBooksResponse.data);
         setGenres(genresResponse.data);
         setPopularBooks(popularBooksResponse.data.results || popularBooksResponse.data);
-        setNewReleases(newReleasesResponse.data.results || newReleasesResponse.data);
+        setRecentlyAdded(recentlyAddedResponse.data.results || recentlyAddedResponse.data);
+        setMostLikedBooks(mostLikedBooksResponse.data.results || mostLikedBooksResponse.data);
+        setRandomUsers(randomUsersResponse.data.results || randomUsersResponse.data);
 
         if (isAuthenticated()) {
           const userCollectionsResponse = await api.get(`/api/users/collections/`);
@@ -79,11 +106,11 @@ const HomePage = () => {
         }
 
         // Fetch books for 3 random genres
-        const randomGenres = genres.sort(() => 0.5 - Math.random()).slice(0, 3);
+        const randomGenres = genresResponse.data.sort(() => 0.5 - Math.random()).slice(0, 3);
         const genreBooksData = {};
         for (const genre of randomGenres) {
-          const genreBooksResponse = await api.get(`/api/books/genres/${genre.name}/books/`);
-          genreBooksData[genre.name] = genreBooksResponse.data;
+          const genreBooksResponse = await api.get(`/api/books/genres/${genre.name}/books/?limit=10`);
+          genreBooksData[genre.name] = genreBooksResponse.data.results || genreBooksResponse.data;
         }
         setGenreBooks(genreBooksData);
 
@@ -97,6 +124,8 @@ const HomePage = () => {
 
     fetchData();
   }, []);
+  
+
 
   const handleScroll = (direction, rowId) => {
     const scrollContainer = document.getElementById(rowId);
@@ -127,18 +156,33 @@ const HomePage = () => {
       
       <BookRow 
         title="Featured Books" 
-        books={allBooks}
+        books={featuredBooks}
         onScrollLeft={() => handleScroll('left', 'scroll-featured-books')}
         onScrollRight={() => handleScroll('right', 'scroll-featured-books')}
       />
       
-      <GenreRow genres={genres.slice(0, 5)} />
+      <GenreRow genres={genres} />
 
       <BookRow 
         title="Popular Now" 
         books={popularBooks}
         onScrollLeft={() => handleScroll('left', 'scroll-popular-books')}
         onScrollRight={() => handleScroll('right', 'scroll-popular-books')}
+      />
+
+       {/* Featured Users Section */}
+       {randomUsers.length > 0 && (
+        <div className="featured-users-section">
+          <h2>Featured Inkwell Users</h2>
+          <UserRow users={randomUsers} />
+        </div>
+      )}
+
+      <BookRow 
+        title="Recently Added" 
+        books={recentlyAdded}
+        onScrollLeft={() => handleScroll('left', 'scroll-recently-added')}
+        onScrollRight={() => handleScroll('right', 'scroll-recently-added')}
       />
 
       {isAuthenticated() && userBooks.length > 0 && (
@@ -150,12 +194,20 @@ const HomePage = () => {
         />
       )}
 
+<div className="about-inkwell-section">
+        <h2>About Inkwell</h2>
+        <p>Discover a new way to explore and enjoy books with Inkwell. Our platform offers a unique reading experience, connecting authors and readers like never before.</p>
+        <Link to="/about" className="learn-more-button">
+          <Info size={20} />
+          Learn More About Inkwell
+        </Link>
+      </div>
 
       <BookRow 
-        title="New Releases" 
-        books={newReleases}
-        onScrollLeft={() => handleScroll('left', 'scroll-new-releases')}
-        onScrollRight={() => handleScroll('right', 'scroll-new-releases')}
+        title="Most Liked Books" 
+        books={mostLikedBooks}
+        onScrollLeft={() => handleScroll('left', 'scroll-most-liked-books')}
+        onScrollRight={() => handleScroll('right', 'scroll-most-liked-books')}
       />
 
       {Object.entries(genreBooks).map(([genre, books]) => (
@@ -168,14 +220,9 @@ const HomePage = () => {
         />
       ))}
 
-      <div className="about-inkwell-section">
-        <h2>About Inkwell</h2>
-        <p>Discover a new way to explore and enjoy books with Inkwell. Our platform offers a unique reading experience, connecting authors and readers like never before.</p>
-        <Link to="/about" className="learn-more-button">
-          <Info size={20} />
-          Learn More About Inkwell
-        </Link>
-      </div>
+     
+
+      
 
       <div className="see-all-links">
         <Link to="/all-books">Explore All Books</Link>

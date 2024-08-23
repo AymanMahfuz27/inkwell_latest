@@ -33,11 +33,28 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
     parser_classes = (MultiPartParser, FormParser, JSONParser)
 
+
     def get_queryset(self):
         username = self.kwargs.get('username')
-        if username == 'undefined':
-            return UserProfile.objects.filter(id=self.request.user.id)
-        return UserProfile.objects.filter(username=username)
+        if self.action == 'list':
+            queryset = UserProfile.objects.all()
+            sort = self.request.query_params.get('sort')
+            limit = self.request.query_params.get('limit')
+            
+            if sort == 'random':
+                queryset = queryset.order_by('?')
+            
+            if limit:
+                try:
+                    limit = int(limit)
+                    queryset = queryset[:limit]
+                except ValueError:
+                    pass
+            
+            return queryset
+        elif username and username != 'undefined':
+            return UserProfile.objects.filter(username=username)
+        return UserProfile.objects.none()
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -140,6 +157,10 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance, context={'request': request})
         return Response(serializer.data)
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
    
 
 

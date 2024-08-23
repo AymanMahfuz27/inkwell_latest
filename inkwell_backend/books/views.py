@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Count
 
 from rest_framework import viewsets, status,permissions, generics
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -50,16 +51,40 @@ class BookViewSet(viewsets.ModelViewSet):
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    def get_queryset(self):
+        queryset = Book.objects.all()
+        
+        # Sorting
+        sort = self.request.query_params.get('sort')
+        if sort:
+            if sort == '-view_count':
+                queryset = queryset.order_by('-view_count')
+            elif sort == '-created_at':
+                queryset = queryset.order_by('-created_at')
+            elif sort == '-likes':
+                queryset = queryset.annotate(like_count=Count('likes')).order_by('-like_count')
+
+        # Limiting
+        limit = self.request.query_params.get('limit')
+        if limit:
+            try:
+                limit = int(limit)
+                queryset = queryset[:limit]
+            except ValueError:
+                pass
+
+        return queryset
+
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
         return super().get_permissions()
 
-
     def list(self, request):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
 
     def create(self, request, *args, **kwargs):
         logger.info(f"User {request.user.username} is attempting to create a book")
@@ -104,9 +129,8 @@ class BookViewSet(viewsets.ModelViewSet):
         serializer = BookInteractionSerializer(book, context={'request': request})
         return Response(serializer.data)
 
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def like(self, request, pk=None):
-        print("Like action")
         book = self.get_object()
         user = request.user
         if book.likes.filter(id=user.id).exists():
@@ -120,6 +144,8 @@ class BookViewSet(viewsets.ModelViewSet):
             'liked': liked,
             'like_count': book.likes.count()
         })
+
+
 
 
     @action(detail=True, methods=['get', 'post'], permission_classes=[IsAuthenticated])
