@@ -48,17 +48,28 @@ const BookReader = () => {
     setViewMode(newMode);
   }, []);
 
+  const handleZoomChange = (newZoom) => {
+    setZoom(Math.max(0.5, Math.min(2, newZoom)));
+  };
+
+
   const handleZoom = useCallback((direction) => {
     console.log('handleZoom called with direction:', direction);
     setZoom(prevZoom => Math.max(0.5, Math.min(2, prevZoom + direction * 0.1)));
   }, []);
 
-  const handlePageChange = useCallback((pageNumber) => {
-    console.log('BookReader handlePageChange called with:', pageNumber);
-    if (pageNumber > 0 && pageNumber <= totalPages && pageNumber !== currentPage) {
-      setCurrentPage(pageNumber);
-    }
-  }, [totalPages, currentPage]);
+  // const handlePageChange = useCallback((pageNumber) => {
+  //   console.log('BookReader handlePageChange called with:', pageNumber);
+  //   if (pageNumber > 0 && pageNumber <= totalPages && pageNumber !== currentPage) {
+  //     setCurrentPage(pageNumber);
+  //   }
+  // }, [totalPages, currentPage]);
+
+  const handlePageChange = (newPage, newTotalPages) => {
+    setCurrentPage(newPage);
+    setTotalPages(newTotalPages);
+  };
+  
 
   const handleTotalPagesChange = useCallback((pages) => {
     console.log('handleTotalPagesChange called with:', pages);
@@ -76,7 +87,7 @@ const BookReader = () => {
   return (
     <div className="book-reader">
       <div className="book-content-container">
-        <div className="book-content-controls">
+        {/* <div className="book-content-controls">
           {isPDF ? null : (
             <>
               <button onClick={() => handleViewModeChange('horizontal')} title="Horizontal View">
@@ -89,7 +100,7 @@ const BookReader = () => {
               <button onClick={() => handleZoom(-0.1)} title="Zoom Out"><ZoomOut /></button>
             </>
           )}
-        </div>
+        </div> */}
         <div className="book-content-scroll">
           {isPDF ? (
             <PDFViewer 
@@ -102,13 +113,16 @@ const BookReader = () => {
             />
           ) : (
             <TextViewer 
-  content={book.content}
-  viewMode={viewMode}
-  zoom={zoom}
-  currentPage={currentPage}
-  totalPages={totalPages}
-  onPageChange={handlePageChange}
-/>
+      content={book.content}
+      currentPage={currentPage}
+      totalPages={totalPages}
+      onPageChange={handlePageChange}
+      viewMode={viewMode}
+      onViewModeChange={handleViewModeChange}
+      zoom={zoom}
+      onZoomChange={handleZoomChange}
+    />
+
           )}
         </div>
       </div>
