@@ -7,7 +7,7 @@ const api = axios.create({
 });
 
 // List of public routes that don't require authentication
-const publicRoutes = ['/api/books/books/'];
+const publicRoutes = ['/api/books/books/$'];
 
 api.interceptors.request.use(
     config => {

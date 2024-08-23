@@ -1,4 +1,3 @@
-// Navbar.js
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
@@ -20,6 +19,7 @@ const Navbar = () => {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const searchInputRef = useRef(null);
+  const searchFormRef = useRef(null);
   const inkwellLogo = "inkwell-logo.svg";
 
   useEffect(() => {
@@ -27,8 +27,19 @@ const Navbar = () => {
       setIsScrolled(window.scrollY > 10);
     };
 
+    const handleClickOutside = (event) => {
+      if (searchFormRef.current && !searchFormRef.current.contains(event.target)) {
+        setIsSearchExpanded(false);
+      }
+    };
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   useEffect(() => {
@@ -78,35 +89,36 @@ const Navbar = () => {
 
   return (
     <nav className={`navbar ${isScrolled ? "scrolled" : ""} ${isMenuOpen ? "menu-open" : ""}`}>
-
       <div className="navbar-content">
-        <Link to="/" className="logo" onClick={handleNavClick}>
-          <img src={inkwellLogo} alt="Inkwell" className="navbar-logo" />
-        </Link>
-        <div className={`nav-center ${isMenuOpen ? "mobile-menu-visible" : ""}`}>
-          <div className="nav-links">
-            <Link to="/all-books" onClick={handleNavClick}>Books</Link>
-            <Link to="/upload" onClick={handleNavClick}>Upload</Link>
-            <Link to="/about" onClick={handleNavClick}>About</Link>
-            {auth && (
-              <>
+        <div className="nav-left">
+          <Link to="/" className="logo" onClick={handleNavClick}>
+            <img src={inkwellLogo} alt="Inkwell" className="navbar-logo" />
+          </Link>
+          <div className={`nav-center ${isMenuOpen ? "mobile-menu-visible" : ""}`}>
+            <div className="nav-links">
+              <Link to="/all-books" onClick={handleNavClick}>Books</Link>
+              <Link to="/upload" onClick={handleNavClick}>Upload</Link>
+              <Link to="/about" onClick={handleNavClick}>About Us</Link>
+              {auth && (
                 <Link to={`/profile/${username}`} onClick={handleNavClick} className="mobile-only">
                   Profile
                 </Link>
-                <button onClick={handleLogout} className="mobile-only mobile-logout-button">
-                  Logout
-                </button>
-              </>
-            )}
-            {!auth && (
-              <Link to="/login" onClick={handleNavClick} className="mobile-only">
-                Sign In
-              </Link>
-            )}
+              )}
+              {!auth && (
+                <Link to="/login" onClick={handleNavClick} className="mobile-only">
+                  Sign In
+                </Link>
+              )}
+            </div>
           </div>
         </div>
+  
         <div className="nav-actions">
-          <form onSubmit={handleSearch} className={`search-form-navbar ${isSearchExpanded ? "expanded" : ""}`}>
+          <form 
+            ref={searchFormRef}
+            onSubmit={handleSearch} 
+            className={`search-form-navbar ${isSearchExpanded ? "expanded" : ""}`}
+          >
             <input
               ref={searchInputRef}
               type="text"
