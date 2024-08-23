@@ -102,10 +102,13 @@ const BookReader = () => {
             />
           ) : (
             <TextViewer 
-              content={book.content}
-              viewMode={viewMode}
-              zoom={zoom}
-            />
+  content={book.content}
+  viewMode={viewMode}
+  zoom={zoom}
+  currentPage={currentPage}
+  totalPages={totalPages}
+  onPageChange={handlePageChange}
+/>
           )}
         </div>
       </div>

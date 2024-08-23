@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useRef, useState } from 'react';
-import { Viewer, Worker, ScrollMode, SpecialZoomLevel } from '@react-pdf-viewer/core';
+import { Viewer, Worker, ScrollMode, SpecialZoomLevel, ProgressBar } from '@react-pdf-viewer/core';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import { toolbarPlugin } from '@react-pdf-viewer/toolbar';
 import { scrollModePlugin } from '@react-pdf-viewer/scroll-mode';
@@ -121,6 +121,16 @@ const PDFViewer = ({ pdfUrl, viewMode, onViewModeChange, onPageChange, onTotalPa
     </Toolbar>
   );
 
+  const renderLoader = (percentages) => (
+    <div className="pdf-loader-container">
+      <div className="pdf-loader-content">
+        <ProgressBar progress={Math.round(percentages)} />
+        <div className="pdf-loader-text">{Math.round(percentages)}% loaded</div>
+      </div>
+    </div>
+  );
+
+
   const defaultLayoutPluginInstance = defaultLayoutPlugin({
     renderToolbar,
     sidebarTabs: (defaultTabs) => [defaultTabs[0]],
@@ -154,6 +164,7 @@ const PDFViewer = ({ pdfUrl, viewMode, onViewModeChange, onPageChange, onTotalPa
           }}
           defaultScale={SpecialZoomLevel.PageFit}
           onError={handleError}
+          renderLoader={renderLoader}
         />
       </Worker>
     </div>

@@ -137,3 +137,54 @@
     display: flex !important;
   }
 }
+
+.pdf-loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(26, 26, 26, 0.9);
+}
+
+.pdf-loader-content {
+  width: 80%;
+  max-width: 300px;
+}
+
+.pdf-loader-text {
+  color: #fff;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* Style the ProgressBar to match your site's aesthetic */
+.rpv-core__viewer .rpv-core__progress-bar {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  height: 8px;
+}
+
+.rpv-core__viewer .rpv-core__progress-bar-progress {
+  background-color: #3291ff;
+  border-radius: 4px;
+  height: 100%;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .pdf-loader-content {
+    width: 90%;
+  }
+}
+
+@media (max-width: 480px) {
+  .pdf-loader-content {
+    width: 95%;
+  }
+  
+  .pdf-loader-text {
+    font-size: 12px;
+  }
+}
