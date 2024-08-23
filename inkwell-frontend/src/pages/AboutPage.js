@@ -27,7 +27,7 @@ const AboutPage = () => {
         
         <AnimatedSection delay={100}>
           <h1 className="inkwell-about-page-title">Welcome to Inkwell</h1>
-          <p className="inkwell-about-page-tagline">Revolutionizing literature through free access and fair compensation</p>
+          <p className="inkwell-about-page-tagline">Changing the World, One Book at a Time</p>
         </AnimatedSection>
         
         <AnimatedSection delay={300}>

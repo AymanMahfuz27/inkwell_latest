@@ -1,3 +1,4 @@
+// Navbar.js
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
@@ -26,71 +27,25 @@ const Navbar = () => {
       setIsScrolled(window.scrollY > 10);
     };
 
-    const handleClickOutside = (event) => {
-      if (
-        searchInputRef.current &&
-        !searchInputRef.current.contains(event.target)
-      ) {
-        if (!searchQuery) {
-          setIsSearchExpanded(false);
-        }
-      }
-    };
-
     window.addEventListener("scroll", handleScroll);
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [searchQuery]);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location]);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        isSearchExpanded &&
-        searchInputRef.current &&
-        !searchInputRef.current.contains(event.target) &&
-        !event.target.closest(".search-toggle")
-      ) {
-        setIsSearchExpanded(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isSearchExpanded]);
-  useEffect(() => {
-    if (!isMenuOpen) {
-      document.body.classList.remove("menu-open");
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'visible';
     }
   }, [isMenuOpen]);
-  
 
   const toggleMenu = () => {
-    // Scroll to the top of the page
-    window.scrollTo(0, 0);
-  
-    // Toggle menu state immediately
-    const menuOpen = !isMenuOpen;
-  
-    setIsMenuOpen(menuOpen);
-  
-    // Enable or disable body scrolling based on the menu state
-    if (menuOpen) {
-      document.body.classList.add("menu-open");
-    } else {
-      document.body.classList.remove("menu-open");
-    }
+    setIsMenuOpen(!isMenuOpen);
   };
-  
 
   const handleLogout = () => {
     logout();
@@ -107,10 +62,8 @@ const Navbar = () => {
     if (!isSearchExpanded) {
       setTimeout(() => searchInputRef.current?.focus(), 100);
     }
-    // Close the menu if it's open
     if (isMenuOpen) {
       setIsMenuOpen(false);
-      document.body.classList.remove("menu-open");
     }
   };
 
@@ -124,63 +77,36 @@ const Navbar = () => {
   };
 
   return (
-    <nav
-      className={`navbar ${isScrolled ? "scrolled" : ""} ${
-        isMenuOpen ? "menu-open" : ""
-      }`}
-    >
+    <nav className={`navbar ${isScrolled ? "scrolled" : ""} ${isMenuOpen ? "menu-open" : ""}`}>
+
       <div className="navbar-content">
         <Link to="/" className="logo" onClick={handleNavClick}>
           <img src={inkwellLogo} alt="Inkwell" className="navbar-logo" />
         </Link>
-        <div
-          className={`nav-center ${isMenuOpen ? "mobile-menu-visible" : ""}`}
-        >
-          <div className={`nav-links ${isSearchExpanded ? "hidden" : ""}`}>
-            <Link to="/all-books" onClick={handleNavClick}>
-              Books
-            </Link>
-            <Link to="/upload" onClick={handleNavClick}>
-              Upload
-            </Link>
-            <Link to="/about" onClick={handleNavClick}>
-              About
-            </Link>
+        <div className={`nav-center ${isMenuOpen ? "mobile-menu-visible" : ""}`}>
+          <div className="nav-links">
+            <Link to="/all-books" onClick={handleNavClick}>Books</Link>
+            <Link to="/upload" onClick={handleNavClick}>Upload</Link>
+            <Link to="/about" onClick={handleNavClick}>About</Link>
             {auth && (
               <>
-                <Link
-                  to={`/profile/${username}`}
-                  onClick={handleNavClick}
-                  className="mobile-only"
-                >
+                <Link to={`/profile/${username}`} onClick={handleNavClick} className="mobile-only">
                   Profile
                 </Link>
-                <button
-                  onClick={handleLogout}
-                  className="mobile-only mobile-logout-button"
-                >
+                <button onClick={handleLogout} className="mobile-only mobile-logout-button">
                   Logout
                 </button>
               </>
             )}
             {!auth && (
-              <Link
-                to="/login"
-                onClick={handleNavClick}
-                className="mobile-only"
-              >
+              <Link to="/login" onClick={handleNavClick} className="mobile-only">
                 Sign In
               </Link>
             )}
           </div>
         </div>
         <div className="nav-actions">
-          <form
-            onSubmit={handleSearch}
-            className={`search-form-navbar ${
-              isSearchExpanded ? "expanded" : ""
-            }`}
-          >
+          <form onSubmit={handleSearch} className={`search-form-navbar ${isSearchExpanded ? "expanded" : ""}`}>
             <input
               ref={searchInputRef}
               type="text"
@@ -190,27 +116,17 @@ const Navbar = () => {
               className="search-input"
             />
           </form>
-          <button
-            type="button"
-            className="icon-button search-toggle"
-            onClick={toggleSearch}
-          >
+          <button type="button" className="icon-button search-toggle" onClick={toggleSearch}>
             <Search size={20} />
           </button>
 
           {auth ? (
             <>
-              <Link
-                to={`/profile/${username}`}
-                className="profile-link desktop-only"
-              >
+              <Link to={`/profile/${username}`} className="profile-link desktop-only">
                 <User size={20} />
                 <span>{firstName || "User"}</span>
               </Link>
-              <button
-                onClick={handleLogout}
-                className="icon-button desktop-only"
-              >
+              <button onClick={handleLogout} className="icon-button desktop-only">
                 <LogOut size={20} />
               </button>
             </>
