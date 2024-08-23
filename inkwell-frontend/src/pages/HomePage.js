@@ -33,10 +33,10 @@ const BookRow = ({ title, books, onScrollLeft, onScrollRight }) => (
 );
 
 const GenreRow = ({ genres }) => (
-  <div className="genre-section">
+  <div className="homepage-genre-section">
     <h2>Explore Genres</h2>
-    <div className="genre-row">
-      <div className="genre-scroll">
+    <div className="homepage-genre-row">
+      <div className="homepage-genre-scroll">
         {genres.slice(0, 10).map(genre => ( 
           <GenreCard key={genre.id} genre={genre} />
         ))}
