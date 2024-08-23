@@ -216,7 +216,7 @@
   }
 
   .desktop-only {
-    display: none;
+    display: flex;
   }
 
   .menu-toggle {
