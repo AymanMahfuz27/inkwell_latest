@@ -1,66 +1,95 @@
-.text-viewer {
+/* TextViewer.css */
+.text-viewer-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background-color: #1a1a1a;
-  color: #ffffff;
+  height: 100%;
 }
 
-.text-viewer.vertical {
-  height: auto;
-}
-.text-viewer .page {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 40px;
-  line-height: 1.6;
-}
-
-.text-viewer h1, .text-viewer h2, .text-viewer h3 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.text-viewer p {
-  margin-bottom: 15px;
-}
-
-.text-viewer ul, .text-viewer ol {
-  margin-left: 30px;
-  margin-bottom: 15px;
-}
-
-.text-viewer li {
-  margin-bottom: 5px;
-}
-
-.text-viewer a {
-  color: #3291ff;
-  text-decoration: none;
-}
-
-.text-viewer a:hover {
-  text-decoration: underline;
-}
-
-.nav-button {
+.text-viewer-toolbar {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 5px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  padding: 10px;
+  background-color: rgba(26, 26, 26, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.text-viewer-toolbar button {
+  background: none;
   border: none;
-  padding: 8px 12px;
-  border-radius: 4px;
+  color: #fff;
   cursor: pointer;
+  padding: 5px 10px;
+  margin: 0 5px;
+  border-radius: 4px;
   transition: background-color 0.3s ease;
 }
 
-.nav-button:hover:not(:disabled) {
+.text-viewer-toolbar button:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.text-viewer-toolbar button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.text-viewer-toolbar button.active {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.nav-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.page-navigation {
+  display: flex;
+  align-items: center;
+  margin: 0 10px;
+}
+
+.page-navigation input {
+  width: 50px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 5px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.page-navigation span {
+  margin-left: 5px;
+  color: #fff;
+}
+
+.text-viewer-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  color: #fff;
+  background-color: #1a1a1a;
+}
+
+.text-viewer-content.horizontal {
+  display: flex;
+  flex-direction: row;
+  overflow-x: hidden;
+}
+
+.text-viewer-content.vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.text-viewer-content.horizontal .page {
+  flex: 0 0 100%;
+}
+
+.page-break {
+  height: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
 }

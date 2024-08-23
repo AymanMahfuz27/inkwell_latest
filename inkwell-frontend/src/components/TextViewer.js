@@ -1,111 +1,163 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DOMPurify from 'dompurify';
+import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Columns, AlignJustify } from 'lucide-react';
 import '../css/TextViewer.css';
 
-const TextViewer = ({ content, currentPage, totalPages, onPageChange, viewMode, zoom }) => {
+const TextViewer = ({ 
+  content, 
+  currentPage, 
+  totalPages, 
+  onPageChange, 
+  viewMode, 
+  onViewModeChange,
+  zoom,
+  onZoomChange
+}) => {
   const [pages, setPages] = useState([]);
-  const baseFontSize = 16;
+  const viewerRef = useRef(null);
+  const [goToPage, setGoToPage] = useState('');
+  const [localCurrentPage, setLocalCurrentPage] = useState(currentPage);
 
   useEffect(() => {
     const paginateContent = () => {
-      const isHTML = /<[a-z][\s\S]*>/i.test(content);
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = DOMPurify.sanitize(content);
+
+      const pageBreakChar = '<!--pagebreak-->';
+      const maxWordsPerPage = 500;
       let pageContents = [];
-    
-      if (isHTML) {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = DOMPurify.sanitize(content);
-    
-        const pageBreakChar = '<!--pagebreak-->';
-        const pageBreakElements = ['H1', 'H2'];
-        const maxCharactersPerPage = 3000; // Adjust as needed
+      let currentPageContent = '';
+      let wordCount = 0;
+
+      const addToPage = (node) => {
+        const nodeContent = node.outerHTML || node.textContent;
         
-        let currentPageContent = '';
-        let currentPageCharCount = 0;
-    
-        const addToPage = (node) => {
-          const nodeContent = node.outerHTML || node.textContent;
-          currentPageContent += nodeContent;
-          currentPageCharCount += nodeContent.length;
-    
-          if (currentPageCharCount >= maxCharactersPerPage) {
+        if (nodeContent.includes(pageBreakChar)) {
+          if (currentPageContent) {
             pageContents.push(currentPageContent);
             currentPageContent = '';
-            currentPageCharCount = 0;
+            wordCount = 0;
           }
-        };
-    
-        tempDiv.childNodes.forEach((node) => {
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            if (node.tagName === 'HR' && node.className === 'page-break') {
-              // Manual page break
-              if (currentPageContent) {
-                pageContents.push(currentPageContent);
-                currentPageContent = '';
-                currentPageCharCount = 0;
-              }
-            } else if (pageBreakElements.includes(node.tagName)) {
-              // New section (H1 or H2)
-              if (currentPageContent && (currentPageCharCount > maxCharactersPerPage / 2)) {
-                pageContents.push(currentPageContent);
-                currentPageContent = '';
-                currentPageCharCount = 0;
-              }
-              addToPage(node);
-            } else {
-              addToPage(node);
+          return;
+        }
+        
+        if (node.nodeType === Node.TEXT_NODE) {
+          const words = node.textContent.trim().split(/\s+/);
+          for (let word of words) {
+            if (wordCount >= maxWordsPerPage) {
+              pageContents.push(currentPageContent);
+              currentPageContent = '';
+              wordCount = 0;
             }
-          } else if (node.nodeType === Node.TEXT_NODE) {
-            // Handle text nodes (e.g., between elements)
-            addToPage(node);
+            currentPageContent += word + ' ';
+            wordCount++;
           }
-        });
-    
-        if (currentPageContent) {
-          pageContents.push(currentPageContent);
+        } else {
+          currentPageContent += nodeContent;
         }
-      } else {
-        // Plain text content handling
-        const wordsPerPage = 500; // Adjust as needed
-        const words = content.split(/\s+/);
-    
-        for (let i = 0; i < words.length; i += wordsPerPage) {
-          pageContents.push(words.slice(i, i + wordsPerPage).join(' '));
-        }
+      };
+
+      tempDiv.childNodes.forEach((node) => {
+        addToPage(node);
+      });
+
+      if (currentPageContent) {
+        pageContents.push(currentPageContent);
       }
-    
+
       setPages(pageContents);
-      onPageChange(Math.min(currentPage, pageContents.length), pageContents.length);
+      onPageChange(localCurrentPage, pageContents.length);
     };
 
     paginateContent();
-  }, [content, onPageChange, currentPage]);
+  }, [content, onPageChange, localCurrentPage]);
 
-  const textStyle = {
-    fontSize: `${baseFontSize * zoom}px`,
+  useEffect(() => {
+    setLocalCurrentPage(currentPage);
+  }, [currentPage]);
+
+  const handleNextPage = () => {
+    if (localCurrentPage < pages.length) {
+      const newPage = localCurrentPage + 1;
+      setLocalCurrentPage(newPage);
+      onPageChange(newPage, pages.length);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (localCurrentPage > 1) {
+      const newPage = localCurrentPage - 1;
+      setLocalCurrentPage(newPage);
+      onPageChange(newPage, pages.length);
+    }
+  };
+
+  const handleGoToPage = () => {
+    const pageNumber = parseInt(goToPage, 10);
+    if (pageNumber >= 1 && pageNumber <= pages.length) {
+      setLocalCurrentPage(pageNumber);
+      onPageChange(pageNumber, pages.length);
+      setGoToPage('');
+    }
   };
 
   const createMarkup = (html) => {
     return {__html: DOMPurify.sanitize(html)};
-  }
+  };
 
   return (
-    <div className={`text-viewer ${viewMode}`} style={textStyle}>
-      {viewMode === 'horizontal' ? (
-        <div 
-          className="page" 
-          style={textStyle}
-          dangerouslySetInnerHTML={createMarkup(pages[currentPage - 1] || '')}
-        />
-      ) : (
-        pages.map((page, index) => (
-          <div 
-            key={index} 
-            className="page" 
-            style={textStyle}
-            dangerouslySetInnerHTML={createMarkup(page)}
+    <div className="text-viewer-container">
+      <div className="text-viewer-toolbar">
+        <button onClick={handlePrevPage} disabled={localCurrentPage === 1}>
+          <ChevronLeft />
+        </button>
+        <div className="page-navigation">
+          <input 
+            type="number" 
+            value={goToPage} 
+            onChange={(e) => setGoToPage(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleGoToPage()}
           />
-        ))
-      )}
+          <span>{localCurrentPage} / {pages.length}</span>
+        </div>
+        <button onClick={handleNextPage} disabled={localCurrentPage === pages.length}>
+          <ChevronRight />
+        </button>
+        <button onClick={() => onZoomChange(zoom + 0.1)}>
+          <ZoomIn />
+        </button>
+        <button onClick={() => onZoomChange(zoom - 0.1)}>
+          <ZoomOut />
+        </button>
+        <button onClick={() => onViewModeChange('horizontal')} className={viewMode === 'horizontal' ? 'active' : ''}>
+          <Columns />
+        </button>
+        <button onClick={() => onViewModeChange('vertical')} className={viewMode === 'vertical' ? 'active' : ''}>
+          <AlignJustify />
+        </button>
+      </div>
+      <div 
+        ref={viewerRef}
+        className={`text-viewer-content ${viewMode}`}
+        style={{ fontSize: `${zoom * 100}%` }}
+      >
+        {viewMode === 'horizontal' ? (
+          <div 
+            className="page"
+            dangerouslySetInnerHTML={createMarkup(pages[localCurrentPage - 1] || '')}
+          />
+        ) : (
+          pages.map((page, index) => (
+            <div key={index}>
+              <div 
+                className="page"
+                dangerouslySetInnerHTML={createMarkup(page)}
+              />
+              {index < pages.length - 1 && <div className="page-break"></div>}
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 };

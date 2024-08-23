@@ -153,6 +153,7 @@ const BookOverlay = ({ book, onClose, onLikeUpdate }) => {
     }
     try {
       const response = await api.post(`/api/books/books/${book.id}/like/`);
+      console.log("Like response:", response.data);
       setIsLiked(response.data.liked);
       setLikeCount(response.data.like_count);
       if (onLikeUpdate)

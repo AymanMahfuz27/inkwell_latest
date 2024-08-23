@@ -106,6 +106,7 @@ class BookViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def like(self, request, pk=None):
+        print("Like action")
         book = self.get_object()
         user = request.user
         if book.likes.filter(id=user.id).exists():
