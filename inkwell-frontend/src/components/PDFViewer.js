@@ -17,7 +17,7 @@ import '@react-pdf-viewer/full-screen/lib/styles/index.css';
 import '../css/PDFViewer.css';
 
 // Define the worker URL as a constant
-const WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
 const PDFViewer = ({ pdfUrl, viewMode, onViewModeChange, onPageChange, onTotalPagesChange, currentPage }) => {
   console.log('PDFViewer render - currentPage:', currentPage);
